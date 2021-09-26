@@ -33,5 +33,8 @@ class CacheDB:
         create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                           VALUES(?,?,?,?,?,?,?) '''
         self.session.execute(create_new_job_posting_sql, job_information)
-        self.session.commit()
+        self.session.connection.commit()
+
+    def delete_job(self, first_name, last_name):
+        self.session.execute('DELETE FROM jobs WHERE firstname = ? AND lastname = ?', (first_name, last_name,))
 

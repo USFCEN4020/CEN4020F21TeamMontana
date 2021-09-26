@@ -9,6 +9,24 @@ import random
 import account_define
 import user_options
 
+
+def succ_story(filename):
+    try:
+        file = open(filename)
+    except IOError:
+        print("Error: File could not open or does not exist.")
+        return 0
+    content = file.read()
+    # returning the
+    return content
+
+
+def play_video():
+    # end='' removes the new line that comes after the print statement
+    print("Video is now playing.", end='')
+    return 0
+
+
 database_name = "userDB"
 # Main function
 if __name__ == '__main__':
@@ -19,13 +37,12 @@ if __name__ == '__main__':
     db_commands.create_table(connection, db_commands.job_table)
     # db_commands.print_database(connection)
 
-    file = open("Student_story.txt")
-    content = file.read()
+    user_story = succ_story("Student_story.txt")
 
     # Welcome everyone to InCollege, a story of success student
     # Prompt user for either logging in or creating an account <- if neither happens they quit
     print("Welcome to inCollege by Team Montana!")
-    print(content)
+    print(user_story)
     print("")
     print("Why you should join in InCollege? Watch the video!")
     print("")
@@ -95,7 +112,7 @@ if __name__ == '__main__':
         print("Successfully created your account. You are now logged in.")
         user_options.additional_options(username_input, firstname_input, lastname_input)
     elif userChoice == "3":
-        print("Video is now playing.")
+        play_video()
     else:
         print("I did not recognize your input")
         connection.close()

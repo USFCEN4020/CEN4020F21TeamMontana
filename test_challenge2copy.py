@@ -17,24 +17,35 @@ def verify_session():
 
 # fixture so we don't instantiate this DB multiple times
 @pytest.fixture
-def cache(verify_session): # 1
+def cache(verify_session):
     return CacheDB(verify_session)
 
 
-def test_create_job_posting(verify_session, mocker):
-    cache = CacheDB(verify_session)
+def test_create_job_posting(cache, mocker):
     # patching the builtin input function to provide the input to test.
-    mocker.patch('builtins.input', side_effect=["tester", "test stuff", "James Anderson", "Florida", 100000, "An", "Dinhh"])
-    test = create_job_posting("An", "Dinhh")
+    mocker.patch('builtins.input', side_effect=["tester", "test stuff", "James Anderson", "Florida", 100000, "An", "Dinh"])
+    test = create_job_posting("An", "Dinh")
 
-    job_array = cache.get_job("An", "Dinhh")
+    mocker.patch('builtins.input', side_effect=["tester", "test stuff", "Bob", "New York", 10, "Test", "Guy"])
+    test = cache.create_job("Test", "Guy")
 
-    assert job_array == ("tester", "test stuff", "James Anderson", "Florida", 100000, "An", "Dinhh")
+    job_array1 = cache.get_job("An", "Dinh")
+    job_array2 = cache.get_job("Test", "Guy")
+
+    assert job_array1 == ("tester", "test stuff", "James Anderson", "Florida", 100000, "An", "Dinh")
+    assert job_array2 == ("tester", "test stuff", "Bob", "New York", 10, "Test", "Guy")
 
 
-def test_print(verify_session):
+def test_delete(verify_session):
     cache = CacheDB(verify_session)
+    cache.delete_job("An", "Dinh")
+    verify_session.connection.commit()
+
+
+def test_print(cache):
+    print("\n")
     all_jobs = cache.get_all_job()
     for job in all_jobs:
         print(job)
+
 
