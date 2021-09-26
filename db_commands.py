@@ -144,7 +144,6 @@ def print_database(connection):
     print("Jobs table: ")
     print(cursor.fetchall())
 
-
 def delete_all_database_info(connection):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM users")
