@@ -36,7 +36,6 @@ def searchJob(username):
 
 
 def findAssociate(username):
-    #print("Under construction")
     print("Looking for someone you know?")
     fname = input("Enter the first name: ")
     lname = input("Enter the last name: ")
