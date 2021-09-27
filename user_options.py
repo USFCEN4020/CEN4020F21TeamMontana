@@ -1,33 +1,7 @@
 import account_define
-import db_commands
 import random
 import job_commands
-
-
-def additional_options(username, first_name, last_name):
-    while True:
-        print("Please choose from the following menu:")
-        print("1 - Post a job")
-        print("2 - Search for a job")
-        print("3 - Find someone you know")
-        print("4 - Learn a new skill")
-        print("Q to quit the program")
-        userChoiceOpt = input("Enter your selection here: ")
-
-        # Potentially use switch
-        if userChoiceOpt == "1":
-            job_commands.create_job_posting(first_name, last_name)
-        elif userChoiceOpt == "2":
-            searchJob(username)
-        elif userChoiceOpt == "3":
-            findAssociate(username)
-        elif userChoiceOpt == "4":
-            newSkill(username)
-        elif userChoiceOpt == "Q":
-            break
-        else:
-            print("Not a valid input")
-    return 0
+import db_commands
 
 
 def searchJob(username):
@@ -35,23 +9,25 @@ def searchJob(username):
     return 0
 
 
-def findAssociate(username):
-    print("Looking for someone you know?")
-    fname = input("Enter the first name: ")
-    lname = input("Enter the last name: ")
-    user_exists = account_define.does_user_exist(fname, lname)
-    if user_exists:
-        print("They are part of the InCollege system.")
-    else: 
-        print("They are not part of the InCollege system.")
-    return 0
+#This function isn't necessary
+def does_user_exist(first_name_input, last_name_input):
+    first_name_input.lower()
+    last_name_input.lower()
+    connection = db_commands.create_connection(db_commands.database_name)
+    existing_names = db_commands.query_names(connection)
+    for firstname, lastname in existing_names:
+        firstname.lower()
+        lastname.lower()
+        if firstname == first_name_input and lastname == last_name_input:
+            return True
+    return False
 
 
 def newSkill(username):
     while True:
-        #Decided have this list of skills rather than just hardcode 5 skills that will be the same for all users. 
+        #Decided have this list of skills rather than just hardcode 5 skills that will be the same for all users.
         #Add more skills here later on
-        skillList = ["Software Engineering", "Software Development",  "Waterfall", "Agile", "Scrum", "Jira", "Python"] 
+        skillList = ["Software Engineering", "Software Development",  "Waterfall", "Agile", "Scrum", "Jira", "Python"]
         #gets 5 unique random skills from skillList, so that Users don't have multiple of the same options
         sampledList = random.sample(skillList, 5)
 
@@ -62,7 +38,6 @@ def newSkill(username):
         print("4 - {}".format(sampledList[3]))
         print("5 - {}".format(sampledList[4]))
         print("6 - Return back to previous options.")
-        print("Q to quit the program")
         userChoiceSkill = input("Enter your selection here: ")
 
         #Have the remove function on the list to remove the skills that the user has already selected
@@ -74,17 +49,50 @@ def newSkill(username):
                 if sampledList[int(userChoiceSkill) - 1] == i:
                     #Since the skillList gets declared each time again in the function at the top, it does not get removed.
                     #The skillList is a local varaible, so to fix that probably create a profile or something per user, and have the skills they selected.
-                    #So, there are no future appearences of duplicate skills, and it is user specific. 
+                    #So, there are no future appearences of duplicate skills, and it is user specific.
                     skillList.remove(sampledList[int(userChoiceSkill) - 1])
                     print("Under construction")
 
         if userChoiceSkill == "6":
-            #At first I thought to call the function again, but if I return 0 it accomplishes the same thing as it returns 0 back to the previous function. 
+            #At first I thought to call the function again, but if I return 0 it accomplishes the same thing as it returns 0 back to the previous function.
             #additionalOptions(username)
             return 0
-        elif userChoiceSkill == "Q":
+        elif int(userChoiceSkill) > 6 and int(userChoiceSkill) < 1:
+            print("Not a valid input")
+    return 0
+
+
+def additional_options(username):
+    while True:
+        print("Please choose from the following menu:")
+        print("1 - Post a job")
+        print("2 - Search for a job")
+        print("3 - Find someone you know")
+        print("4 - Learn a new skill")
+        print("5 to return to previous menu")
+        userChoiceOpt = input("Enter your selection here: ")
+
+        # Potentially use switch
+        if userChoiceOpt == "1":
+            first_name_input = input("Enter the first name: ")
+            last_name_input = input("Enter the last name: ")
+            job_commands.create_job_posting(first_name_input, last_name_input)
+        elif userChoiceOpt == "2":
+            searchJob(username)
+        elif userChoiceOpt == "3":
+            print("Looking for someone you know?")
+            first_name_input = input("Enter the first name: ")
+            last_name_input = input("Enter the last name: ")
+            user_exists = does_user_exist(first_name_input, last_name_input)
+            if user_exists:
+                print("They are part of the InCollege system.")
+            else:
+                print("They are not part of the InCollege system.")
+        elif userChoiceOpt == "4":
+            newSkill(username)
+        elif userChoiceOpt == "5":
             break
-        elif int(userChoiceSkill) > 5 and int(userChoiceSkill) < 1:
+        else:
             print("Not a valid input")
     return 0
 
