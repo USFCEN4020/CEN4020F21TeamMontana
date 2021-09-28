@@ -1,12 +1,15 @@
 import pytest
 import sqlite3
 from testDB import CacheDB
+# In cmd
+# pip install pytest-mock
 import mock
 from account_define import userLogin
 from job_commands import create_job_posting
-from main import succ_story, play_video
+import start_options
 
 
+# The scope of being session has this connection being active for only each individual run
 @pytest.fixture(scope='session', params=[':memory:'])
 def session(request):
     # create in memory database, just for testing purposes
@@ -16,6 +19,8 @@ def session(request):
     connection.close()
 
 
+# autouse being True means that this fixture will be called for all the following tests
+# this function is to fill in the empty temporary database in memory
 @pytest.fixture(autouse=True, scope='session')
 def setup_db(session):
     session.execute("""CREATE TABLE IF NOT EXISTS users (
@@ -42,19 +47,13 @@ def setup_db(session):
 
 
 # fixture so we don't instantiate this DB multiple times
+# CacheDB is a class that is created in testDB.py
 @pytest.fixture
 def cache(session):
     return CacheDB(session)
 
 
-def test_user(session):
-    username = "username2"
-    password = "Password?2"
-    firstname = "An"
-    lastname = "Dinh"
-
-    cache = CacheDB(session)
-
+def test_user(cache):
     user_array = cache.get_user_info("username2")
     assert user_array == ("username2", "Password?2", "An", "Dinh")
 
@@ -63,9 +62,9 @@ def test_user(session):
 #    cache = CacheDB(session)
 
 
-def test_create_job_posting(session, mocker):
-    cache = CacheDB(session)
-
+# This function in cache does not have the limit of 5 jobs
+# To test that functionality of the limit of 5 jos go to test_database_tester1
+def test_create_job_posting(cache, mocker):
     # patching the builtin input function to provide the input to test.
     mocker.patch('builtins.input', side_effect=["tester", "test stuff", "Bob", "New York", 10, "Test", "Guy"])
     test = cache.create_job("Test", "Guy")
@@ -96,32 +95,32 @@ def test_create_job_posting(session, mocker):
     assert job_array5 == ("SELECT * FROM jobs WHERE firstname = 'An'", " ", " ", " ", 100, "An", "Dinhh")
 
 
-def test_job_post(session):
-    cache = CacheDB(session)
-
+def test_job_post(cache):
     user_array = cache.get_job("An", "Dinh")
     assert user_array == ("tester", "test stuff", "James Anderson", "Florida", 100000, "An", "Dinh")
 
 
-def test_print(session):
-    cache = CacheDB(session)
+def test_print(cache):
     print("\n")
     all_jobs = cache.get_all_job()
     for job in all_jobs:
         print(job)
 
 
+# the capsys is a fixture of pytest, and it is being passed as a parameter to capture the system outputs and errors
 def test_succ_story(capsys):
-    user_succ_story = succ_story("Student_story.txt")
+    user_succ_story = start_options.succ_story("Student_story.txt")
     # the end= '' was because the print statement alone appended a newline at the end
     # this was the solution to get rid of that newline at the end
     print(user_succ_story, end='')
+    # capture will contain output, error data
     capture = capsys.readouterr()
+    # only verifying the output for now.
     assert capture.out == user_succ_story
 
 
 def test_video(capsys):
-    play_video()
+    start_options.play_video()
     capture = capsys.readouterr()
     assert capture.out == "Video is now playing."
 
