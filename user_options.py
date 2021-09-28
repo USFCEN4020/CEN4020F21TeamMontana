@@ -1,7 +1,10 @@
+from important_links_group import important_link
+from useful_links import useful_link
 import account_define
 import random
 import job_commands
 import db_commands
+
 
 
 def searchJob(username):
@@ -69,7 +72,9 @@ def additional_options(username):
         print("2 - Search for a job")
         print("3 - Find someone you know")
         print("4 - Learn a new skill")
-        print("5 to return to previous menu")
+        print("5 - Useful links group options")
+        print("6 - InCollege important links group options")
+        print("7 - Return to previous menu")
         userChoiceOpt = input("Enter your selection here: ")
 
         # Potentially use switch
@@ -91,6 +96,10 @@ def additional_options(username):
         elif userChoiceOpt == "4":
             newSkill(username)
         elif userChoiceOpt == "5":
+            useful_link()
+        elif userChoiceOpt == "6":
+            important_link()
+        elif userChoiceOpt == "7":
             break
         else:
             print("Not a valid input")

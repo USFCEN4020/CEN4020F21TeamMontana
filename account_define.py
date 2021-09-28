@@ -22,7 +22,7 @@ def userLogin(username_input, password_input, existing_usernames, username_passw
                 succLogin = True
                 # call function here to get the user into inCollege and be able to use their functions
                 firstname, lastname = db_commands.find_names_from_username(username_input)
-                user_options.additional_options(username_input, firstname, lastname)
+                user_options.additional_options(username_input)
                 # return that succLogin is true back to main. And it will break out of the userLogin while loop and users will then be greeted with the first options when program runs
                 return succLogin
             elif password_input == "Q":
@@ -41,7 +41,7 @@ def userLogin(username_input, password_input, existing_usernames, username_passw
 
 
 def username_meets_qualifications(username_input, existing_usernames):
-    if len(existing_usernames) > 5:
+    if len(existing_usernames) >= 5:
         print("The system has too many users already.")
         return False
 

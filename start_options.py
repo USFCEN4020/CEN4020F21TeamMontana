@@ -103,3 +103,11 @@ def join_contact(contact_firstname, contact_lastname, connection):
     else:
         print("They are not part of the InCollege system.")
         return 0
+def get_user_option(limit1, limit2):
+    while True:
+        try:
+            option1 = int(
+                input(f"Please enter your option ({limit1}-{limit2}): "))
+            return option1
+        except ValueError:
+            print("Input has to be an integer")
