@@ -9,7 +9,7 @@ import random
 import account_define
 import user_options
 import start_options
-import useful_links
+import useful_links_options
 import important_links_group
 
 database_name = "userDB"
@@ -65,7 +65,7 @@ def main_menu():
             start_options.join_contact(contact_firstname, contact_lastname, connection)
             continue
         elif user_choice == 5:
-            useful_links.useful_link()
+            useful_links_options.useful_link()
             continue
         elif user_choice == 6:
             important_links_group.important_link()

@@ -1,5 +1,5 @@
 from important_links_group import important_link
-from useful_links import useful_link
+from useful_links_options import useful_link
 import account_define
 import random
 import job_commands
