@@ -41,7 +41,7 @@ def create_account(connection):
     existing_usernames = db_commands.query_usernames_list(connection)
 
     # Otherwise, safe to create username
-    # Tests if safe username
+    # tests if safe username
     while True:
         if len(existing_usernames) > 5:
             print("The system has too many users already.")

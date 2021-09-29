@@ -1,8 +1,6 @@
 import pytest
 import sqlite3
-from testDB import CacheDB
-import mock
-from account_define import userLogin
+from tests.unit.testDB import CacheDB
 from job_commands import create_job_posting
 
 
@@ -32,6 +30,7 @@ def test_delete(verify_session):
 
 
 def test_create_job_posting(cache, mocker):
+    print("\n")
     # patching the builtin input function to provide the input to test.
     mocker.patch('builtins.input', side_effect=["tester", "test stuff", "James Anderson", "Florida", 100000, "An", "Dinh"])
     test = create_job_posting("An", "Dinh")

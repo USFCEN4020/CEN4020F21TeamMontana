@@ -4,6 +4,7 @@ import db_commands
 database_name = "userDB"
 connection = db_commands.create_connection(database_name)
 
+
 def general_link():
     links = """
     General links available:
@@ -18,7 +19,8 @@ def general_link():
 
     """
     print(links)
-    
+
+
 def useful_link():
     links = """
     Useful links available:
@@ -38,7 +40,7 @@ def useful_link():
         if option == 1:
             while True:
                 general_link()
-                options = start_options.get_user_option(1,8)
+                options = start_options.get_user_option(1, 8)
                 while options < 1 or options > 8:
                     print("Invalid input. Try again")
                     options = start_options.get_user_option(1, 8)
@@ -49,7 +51,8 @@ def useful_link():
                     print("We're here to help.")
 
                 elif options == 3:
-                    print("InCollege: Welcome to InCollege, the world's largest college student network with many users in many countries and territories worldwide")
+                    print("InCollege: Welcome to InCollege, the world's largest college student network "
+                          "with many users in many countries and territories worldwide")
                     continue
                 elif options == 4:
                     print("InCollege Pressroom: Stay on top of the latest news, updates, and reports")
