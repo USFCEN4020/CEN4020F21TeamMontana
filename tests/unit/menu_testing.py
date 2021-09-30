@@ -2,23 +2,22 @@ import pytest
 import main
 import useful_links_options
 
-
+# ignore this
 def test_main_menu(capsys, monkeypatch):
     desired_output = """
-    General links available:
-    1. Sign Up
-    2. Help Center
-    3. About
-    4. Press
-    5. Blog
-    6. Careers
-    7. Developers
-    8. Go Back
+            Please choose from the following menu:
+            1 - Log into an existing account
+            2 - Create an account
+            3 - Play a video
+            4 - Find a contact in InCollege
+            5 - Useful Links Group
+            6 - InCollege Important Links Group
+            7 - Exit the program
 
-    """
+            """
 
     try:
-        useful_links_options.print_general_link()
+        main.print_start_menu()
     except(StopIteration):
         output = capsys.readouterr().out
         assert output == desired_output

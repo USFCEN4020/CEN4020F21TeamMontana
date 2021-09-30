@@ -4,6 +4,7 @@ import db_commands
 database_name = "userDB"
 connection = db_commands.create_connection(database_name)
 
+
 def print_general_link():
     links = """
         General links available:
@@ -56,18 +57,23 @@ def general_link():
             return False
 
 
-def useful_link():
+def print_useful_link():
     links = """
-    Useful links available:
-    1. General
-    2. Browse InCollege
-    3. Business Solutions
-    4. Directories
-    5. Go Back
+        Useful links available:
+        1. General
+        2. Browse InCollege
+        3. Business Solutions
+        4. Directories
+        5. Go Back
 
-    """
+        """
+    print(links)
+
+
+def useful_link():
+
     while True:
-        print(links)
+        print_useful_link()
         option = start_options.get_user_option(1, 5)
         while option < 1 or option > 5:
             print("Invalid input. Try again")
