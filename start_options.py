@@ -104,6 +104,7 @@ def join_contact(contact_firstname, contact_lastname, connection):
         print("They are not part of the InCollege system.")
         return 0
 
+
 def get_user_option(limit1, limit2):
     while True:
         try:
