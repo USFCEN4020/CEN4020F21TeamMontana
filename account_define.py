@@ -11,16 +11,19 @@ def userLogin(username_input, password_input, existing_usernames, username_passw
             # convert the list into a dictionary, since all usernames should be distinct
             userPass_lookup = dict(username_password_tuples)
             userPassword = userPass_lookup[username_input]
+
             while password_input != userPassword and password_input != "Q":
                 print("Incorrect password, please try again")
+
                 password_input = input("Enter your password, or Q to quit the program: ")
+
             if password_input == userPassword:
                 print("You have successfully logged in")
                 succLogin = True
                 # call function here to get the user into inCollege and be able to use their functions
                 firstname, lastname = db_commands.find_names_from_username(username_input)
-                user_options.additional_options(username_input, firstname, lastname)
-                #return that succLogin is true back to main. And it will break out of the userLogin while loop and users will then be greeted with the first options when program runs
+                user_options.additional_options(username_input)
+                # return that succLogin is true back to main. And it will break out of the userLogin while loop and users will then be greeted with the first options when program runs
                 return succLogin
             elif password_input == "Q":
                 print("Exiting program now, hope to see you again!")
@@ -38,7 +41,7 @@ def userLogin(username_input, password_input, existing_usernames, username_passw
 
 
 def username_meets_qualifications(username_input, existing_usernames):
-    if len(existing_usernames) > 5:
+    if len(existing_usernames) >= 5:
         print("The system has too many users already.")
         return False
 
@@ -84,16 +87,3 @@ def password_meets_qualifications(password):
         return False
 
     return True
-
-
-def does_user_exist(first_name_input, last_name_input):
-    first_name_input.lower()
-    last_name_input.lower()
-    connection = db_commands.create_connection(db_commands.database_name)
-    existing_names = db_commands.query_names(connection)
-    for firstname, lastname in existing_names:
-        firstname.lower()
-        lastname.lower()
-        if firstname == first_name_input and lastname == last_name_input:
-            return True
-    return False
