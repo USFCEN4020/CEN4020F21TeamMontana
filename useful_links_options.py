@@ -20,7 +20,7 @@ def general_link():
     """
     print(links)
     while True:
-        general_link()
+        print(links)
         options = start_options.get_user_option(1, 8)
         while options < 1 or options > 8:
             print("Invalid input. Try again")
