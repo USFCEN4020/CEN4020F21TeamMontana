@@ -4,21 +4,25 @@ import db_commands
 database_name = "userDB"
 connection = db_commands.create_connection(database_name)
 
+def print_general_link():
+    links = """
+        General links available:
+        1. Sign Up
+        2. Help Center
+        3. About
+        4. Press
+        5. Blog
+        6. Careers
+        7. Developers
+        8. Go Back
+
+        """
+    print(links)
+
 
 def general_link():
-    links = """
-    General links available:
-    1. Sign Up
-    2. Help Center
-    3. About
-    4. Press
-    5. Blog
-    6. Careers
-    7. Developers
-    8. Go Back
 
-    """
-    print(links)
+    print_general_link()
     while True:
         print(links)
         options = start_options.get_user_option(1, 8)
