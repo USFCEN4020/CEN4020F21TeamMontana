@@ -7,7 +7,6 @@ import account_define
 
 #test function
 def test_challenge1():
-
     i = 0
     print("================ start of password_meets_qualifications tests =================")
     while i < 10:       #will test 10 passwords

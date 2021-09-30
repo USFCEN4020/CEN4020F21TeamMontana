@@ -22,9 +22,8 @@ def print_general_link():
 
 def general_link():
 
-    print_general_link()
     while True:
-        print(links)
+        print_general_link()
         options = start_options.get_user_option(1, 8)
         while options < 1 or options > 8:
             print("Invalid input. Try again")
