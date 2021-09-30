@@ -3,6 +3,7 @@
 import pytest           #used for testing different functions for a given file
 import main             #name of file thats being tested
 import random           #used to generate random test values
+import account_define
 
 #test function
 def test_challenge1():
@@ -26,7 +27,7 @@ def test_challenge1():
             password += chr(next_char)
             j += 1
         i += 1
-        val = main.password_meets_qualifications(password)  #applies password function in main.py as test value
+        val = account_define.password_meets_qualifications(password)  #applies password function in main.py as test value
         if val is True:  #prints if password is good
             print("test #" + str(i) + ":\t" + str(password) + "\t\t PASSED")  # prints current password
         elif val is False: #prints if password is bad
@@ -72,7 +73,7 @@ def test_challenge1():
                 j += 1
         i += 1
 
-        val = main.username_meets_qualifications(username_input, existing_usernames)  # applies username function in main.py as test value
+        val = account_define.username_meets_qualifications(username_input, existing_usernames)  # applies username function in main.py as test value
         if val is True:  # prints if username is good
             print("test #" + str(i) + ":\t" + str(username_input) + "\t\t PASSED")  # prints current password
         elif val is False:  # prints if username is bad
