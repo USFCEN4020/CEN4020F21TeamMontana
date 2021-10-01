@@ -14,6 +14,20 @@ import important_links_group
 
 database_name = "userDB"
 
+def print_start_menu():
+    start_menu = """
+            Please choose from the following menu:
+            1 - Log into an existing account
+            2 - Create an account
+            3 - Play a video
+            4 - Find a contact in InCollege
+            5 - Useful Links Group
+            6 - InCollege Important Links Group
+            7 - Exit the program
+
+            """
+    print(start_menu)
+
 
 # Main function
 def main_menu():
@@ -32,19 +46,9 @@ def main_menu():
     print("")
     print("Why you should join in InCollege? Watch the video!")
     print("")
-    start_menu = """
-        Please choose from the following menu:
-        1 - Log into an existing account
-        2 - Create an account
-        3 - Play a video
-        4 - Find a contact in InCollege
-        5 - Useful Links Group
-        6 - InCollege Important Links Group
-        7 - Exit the program
 
-        """
     while True:
-        print(start_menu)
+        print_start_menu()
         user_choice = start_options.get_user_option(1, 7)
         while user_choice < 1 or user_choice > 7:
             print("Invalid input. Try again")

@@ -65,16 +65,19 @@ def new_skill(username):
     return 0
 
 
+def print_additional_options():
+    print("Please choose from the following menu:")
+    print("1 - Post a job")
+    print("2 - Search for a job")
+    print("3 - Find someone you know")
+    print("4 - Learn a new skill")
+    print("5 - Useful links group options")
+    print("6 - InCollege important links group options")
+    print("7 - Return to previous menu")
+
 def additional_options(username):
     while True:
-        print("Please choose from the following menu:")
-        print("1 - Post a job")
-        print("2 - Search for a job")
-        print("3 - Find someone you know")
-        print("4 - Learn a new skill")
-        print("5 - Useful links group options")
-        print("6 - InCollege important links group options")
-        print("7 - Return to previous menu")
+        print_additional_options()
         user_choice_opt = input("Enter your selection here: ")
 
         # Potentially use switch
