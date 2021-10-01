@@ -16,22 +16,24 @@ def succ_story(filename):
 
 def login_account(connection):
     # variable used to continue the attempt by the user to login
-    succLogin = False
+    succ_login = False
     # returns usernames from the database
     existing_usernames = db_commands.query_usernames_list(connection)
     username_password_tuples = db_commands.query_username_password(connection)
     username_input = None
     password_input = None
-    # Need to implement later on for user to go back, in that case we can just have a while true loop in main that encompasses all the code.
+    # Need to implement later on for user to go back, in that case we can
+    # just have a while true loop in main that encompasses all the code.
     # And break out of this statement if for another user input like "Back", which will break out of this while loop
-    while succLogin is False and username_input != "Q":
+    while succ_login is False and username_input != "Q":
         username_input = input("Enter your username, or Q to quit the program: ")
         if username_input == "Q":
             exit()
         else:
             password_input = input("Enter your password: ")
-            # If userLogin continues to return false then keep running this while loop and ask for usernames or if the user wants to quit the program
-            succLogin = account_define.userLogin(username_input, password_input, existing_usernames,
+            # If userLogin continues to return false then keep running this while loop
+            # and ask for usernames or if the user wants to quit the program
+            succ_login = account_define.userLogin(username_input, password_input, existing_usernames,
                                                  username_password_tuples)
 
 

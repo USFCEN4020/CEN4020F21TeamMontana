@@ -53,7 +53,6 @@ def general_link():
             continue
         elif options == 8:
             print("Going back to 'Useful Links' Menu")
-            useful_link()
             return False
 
 
@@ -81,13 +80,13 @@ def useful_link():
         if option == 1:
             general_link()
         elif option == 2:
-            print("Under construction")
+            print("Under Construction")
             
         elif option == 3:
-            print("Under construction")
+            print("Under Construction")
             
         elif option == 4:
-            print("Under construction")
+            print("Under Construction")
            
         elif option == 5:
             print("Going back to the Main Menu")
