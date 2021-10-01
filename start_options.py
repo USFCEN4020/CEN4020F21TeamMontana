@@ -74,7 +74,9 @@ def create_account(connection):
             break
 
     # Create row in users table
-    user_information = (username_input, password_input, firstname_input, lastname_input)
+    # Adds Englist as Language
+    default_language = "English"
+    user_information = (username_input, password_input, firstname_input, lastname_input, default_language)
     db_commands.create_row_in_users_table(connection, user_information)
 
     print("Successfully created your account. You are now logged in.")

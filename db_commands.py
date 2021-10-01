@@ -10,6 +10,7 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     password text NOT NULL,
     firstname text NOT NULL,
     lastname text NOT NULL,
+    language text NULL,
     UNIQUE(firstname, lastname)
     );"""
 
