@@ -2,7 +2,6 @@ import start_options
 import db_commands
 
 def important_link():
-    print("under construction.")
     while True:
         print("Please choose from the following menu:")
         print("1 - Copyright Notice")
@@ -12,10 +11,8 @@ def important_link():
         print("5 - Privacy Policy")
         print("6 - Cookie Policy")
         print("7 - Brand Policy")
-        print("8 - Guest Controls")
-        print("9 - Languages")
         print("0 - Exit Menu")
-        userMenuChoice = input("Enter your selection here... (0-9")
+        userMenuChoice = input("Enter your selection here... (0-9)")
 
         if userMenuChoice == "1":
             print("This work is copyrighted\n")
@@ -43,6 +40,7 @@ def important_link():
                         print("1 - Turn Off InCollege Email")
                         print("2 - Turn Off SMS Notifications")
                         print("3 - Turn Off Targeted Advertising")
+                        print("4 - Change Language")
                         print("0 - Exit")
                         userMenuChoice = input("Enter your Selection Here... (0-3)")
 
@@ -72,12 +70,6 @@ def important_link():
             continue
         elif userMenuChoice == "7":
             print("Accept Brand Policy\n")
-            continue
-        elif userMenuChoice == "8":
-            print("Guest Controls\n")
-            continue
-        elif userMenuChoice == "9":
-            print("Languages\n")
             continue
         elif userMenuChoice == "0":
             break
