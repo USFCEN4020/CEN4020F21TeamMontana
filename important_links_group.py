@@ -2,6 +2,7 @@ import start_options
 import db_commands
 
 def important_link():
+    print("under construction.")
     while True:
         print("Please choose from the following menu:")
         print("1 - Copyright Notice")
