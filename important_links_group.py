@@ -2,7 +2,6 @@ import start_options
 import db_commands
 
 def important_link():
-    print("under construction.")
     while True:
         print("Please choose from the following menu:")
         print("1 - Copyright Notice")
@@ -15,7 +14,7 @@ def important_link():
         print("8 - Guest Controls")
         print("9 - Languages")
         print("0 - Exit Menu")
-        userMenuChoice = input("Enter your selection here: ")
+        userMenuChoice = input("Enter your selection here... (0-9")
 
         if userMenuChoice == "1":
             print("This work is copyrighted\n")
@@ -30,8 +29,43 @@ def important_link():
             print("Agree with User Agreement\n")
             continue
         elif userMenuChoice == "5":
-            print("Agree with Privacy Policy\n")
-            continue
+            print("Would you like to open Guest Options\n")
+            while True:
+                print("1 - Yes")
+                print("0 - Exit")
+                userMenuChoice = input("Enter Your Selection Here... (0-1)")
+
+                if userMenuChoice == "1":
+                    print("Guest Options:")
+                    while True:
+                        print("Please choose from the following menu:")
+                        print("1 - Turn Off InCollege Email")
+                        print("2 - Turn Off SMS Notifications")
+                        print("3 - Turn Off Targeted Advertising")
+                        print("0 - Exit")
+                        userMenuChoice = input("Enter your Selection Here... (0-3)")
+
+                        if userMenuChoice == "1":
+                            sendEmails = False
+                            continue
+                        elif userMenuChoice == "2":
+                            sendSMS = False
+                            continue
+                        elif userMenuChoice == "3":
+                            targetedAdvertising = False
+                            continue
+                        elif userMenuChoice == "0":
+                            break
+                        else:
+                            print("Invalid Input")
+                            continue
+                    continue
+                elif userMenuChoice == "0":
+                    break
+                else:
+                    print("Invalid Input")
+                    continue
+
         elif userMenuChoice == "6":
             print("Accept Cookie Policy\n")
             continue
