@@ -42,7 +42,7 @@ def important_link():
                         print("3 - Turn Off Targeted Advertising")
                         print("4 - Change Language")
                         print("0 - Exit")
-                        userMenuChoice = input("Enter your Selection Here... (0-3)")
+                        userMenuChoice = input("Enter your Selection Here... (0-4)")
 
                         if userMenuChoice == "1":
                             sendEmails = False
@@ -52,6 +52,9 @@ def important_link():
                             continue
                         elif userMenuChoice == "3":
                             targetedAdvertising = False
+                            continue
+                        elif userMenuChoice == "4":
+
                             continue
                         elif userMenuChoice == "0":
                             break

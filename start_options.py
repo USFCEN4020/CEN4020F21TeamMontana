@@ -68,7 +68,7 @@ def create_account(connection):
         # Prompt for second name
         lastname_input = input("Please enter your last name: ")
         # Check if those are in the system
-        if account_define.does_user_exist(firstname_input, lastname_input):
+        if user_options.does_user_exist(firstname_input, lastname_input):
             print("That name already exists in our system. Do you have a nickname you go by?")
         else:
             break
@@ -80,7 +80,7 @@ def create_account(connection):
     db_commands.create_row_in_users_table(connection, user_information)
 
     print("Successfully created your account. You are now logged in.")
-    user_options.additional_options(username_input, firstname_input, lastname_input)
+    user_options.additional_options(username_input)
 
 
 def play_video():
