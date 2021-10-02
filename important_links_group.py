@@ -1,6 +1,10 @@
 import start_options
 import db_commands
 
+# def ChangeLanguage():
+#     # db_commands.ChangeLang(db_commands.database_name)
+#     con = db_commands.create_connection(db_commands.database_name)
+#     db_commands.print_database(con)
 def important_link():
     while True:
         print("Please choose from the following menu:")
@@ -54,7 +58,7 @@ def important_link():
                             targetedAdvertising = False
                             continue
                         elif userMenuChoice == "4":
-
+                            # ChangeLanguage()
                             continue
                         elif userMenuChoice == "0":
                             break

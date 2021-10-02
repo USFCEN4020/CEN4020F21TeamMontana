@@ -10,7 +10,7 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     password text NOT NULL,
     firstname text NOT NULL,
     lastname text NOT NULL,
-    language text NULL,
+    language text NOT NULL,
     UNIQUE(firstname, lastname)
     );"""
 
@@ -132,6 +132,11 @@ def create_row_in_jobs_table(job_info):
     except Error as e:
         print(e)
 
+# def ChangeLang(db_name):
+#     connection = create_connection(db_name)
+#     cursor = connection.cursor()
+#     cursor.execute("SELECT language FROM users")
+#     print(cursor.fetchall())
 
 # These are helper functions specifically to help testers and developers
 # Helper function for testing purposes

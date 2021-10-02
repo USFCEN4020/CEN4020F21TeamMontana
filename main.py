@@ -39,7 +39,7 @@ def main_menu():
     # db_commands.print_database(connection)
 
     user_story = start_options.succ_story("Student_story.txt")
-
+    # log_in_status = False
     # Welcome everyone to InCollege, a story of success student
     # Prompt user for either logging in or creating an account <- if neither happens they quit
     print("Welcome to inCollege by Team Montana!")
