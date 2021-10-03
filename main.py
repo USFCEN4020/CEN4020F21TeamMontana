@@ -73,7 +73,7 @@ def main_menu():
             useful_links_options.useful_link()
             continue
         elif user_choice == 6:
-            important_links_group.important_link()
+            important_links_group.important_links()
             continue
         else:
             print("Exit the program.")

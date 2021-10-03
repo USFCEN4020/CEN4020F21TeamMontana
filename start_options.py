@@ -74,10 +74,8 @@ def create_account(connection):
             break
 
     # Create row in users table
-    # Adds Englist as Language
-    default_language = "English"
-    user_information = (username_input, password_input, firstname_input, lastname_input)
-    # user_information = (username_input, password_input, firstname_input, lastname_input, default_language)
+    # Adds English as Language and sets defaults for Privacy settings
+    user_information = (username_input, password_input, firstname_input, lastname_input, "English", "Send Emails", "Send SMS", "Target Ads")
     db_commands.create_row_in_users_table(connection, user_information)
 
     print("Successfully created your account. You are now logged in.")
@@ -91,7 +89,7 @@ def play_video():
 
 
 def join_contact(contact_firstname, contact_lastname, connection):
-    contact_exist = account_define.does_user_exist(contact_firstname, contact_lastname)
+    contact_exist = user_options.does_user_exist(contact_firstname, contact_lastname)
     if contact_exist is True:
         print("They are part of the InCollege system.")
         print("Do you want to connect with this contact?")

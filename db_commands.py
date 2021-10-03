@@ -11,6 +11,9 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     firstname text NOT NULL,
     lastname text NOT NULL,
     language text NOT NULL,
+    emails text NOT NULL,
+    sms text NOT NULL,
+    targetedads text NOT NULL,
     UNIQUE(firstname, lastname)
     );"""
 
@@ -26,8 +29,8 @@ job_table = """CREATE TABLE IF NOT EXISTS jobs (
     FOREIGN KEY(lastname) REFERENCES users(lastname)
     );"""
 
-create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname)
-                  VALUES(?,?,?,?) '''
+create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads)
+                  VALUES(?,?,?,?,?,?,?,?) '''
 
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                   VALUES(?,?,?,?,?,?,?) '''
@@ -132,11 +135,30 @@ def create_row_in_jobs_table(job_info):
     except Error as e:
         print(e)
 
-# def ChangeLang(db_name):
-#     connection = create_connection(db_name)
-#     cursor = connection.cursor()
-#     cursor.execute("SELECT language FROM users")
-#     print(cursor.fetchall())
+#These next 4 functions modify a User's privacy settings (ChangeLang, SendEmailsStatus, SendSMSStatus, TargetAdsStatus)
+def ChangeLang(username, lang):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET language = ? WHERE username = ?''', (lang, username))
+    connection.commit()
+
+def SendEmailsStatus(username, status):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET emails = ? WHERE username = ?''', (status, username))
+    connection.commit()
+
+def SendSMSStatus(username, status):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET sms = ? WHERE username = ?''', (status, username))
+    connection.commit()
+
+def TargetAdsStatus(username, status):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET targetedads = ? WHERE username = ?''', (status, username))
+    connection.commit()
 
 # These are helper functions specifically to help testers and developers
 # Helper function for testing purposes

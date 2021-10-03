@@ -1,4 +1,4 @@
-from important_links_group import important_link
+from important_links_group import important_links
 from useful_links_options import useful_link
 import account_define
 import random
@@ -101,7 +101,7 @@ def additional_options(username):
         elif user_choice_opt == "5":
             useful_link()
         elif user_choice_opt == "6":
-            important_link()
+            important_links(username)
         elif user_choice_opt == "7":
             break
         else:
