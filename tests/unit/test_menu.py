@@ -16,7 +16,6 @@ def test_main_menu(capsys, monkeypatch):
             7 - Exit the program
 
             """
-
     try:
         main.print_start_menu()
     except(StopIteration):
