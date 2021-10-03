@@ -1,5 +1,11 @@
 # CEN4020F21TeamMontana
 
+Install to run the tests:
+pip install pytest
+pip install mock
+
+The tests are in the directory tests/unit
+
 userDB
 The main database
 
