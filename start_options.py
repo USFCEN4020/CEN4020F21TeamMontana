@@ -33,8 +33,8 @@ def login_account(connection):
             password_input = input("Enter your password: ")
             # If userLogin continues to return false then keep running this while loop
             # and ask for usernames or if the user wants to quit the program
-            succ_login = account_define.userLogin(username_input, password_input, existing_usernames,
-                                                 username_password_tuples)
+            succ_login = account_define.user_login(username_input, password_input, existing_usernames,
+                                                   username_password_tuples)
 
 
 def create_account(connection):

@@ -2,6 +2,7 @@ import pytest
 import start_options
 import db_commands
 import useful_links_options
+import important_links_group
 
 database_name = "userDB"
 connection = db_commands.create_connection(database_name)
@@ -68,5 +69,82 @@ def test_useful_link(capsys, mocker):
     capture = capsys.readouterr()
     assert capture.out == result
 
+
+def test_important_links_visitors(capsys, mocker):
+    mocker.patch('builtins.input', side_effect=["1", "2", "3", "4", "5", "6", "0", "7"])
+    important_links_group.important_links_visitors()
+    links = """Please choose from the following menu:
+1 - Copyright Notice
+2 - About
+3 - Accessibility
+4 - User Agreement Policy
+5 - Cookie Policy
+6 - Brand Policy
+7 - Exit Menu
+"""
+
+    print_copyright = "This work is copyrighted" + "\n"
+    print_about = "About InCollege" + "\n"
+    print_acess = "Accessibility Remarks" + "\n"
+    print_agree = "Agree with User Agreement" + "\n"
+    print_cookie = "Cookie Policy" + "\n"
+    print_brand = "Brand Policy" + "\n"
+    print_go_back = "Going back to 'Main' Menu" + "\n"
+    print_invalid = "Invalid Input" + "\n"
+    option1 = links + print_copyright
+    option2 = links + print_about
+    option3 = links + print_acess
+    option4 = links + print_agree
+    option5 = links + print_cookie
+    option6 = links + print_brand
+    option0 = links + print_invalid
+    option7 = links + print_go_back
+
+    result = option1 + option2 + option3 + option4 + option5 + option6 + option0 + option7
+    capture = capsys.readouterr()
+    assert capture.out == result
+
+
+def test_important_links_users(capsys, mocker):
+    mocker.patch('builtins.input', side_effect=["1", "2", "3", "4", "5", "0",
+                                                "5", "2", "0",  "6", "7", "0", "8"])
+    important_links_group.important_links_users("test")
+    links = """Please choose from the following menu:
+1 - Copyright Notice
+2 - About
+3 - Accessibility
+4 - User Agreement Policy
+5 - Privacy Policy
+6 - Cookie Policy
+7 - Brand Policy
+8 - Exit Menu
+"""
+
+    print_copyright = "This work is copyrighted" + "\n"
+    print_about = "About InCollege" + "\n"
+    print_acess = "Accessibility Remarks" + "\n"
+    print_agree = "Agree with User Agreement" + "\n"
+    print_privacy = "Would you like to open Guest Options" + "\n"
+    print_privacy_options = "1 - Yes" + "\n" "0 - Exit" + "\n"
+    print_cookie = "Cookie Policy" + "\n"
+    print_brand = "Brand Policy" + "\n"
+    print_go_back = "Going back to 'User Options' Menu" + "\n"
+    print_invalid = "Invalid Input" + "\n"
+    option1 = links + print_copyright
+    option2 = links + print_about
+    option3 = links + print_acess
+    option4 = links + print_agree
+    option5_0 = links + print_privacy + print_privacy_options
+    # option5_1 = links + print_privacy + print_privacy_options
+    option5_2 = links + print_privacy + print_privacy_options + print_invalid + print_privacy_options
+    option6 = links + print_cookie
+    option7 = links + print_brand
+    option0 = links + print_invalid
+    option8 = links + print_go_back
+
+    result = option1 + option2 + option3 + option4 + option5_0 + option5_2 + option6 + option7 + \
+             option0 + option8
+    capture = capsys.readouterr()
+    assert capture.out == result
 
 

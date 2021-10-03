@@ -1,4 +1,4 @@
-from important_links_group import important_links_Users
+from important_links_group import important_links_users
 from useful_links_options import useful_link
 import account_define
 import random
@@ -75,6 +75,7 @@ def print_additional_options():
     print("6 - InCollege important links group options")
     print("7 - Return to previous menu")
 
+
 def additional_options(username):
     while True:
         print_additional_options()
@@ -101,7 +102,7 @@ def additional_options(username):
         elif user_choice_opt == "5":
             useful_link()
         elif user_choice_opt == "6":
-            important_links_Users(username)
+            important_links_users(username)
         elif user_choice_opt == "7":
             break
         else:

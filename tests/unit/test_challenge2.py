@@ -4,7 +4,7 @@ from testDB import CacheDB
 # In cmd
 # pip install pytest-mock
 import mock
-from account_define import userLogin
+from account_define import user_login
 from job_commands import create_job_posting
 import start_options
 

@@ -1,8 +1,9 @@
 import start_options
 import db_commands
 
+
 # Changes Language setting
-def ChangeLanguage(username):
+def change_language(username):
     con = db_commands.create_connection(db_commands.database_name)
     db_commands.print_database(con)
 
@@ -13,47 +14,51 @@ def ChangeLanguage(username):
         print("0 - Exit Menu")
         user_input = input("Enter your selection here... (0-2): ")
 
-        #lang passes language into database
+        # lang passes language into database
         if user_input == "1":
             lang = 'English'
             db_commands.ChangeLang(username, lang)
-            print("Default Language is now English\n")
+            print("Default Language is now English")
             break
         elif user_input == "2":
             lang = 'Spanish'
             db_commands.ChangeLang(username, lang)
-            print("Default Language is now Spanish\n")
+            print("Default Language is now Spanish")
             break
         elif user_input == "0":
             break
         else:
             print("Invalid Input")
+            continue
+
 
 # Prints Links for InCollege Members
-def PrintImportantLinksForUsers():
+def print_important_links_for_users():
     print("Please choose from the following menu:")
     print("1 - Copyright Notice")
     print("2 - About")
     print("3 - Accessibility")
-    print("4 - User Agreement Policy ")
+    print("4 - User Agreement Policy")
     print("5 - Privacy Policy")
     print("6 - Cookie Policy")
     print("7 - Brand Policy")
-    print("0 - Exit Menu")
+    print("8 - Exit Menu")
+
 
 # Prints Links for InCollege Visitors
-def PrintImportantLinksForVisitors():
+def print_important_links_for_visitors():
     print("Please choose from the following menu:")
     print("1 - Copyright Notice")
     print("2 - About")
     print("3 - Accessibility")
-    print("4 - User Agreement Policy ")
+    print("4 - User Agreement Policy")
     print("5 - Cookie Policy")
     print("6 - Brand Policy")
-    print("0 - Exit Menu")
+    print("7 - Exit Menu")
 
-#Changes User's Email Status
-def EmailStatus(con, username):
+
+# Changes User's Email Status
+def email_status(con, username):
     while True:
         print("Would You like To Receive Emails:")
         print("1 - Send Emails")
@@ -73,9 +78,11 @@ def EmailStatus(con, username):
             break
         else:
             print("Invalid Input")
+            continue
+
 
 # Changes User SMS Status
-def SMSStatus(con, username):
+def sms_status(con, username):
     while True:
         print("Would You like To Receive SMS:")
         print("1 - Send SMS")
@@ -94,9 +101,11 @@ def SMSStatus(con, username):
             break
         else:
             print("Invalid Input")
+            continue
+
 
 # Changes User's Advertising Status
-def TargetedAdvertisingStatus(con, username):
+def targeted_advertising_status(con, username):
     while True:
         print("Would You like To Have Targeted Advertising:")
         print("1 - Target Ads")
@@ -108,16 +117,18 @@ def TargetedAdvertisingStatus(con, username):
             print("InCollege Will Now Send You Targeted Ads!")
             continue
         elif user_input == "2":
-            db_commands.TargetAdsStatus(username, 'Don\'t Target Ads')
+            db_commands.TargetAdsStatus(username, "Don't Target Ads")
             print("InCollege Will No Longer Send You Targeted Ads!")
             continue
         elif user_input == "0":
             break
         else:
             print("Invalid Input")
+            continue
+
 
 # Opens Guest Options for Users
-def GuestOptions(username):
+def guest_options(username):
     connection = db_commands.create_connection(db_commands.database_name)
     print("Guest Options:")
     while True:
@@ -127,97 +138,100 @@ def GuestOptions(username):
         print("3 - Turn On/Off Targeted Advertisings")
         print("4 - Change Language")
         print("0 - Exit")
-        userMenuChoice = input("Enter your Selection Here... (0-4)")
+        user_menu_choice = input("Enter your Selection Here... (0-4): ")
 
-        if userMenuChoice == "1":
-            EmailStatus(connection, username)
+        if user_menu_choice == "1":
+            email_status(connection, username)
             continue
-        elif userMenuChoice == "2":
-            SMSStatus(connection, username)
+        elif user_menu_choice == "2":
+            sms_status(connection, username)
             continue
-        elif userMenuChoice == "3":
-            TargetedAdvertisingStatus(connection, username)
+        elif user_menu_choice == "3":
+            targeted_advertising_status(connection, username)
             continue
-        elif userMenuChoice == "4":
-            ChangeLanguage(username)
+        elif user_menu_choice == "4":
+            change_language(username)
             continue
-        elif userMenuChoice == "0":
+        elif user_menu_choice == "0":
             break
         else:
             print("Invalid Input")
             continue
 
-def important_links_Users(username):
-    while True:
-        PrintImportantLinksForUsers()
-        userMenuChoice = input("Enter your selection here... (0-9): ")
 
-        if userMenuChoice == "1":
-            print("This work is copyrighted\n")
+def important_links_users(username):
+    while True:
+        print_important_links_for_users()
+        user_menu_choice = input("Enter your selection here... (1-8): ")
+
+        if user_menu_choice == "1":
+            print("This work is copyrighted")
             continue
-        elif userMenuChoice == "2":
-            print("About InCollege\n")
+        elif user_menu_choice == "2":
+            print("About InCollege")
             continue
-        elif userMenuChoice == "3":
-            print("Accessibility Remarks\n")
+        elif user_menu_choice == "3":
+            print("Accessibility Remarks")
             continue
-        elif userMenuChoice == "4":
-            print("Agree with User Agreement\n")
+        elif user_menu_choice == "4":
+            print("Agree with User Agreement")
             continue
-        elif userMenuChoice == "5":
-            print("Would you like to open Guest Options\n")
+        elif user_menu_choice == "5":
+            print("Would you like to open Guest Options")
 
             while True:
                 print("1 - Yes")
                 print("0 - Exit")
-                userMenuChoice = input("Enter Your Selection Here... (0-1): ")
+                user_menu_choice = input("Enter Your Selection Here... (0-1): ")
 
-                if userMenuChoice == "1":
-                    GuestOptions(username)
-                elif userMenuChoice == "0":
+                if user_menu_choice == "1":
+                    guest_options(username)
+                elif user_menu_choice == "0":
                     break
                 else:
                     print("Invalid Input")
                     continue
 
-        elif userMenuChoice == "6":
-            print("Cookie Policy\n")
+        elif user_menu_choice == "6":
+            print("Cookie Policy")
             continue
-        elif userMenuChoice == "7":
-            print("Brand Policy\n")
+        elif user_menu_choice == "7":
+            print("Brand Policy")
             continue
-        elif userMenuChoice == "0":
+        elif user_menu_choice == "8":
+            print("Going back to 'User Options' Menu")
             break
         else:
             print("Invalid Input")
-            break
+            continue
 
 
-def important_links_Visitors():
+def important_links_visitors():
     while True:
-        PrintImportantLinksForVisitors()
-        userMenuChoice = input("Enter your selection here... (0-9): ")
+        print_important_links_for_visitors()
+        user_menu_choice = input("Enter your selection here... (1-7): ")
 
-        if userMenuChoice == "1":
-            print("This work is copyrighted\n")
+        if user_menu_choice == "1":
+            print("This work is copyrighted")
             continue
-        elif userMenuChoice == "2":
-            print("About InCollege\n")
+        elif user_menu_choice == "2":
+            print("About InCollege")
             continue
-        elif userMenuChoice == "3":
-            print("Accessibility Remarks\n")
+        elif user_menu_choice == "3":
+            print("Accessibility Remarks")
             continue
-        elif userMenuChoice == "4":
-            print("Agree with User Agreement\n")
+        elif user_menu_choice == "4":
+            print("Agree with User Agreement")
             continue
-        elif userMenuChoice == "5":
-            print("Cookie Policy\n")
+        elif user_menu_choice == "5":
+            print("Cookie Policy")
             continue
-        elif userMenuChoice == "6":
-            print("Brand Policy\n")
+        elif user_menu_choice == "6":
+            print("Brand Policy")
             continue
-        elif userMenuChoice == "0":
+        elif user_menu_choice == "7":
+            print("Going back to 'Main' Menu")
             break
         else:
             print("Invalid Input")
-            break
+            continue
