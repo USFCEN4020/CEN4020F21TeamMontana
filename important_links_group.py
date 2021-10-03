@@ -16,13 +16,11 @@ def ChangeLanguage(username):
         #lang passes language into database
         if user_input == "1":
             lang = 'English'
-            db_commands.print_database(con)
             db_commands.ChangeLang(username, lang)
             print("Default Language is now English\n")
             break
         elif user_input == "2":
             lang = 'Spanish'
-            db_commands.print_database(con)
             db_commands.ChangeLang(username, lang)
             print("Default Language is now Spanish\n")
             break
@@ -65,12 +63,10 @@ def EmailStatus(con, username):
 
         if user_input == "1":
             db_commands.SendEmailsStatus(username, 'Send Emails')
-            db_commands.print_database(con)
             print("InCollege Will Now Send You Emails!")
             continue
         elif user_input == "2":
             db_commands.SendEmailsStatus(username, 'Don\'t Send Emails')
-            db_commands.print_database(con)
             print("InCollege Will No Longer Send You Emails!")
             continue
         elif user_input == "0":
@@ -88,12 +84,10 @@ def SMSStatus(con, username):
         user_input = input("Enter your selection here... (0-2): ")
         if user_input == "1":
             db_commands.SendSMSStatus(username, 'Send SMS')
-            db_commands.print_database(con)
             print("InCollege Will Now Send You SMS!")
             continue
         elif user_input == "2":
             db_commands.SendSMSStatus(username, 'Don\'t Send SMS')
-            db_commands.print_database(con)
             print("InCollege Will No Longer Send You SMS!")
             continue
         elif user_input == "0":
@@ -111,12 +105,10 @@ def TargetedAdvertisingStatus(con, username):
         user_input = input("Enter your selection here... (0-2): ")
         if user_input == "1":
             db_commands.TargetAdsStatus(username, 'Target Ads')
-            db_commands.print_database(con)
             print("InCollege Will Now Send You Targeted Ads!")
             continue
         elif user_input == "2":
             db_commands.TargetAdsStatus(username, 'Don\'t Target Ads')
-            db_commands.print_database(con)
             print("InCollege Will No Longer Send You Targeted Ads!")
             continue
         elif user_input == "0":
@@ -155,7 +147,7 @@ def GuestOptions(username):
             print("Invalid Input")
             continue
 
-def important_links(username):
+def important_links_Users(username):
     while True:
         PrintImportantLinksForUsers()
         userMenuChoice = input("Enter your selection here... (0-9): ")
@@ -201,7 +193,7 @@ def important_links(username):
             break
 
 
-def important_links():
+def important_links_Visitors():
     while True:
         PrintImportantLinksForVisitors()
         userMenuChoice = input("Enter your selection here... (0-9): ")
