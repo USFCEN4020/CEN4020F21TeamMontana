@@ -3,6 +3,8 @@ import start_options
 import db_commands
 import useful_links_options
 import important_links_group
+import user_options
+import main
 
 database_name = "userDB"
 connection = db_commands.create_connection(database_name)
@@ -147,4 +149,35 @@ def test_important_links_users(capsys, mocker):
     capture = capsys.readouterr()
     assert capture.out == result
 
+
+def test_print_additional_options(capsys):
+    user_options.print_additional_options()
+    options = """Please choose from the following menu:
+1 - Post a job
+2 - Search for a job
+3 - Find someone you know
+4 - Learn a new skill
+5 - Useful links group options
+6 - InCollege important links group options
+7 - Return to previous menu
+"""
+    capture = capsys.readouterr()
+    assert capture.out == options
+
+
+def test_print_start_menu(capsys):
+    main.print_start_menu()
+    options = """
+            Please choose from the following menu:
+            1 - Log into an existing account
+            2 - Create an account
+            3 - Play a video
+            4 - Find a contact in InCollege
+            5 - Useful Links Group
+            6 - InCollege Important Links Group
+            7 - Exit the program
+
+            """ + "\n"
+    capture = capsys.readouterr()
+    assert capture.out == options
 
