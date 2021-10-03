@@ -5,7 +5,7 @@ import user_options
 import db_commands
 
 
-def fake_database_setup():
+def test_fake_database_setup():
     test_connection = db_commands.create_connection("testDB")
     db_commands.create_table(test_connection, db_commands.user_table)
     user_information = (
@@ -21,7 +21,7 @@ def test_user_language_pref(capsys, monkeypatch):
             """
     inputs = iter('1')
     test_connection = fake_databasesetup()
-    monkeypatch.setattr('builtins.input', lambda ="": next(inputs))
+    monkeypatch.setattr('builtins.input', lambda _="": next(inputs))
     try:
         important_links_group.ChangeLanguage("username")
     except(StopIteration):
