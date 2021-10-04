@@ -135,12 +135,14 @@ def create_row_in_jobs_table(job_info):
     except Error as e:
         print(e)
 
-#These next 4 functions modify a User's privacy settings (ChangeLang, SendEmailsStatus, SendSMSStatus, TargetAdsStatus)
+
+# These next 4 functions modify a User's privacy settings (ChangeLang, SendEmailsStatus, SendSMSStatus, TargetAdsStatus)
 def ChangeLang(username, lang):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET language = ? WHERE username = ?''', (lang, username))
     connection.commit()
+
 
 def SendEmailsStatus(username, status):
     connection = create_connection(database_name)
