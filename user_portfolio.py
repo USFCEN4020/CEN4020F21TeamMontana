@@ -150,7 +150,7 @@ def Enter_Education(username):
 def portfolio_options(username):
     while True:
         print_portfolio_options()
-        user_input = input("Enter Selection Here (0-6): ")
+        user_input = input("Enter Selection Here (0-7): ")
 
         if user_input == "1":
             Enter_Title(username)

@@ -165,7 +165,7 @@ def create_row_in_experience_table(experience_info):
     connection = create_connection(database_name)
     try:
         cursor = connection.cursor()
-        cursor.execute(create_new_job_posting_sql, experience_info)
+        cursor.execute(create_new_job_experience_sql, experience_info)
         connection.commit()
     except Error as e:
         print(e)
@@ -243,7 +243,7 @@ def print_database(connection):
 def print_experiences(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''SELECT experiences WHERE username = ?''', (username,))
+    cursor.execute('''SELECT * FROM experiences WHERE username = ?''', (username,))
     print("Users job experiences: ")
     print(cursor.fetchall())
 
