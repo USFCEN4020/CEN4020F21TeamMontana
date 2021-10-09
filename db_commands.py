@@ -14,6 +14,11 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     emails text NOT NULL,
     sms text NOT NULL,
     targetedads text NOT NULL,
+    title text NOT NULL,
+    major text NOT NULL,
+    university text NOT NULL,
+    studentinfo text NOT NULL,
+    education text NOT NULL,
     UNIQUE(firstname, lastname)
     );"""
 
@@ -40,8 +45,9 @@ experience_table = """CREATE TABLE IF NOT EXISTS experiences (
     FOREIGN KEY(username) REFERENCES users(username)
     );"""
 
-create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads)
-                  VALUES(?,?,?,?,?,?,?,?) '''
+create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads,
+                            title,major,university,studentinfo,education)
+                  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                   VALUES(?,?,?,?,?,?,?) '''
@@ -190,6 +196,37 @@ def TargetAdsStatus(username, status):
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET targetedads = ? WHERE username = ?''', (status, username))
     connection.commit()
+
+def User_Title(username, title):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET title = ? WHERE username = ?''', (title, username))
+    connection.commit()
+
+def User_Major(username, major):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET major = ? WHERE username = ?''', (major, username))
+    connection.commit()
+
+def User_University(username, university_name):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET university = ? WHERE username = ?''', (university_name, username))
+    connection.commit()
+
+def User_Info(username, student_info):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET studentinfo = ? WHERE username = ?''', (student_info, username))
+    connection.commit()
+
+def User_Education(username, education):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''UPDATE users SET education = ? WHERE username = ?''', (education, username))
+    connection.commit()
+
 
 # These are helper functions specifically to help testers and developers
 # Helper function for testing purposes

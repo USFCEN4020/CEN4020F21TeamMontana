@@ -4,6 +4,7 @@ import account_define
 import random
 import job_commands
 import db_commands
+from user_portfolio import portfolio_options
 
 
 def search_job(username):
@@ -105,7 +106,7 @@ def additional_options(username):
         elif user_choice_opt == "6":
             important_links_users(username)
         elif user_choice_opt == "7":
-            important_links_users(username)
+            portfolio_options(username)
         elif user_choice_opt == "8":
             break
         else:

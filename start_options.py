@@ -75,7 +75,8 @@ def create_account(connection):
 
     # Create row in users table
     # Adds English as Language and sets defaults for Privacy settings
-    user_information = (username_input, password_input, firstname_input, lastname_input, "English", "Send Emails", "Send SMS", "Target Ads")
+    user_information = (username_input, password_input, firstname_input, lastname_input,
+                        "English", "Send Emails", "Send SMS", "Target Ads", "TITLE:NULL", "MAJOR:NULL", "UNIVERSITY:NULL", "STUDENTINFO:NULL", "EDUCATION:NULL")
     db_commands.create_row_in_users_table(connection, user_information)
 
     print("Successfully created your account. You are now logged in.")
