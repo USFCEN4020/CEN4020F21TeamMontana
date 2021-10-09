@@ -29,12 +29,25 @@ job_table = """CREATE TABLE IF NOT EXISTS jobs (
     FOREIGN KEY(lastname) REFERENCES users(lastname)
     );"""
 
+experience_table = """CREATE TABLE IF NOT EXISTS experiences (
+    title text NOT NULL,
+    employer text NOT NULL,
+    location text NOT NULL,
+    description text NOT NULL,
+    start_date INTEGER NOT NULL,
+    end_date INTEGER NOT NULL,
+    username text NOT NULL,
+    FOREIGN KEY(username) REFERENCES users(username)
+    );"""
+
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads)
                   VALUES(?,?,?,?,?,?,?,?) '''
 
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                   VALUES(?,?,?,?,?,?,?) '''
 
+create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,location,description,start_date,end_date,username)
+                  VALUES(?,?,?,?,?,?,?) '''
 
 # Function for creating sqlite database
 def create_connection(db_name):
@@ -125,12 +138,28 @@ def query_list_of_jobs():
     cursor.execute("SELECT title FROM jobs")
     return cursor.fetchall()
 
+def query_list_of_experiences():
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute("SELECT username FROM experiences")
+    return cursor.fetchall()
+
 
 def create_row_in_jobs_table(job_info):
     connection = create_connection(database_name)
     try:
         cursor = connection.cursor()
         cursor.execute(create_new_job_posting_sql, job_info)
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
+def create_row_in_experience_table(experience_info):
+    connection = create_connection(database_name)
+    try:
+        cursor = connection.cursor()
+        cursor.execute(create_new_job_posting_sql, experience_info)
         connection.commit()
     except Error as e:
         print(e)
@@ -174,10 +203,15 @@ def print_database(connection):
     print("Jobs table: ")
     print(cursor.fetchall())
 
+def print_experiences(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT experiences WHERE username = ?''', (username,))
+    print("Users job experiences: ")
+    print(cursor.fetchall())
+
 
 def delete_all_database_info(connection):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM users")
     cursor.execute("DELETE FROM jobs")
-
-

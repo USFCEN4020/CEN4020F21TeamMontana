@@ -1,7 +1,9 @@
 import db_commands
+import experience_commands
 
 def view_profile(username):
-
+    print("Profile Information: \n --------------------- \n")
+    db_commands.print_experiences(username)
 
 def print_portfolio_options():
     print("Please choose which options to modify")
@@ -11,18 +13,26 @@ def print_portfolio_options():
     print("4 - Enter Information about student")
     print("5 - Enter Experience")
     print("6 - Enter Education")
+    print("0 - Return to previous menu")
 
 def Enter_Title(username):
+    print("currently under construction")
+
 
 def Enter_Major(username):
+    print("currently under construction")
+
 
 def Enter_University_Name(username):
+    print("currently under construction")
+
 
 def Enter_Student_Info(username):
+    print("currently under construction")
 
-def Enter_Experience(username):
 
 def Enter_Education(username):
+    print("currently under construction")
 
 
 def portfolio_options(username):
@@ -31,7 +41,7 @@ def portfolio_options(username):
         user_input = input("Enter Selection Here (0-6): ")
 
         if user_input == "1":
-            Enter_Title(usernme)
+            Enter_Title(username)
             continue
         elif user_input == "2":
             Enter_Major(username)
@@ -43,7 +53,7 @@ def portfolio_options(username):
             Enter_Student_Info(username)
             continue
         elif user_input == "5":
-            Enter_Experience(username)
+            experience_commands.create_experience_posting(username)
             continue
         elif user_input == "6":
             Enter_Education(username)
@@ -53,4 +63,3 @@ def portfolio_options(username):
         else:
             print("\nINVALID INPUT\n")
             continue
-

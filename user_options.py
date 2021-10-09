@@ -4,7 +4,6 @@ import account_define
 import random
 import job_commands
 import db_commands
-import user_portfolio
 
 
 def search_job(username):
@@ -74,8 +73,8 @@ def print_additional_options():
     print("4 - Learn a new skill")
     print("5 - Useful links group options")
     print("6 - InCollege important links group options")
-    print("7 - Create a portfolio")
-    print("0 - Log Out")
+    print("7 - Edit user profile")
+    print("8 - Return to previous menu")
 
 
 def additional_options(username):
@@ -105,9 +104,10 @@ def additional_options(username):
             useful_link()
         elif user_choice_opt == "6":
             important_links_users(username)
-        elif user_choice_opt == "0":
+        elif user_choice_opt == "7":
+            important_links_users(username)
+        elif user_choice_opt == "8":
             break
         else:
             print("Not a valid input")
     return 0
-
