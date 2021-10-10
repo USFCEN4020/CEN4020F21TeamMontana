@@ -255,6 +255,7 @@ def print_experiences(connection, username):
     print(cursor.fetchall())
 
 
+# commit the deletes to remove all the data in each table.
 def delete_all_database_info(connection):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM users")
@@ -280,6 +281,7 @@ def query_education(username):
     return cursor.fetchall()
 
 
+# function to fill in values to the database for testing purposes primarily
 def fill_database(connection):
     create_table(connection, user_table)
     user = ("username2", "Password?2", "An", "Dinh", "English", "Don't Send Emails", "Don't Send SMS", "Don't Target Ads",
