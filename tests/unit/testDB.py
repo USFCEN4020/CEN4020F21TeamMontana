@@ -38,6 +38,14 @@ class CacheDB:
     def delete_job(self, first_name, last_name):
         self.session.execute('DELETE FROM jobs WHERE firstname = ? AND lastname = ?', (first_name, last_name,))
 
+    def get_experience(self, username):
+        self.session.execute("SELECT * FROM experiences WHERE username = ?", (username,))
+        return self.session.fetchone()
+    
+    def get_all_experience(self):
+        self.session.execute("SELECT * FROM experiences")
+        return self.session.fetchall()
+
     def change_language_prefs(self, username, lang):
         self.session.execute('''UPDATE users SET language = ? WHERE username = ?''', (lang, username))
 
