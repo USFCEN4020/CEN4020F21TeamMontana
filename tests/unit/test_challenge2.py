@@ -109,7 +109,7 @@ def test_print(cache):
 
 # the capsys is a fixture of pytest, and it is being passed as a parameter to capture the system outputs and errors
 def test_succ_story(capsys):
-    user_succ_story = start_options.succ_story("Student_story.txt")
+    user_succ_story = start_options.succ_story("../../Student_story.txt")
     # the end= '' was because the print statement alone appended a newline at the end
     # this was the solution to get rid of that newline at the end
     print(user_succ_story, end='')

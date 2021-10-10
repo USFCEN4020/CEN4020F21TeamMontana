@@ -2,12 +2,13 @@ import pytest
 import sqlite3
 from tests.unit.testDB import CacheDB
 from job_commands import create_job_posting
+import db_commands
 
 
 @pytest.fixture(scope='session')
 def verify_session():
     # create a connection with our program database as well for our specific database functions that access it
-    connection = sqlite3.connect("userDB")
+    connection = sqlite3.connect("../../userDB")
     db_session = connection.cursor()
     yield db_session
     connection.close()

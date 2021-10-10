@@ -252,3 +252,18 @@ def delete_all_database_info(connection):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM users")
     cursor.execute("DELETE FROM jobs")
+
+
+# For testing purposes
+def query_student_info(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT studentinfo FROM users WHERE username = ?''', (username,))
+    return (cursor.fetchall())
+
+
+def query_education(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT university, major, education FROM users WHERE username = ?''', (username,))
+    return (cursor.fetchall())

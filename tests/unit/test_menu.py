@@ -2,6 +2,7 @@ import pytest
 import main
 import useful_links_options
 import user_options
+import user_portfolio
 
 
 def test_main_menu(capsys, monkeypatch):
@@ -37,6 +38,25 @@ def test_inside_main_menu(capsys, monkeypatch):
 
     try:
         user_options.print_additional_options()
+    except(StopIteration):
+        output = capsys.readouterr().out
+        assert output == desired_output
+
+
+def test_profile_menu(capsys, monkeypatch):
+    desired_output = """
+    Please choose which options to modify
+    1 - Enter Title
+    2 - Enter Major
+    3 - Enter University name
+    4 - Enter Information about student
+    5 - Enter Experience
+    6 - Enter Education
+    7 - View Profile
+    0 - Return to previous menu"""
+
+    try:
+        user_portfolio.print_portfolio_options()
     except(StopIteration):
         output = capsys.readouterr().out
         assert output == desired_output
