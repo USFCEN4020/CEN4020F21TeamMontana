@@ -5,11 +5,13 @@ from job_commands import create_job_posting
 import db_commands
 import os
 
-
+# this is the absolute path to the directory CEN4020F21TeamMontana/tests/unit
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+# this joins the directory with the file so that we access the file in this directory
 db_path = os.path.join(ROOT_DIR, "userDB")
 
 
+# this is so that the fixture is automatically used for all the functions to have them operate in this local directory
 @pytest.fixture(autouse=True, scope="function")
 def change_test_dir(request):
     # local path at the directory CEN4020F21TeamMontana/tests/unit
@@ -25,10 +27,12 @@ def verify_session():
     connection = sqlite3.connect(db_path)
     db_session = connection.cursor()
     yield db_session
-    db_commands.delete_all_database_info(connection)
+    # delete all the data of the database after test is done
+    # db_commands.delete_all_database_info(connection)
     connection.close()
 
 
+# setting up a database that will get filled with preset information
 @pytest.fixture(autouse=True, scope='session')
 def setup_db(verify_session):
     db_commands.fill_database(sqlite3.connect(db_path))
