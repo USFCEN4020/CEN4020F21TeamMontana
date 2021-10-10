@@ -1,5 +1,8 @@
 import builtins
 from os import major
+import pytest
+import sqlite3
+from tests.unit.testDB import CacheDB
 from experience_commands import create_experience_posting
 import start_options
 import db_commands
@@ -9,9 +12,10 @@ import user_options
 import main
 import user_portfolio
 
+
 def test_print_portfolio_options(capsys):
     user_portfolio.print_portfolio_options()
-    options = """Please choose which options to modify:
+    options = """Please choose which options to modify
 1 - Enter Title
 2 - Enter Major
 3 - Enter University name
@@ -23,6 +27,7 @@ def test_print_portfolio_options(capsys):
 """
     capture = capsys.readouterr()
     assert capture.out == options
+
 
 def test_Enter_Title_func():
     title_test = "The third year Computer Science student"
@@ -38,7 +43,8 @@ def test_Enter_Title_func():
 
     assert title == "The third year Computer Science student"
     print(title)
-     
+
+
 def test_Enter_Major_func():
     testcase_majors = [
         "art studies",
@@ -85,7 +91,8 @@ def test_Enter_Major_func():
     major = cursor.fetchone()
     assert major.title() == "Computer Engineering"
 
-def test_Enter_University_Name_func(username):
+
+def test_Enter_University_Name_func():
     testcase_universities = [
         "university OF south florida",
         "HARVARD UNIVERSITY",
@@ -130,6 +137,7 @@ def test_Enter_University_Name_func(username):
     cursor.execute('''SELECT university FROM users WHERE username = ?''', (username,))
     university = cursor.fetchone()
     assert university.title() == "University Of Pennsylvania"
+
 
 def test_create_experience_posting_func(cache, mocker):
 

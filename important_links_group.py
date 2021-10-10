@@ -5,7 +5,6 @@ import db_commands
 # Changes Language setting
 def change_language(username):
     con = db_commands.create_connection(db_commands.database_name)
-    db_commands.print_database(con)
 
     while True:
         print("Please choose a Language:")
@@ -71,7 +70,7 @@ def email_status(con, username):
             print("InCollege Will Now Send You Emails!")
             continue
         elif user_input == "2":
-            db_commands.SendEmailsStatus(username, 'Don\'t Send Emails')
+            db_commands.SendEmailsStatus(username, "Don't Send Emails")
             print("InCollege Will No Longer Send You Emails!")
             continue
         elif user_input == "0":
@@ -94,7 +93,7 @@ def sms_status(con, username):
             print("InCollege Will Now Send You SMS!")
             continue
         elif user_input == "2":
-            db_commands.SendSMSStatus(username, 'Don\'t Send SMS')
+            db_commands.SendSMSStatus(username, "Don't Send SMS")
             print("InCollege Will No Longer Send You SMS!")
             continue
         elif user_input == "0":

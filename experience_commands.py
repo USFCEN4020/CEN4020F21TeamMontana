@@ -38,7 +38,7 @@ def create_experience_posting(username):
     start_date = input_date_info("Enter a start date in MM/DD/YYYY format")
     end_date = input_date_info("Enter an end date in MM/DD/YYYY format")
 
-    experience_information = (title, description, employer, location, start_date, end_date, username)
-    db_commands.create_row_in_experience_table(experience_information)
+    experience_information = (title, employer, location, description, start_date, end_date, username)
+    db_commands.create_row_in_experience_table(db_commands.create_connection(db_commands.database_name), experience_information)
 
 

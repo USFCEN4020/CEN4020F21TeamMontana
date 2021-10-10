@@ -4,6 +4,7 @@ import db_commands
 import sqlite3
 from testDB import CacheDB
 
+
 @pytest.fixture(scope='session')
 def verify_session():
     # create a connection with our program database as well for our specific database functions that access it

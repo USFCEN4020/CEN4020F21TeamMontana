@@ -1,9 +1,10 @@
 import db_commands
 import experience_commands
 
+
 def view_profile(username):
-    conn = db_commands.create_connection(db_commands.database_name)
-    cursor = conn.cursor()
+    connection = db_commands.create_connection(db_commands.database_name)
+    cursor = connection.cursor()
 
     cursor.execute('''SELECT title FROM users WHERE username = ?''', (username,))
     title = cursor.fetchone()
@@ -34,7 +35,8 @@ def view_profile(username):
     print("Student Info: ", info)
     print("Education: ", education)
 
-    db_commands.print_experiences(username)
+    db_commands.print_experiences(connection, username)
+
 
 def print_portfolio_options():
     print("Please choose which options to modify")
@@ -46,6 +48,7 @@ def print_portfolio_options():
     print("6 - Enter Education")
     print("7 - View Profile")
     print("0 - Return to previous menu")
+
 
 def Enter_Title(username):
     while True:
@@ -84,6 +87,7 @@ def Enter_Major(username):
         else:
             print("\n Invalid Input \n")
             continue
+
 
 def Enter_University_Name(username):
     while True:

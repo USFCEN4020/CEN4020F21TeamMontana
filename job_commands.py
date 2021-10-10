@@ -29,5 +29,5 @@ def create_job_posting(first_name, last_name):
         return
 
     job_information = (title, description, employer, location, salary, first_name, last_name)
-    db_commands.create_row_in_jobs_table(job_information)
+    db_commands.create_row_in_jobs_table(db_commands.create_connection(db_commands.database_name), job_information)
 

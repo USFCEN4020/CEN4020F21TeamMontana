@@ -46,14 +46,15 @@ experience_table = """CREATE TABLE IF NOT EXISTS experiences (
     );"""
 
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads,
-                            title,major,university,studentinfo,education)
-                  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+                             title,major,university,studentinfo,education)
+                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
-                  VALUES(?,?,?,?,?,?,?) '''
+                                 VALUES(?,?,?,?,?,?,?) '''
 
 create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,location,description,start_date,end_date,username)
-                  VALUES(?,?,?,?,?,?,?) '''
+                                    VALUES(?,?,?,?,?,?,?) '''
+
 
 # Function for creating sqlite database
 def create_connection(db_name):
@@ -144,6 +145,7 @@ def query_list_of_jobs():
     cursor.execute("SELECT title FROM jobs")
     return cursor.fetchall()
 
+
 def query_list_of_experiences():
     connection = create_connection(database_name)
     cursor = connection.cursor()
@@ -151,8 +153,7 @@ def query_list_of_experiences():
     return cursor.fetchall()
 
 
-def create_row_in_jobs_table(job_info):
-    connection = create_connection(database_name)
+def create_row_in_jobs_table(connection, job_info):
     try:
         cursor = connection.cursor()
         cursor.execute(create_new_job_posting_sql, job_info)
@@ -161,8 +162,7 @@ def create_row_in_jobs_table(job_info):
         print(e)
 
 
-def create_row_in_experience_table(experience_info):
-    connection = create_connection(database_name)
+def create_row_in_experience_table(connection, experience_info):
     try:
         cursor = connection.cursor()
         cursor.execute(create_new_job_experience_sql, experience_info)
@@ -185,11 +185,13 @@ def SendEmailsStatus(username, status):
     cursor.execute('''UPDATE users SET emails = ? WHERE username = ?''', (status, username))
     connection.commit()
 
+
 def SendSMSStatus(username, status):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET sms = ? WHERE username = ?''', (status, username))
     connection.commit()
+
 
 def TargetAdsStatus(username, status):
     connection = create_connection(database_name)
@@ -197,11 +199,13 @@ def TargetAdsStatus(username, status):
     cursor.execute('''UPDATE users SET targetedads = ? WHERE username = ?''', (status, username))
     connection.commit()
 
+
 def User_Title(username, title):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET title = ? WHERE username = ?''', (title, username))
     connection.commit()
+
 
 def User_Major(username, major):
     connection = create_connection(database_name)
@@ -209,17 +213,20 @@ def User_Major(username, major):
     cursor.execute('''UPDATE users SET major = ? WHERE username = ?''', (major, username))
     connection.commit()
 
+
 def User_University(username, university_name):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET university = ? WHERE username = ?''', (university_name, username))
     connection.commit()
 
+
 def User_Info(username, student_info):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET studentinfo = ? WHERE username = ?''', (student_info, username))
     connection.commit()
+
 
 def User_Education(username, education):
     connection = create_connection(database_name)
@@ -240,8 +247,8 @@ def print_database(connection):
     print("Jobs table: ")
     print(cursor.fetchall())
 
-def print_experiences(username):
-    connection = create_connection(database_name)
+
+def print_experiences(connection, username):
     cursor = connection.cursor()
     cursor.execute('''SELECT * FROM experiences WHERE username = ?''', (username,))
     print("Users job experiences: ")
@@ -251,7 +258,11 @@ def print_experiences(username):
 def delete_all_database_info(connection):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM users")
+    connection.commit()
     cursor.execute("DELETE FROM jobs")
+    connection.commit()
+    cursor.execute("DELETE FROM experiences")
+    connection.commit()
 
 
 # For testing purposes
@@ -259,11 +270,26 @@ def query_student_info(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''SELECT studentinfo FROM users WHERE username = ?''', (username,))
-    return (cursor.fetchall())
+    return cursor.fetchall()
 
 
 def query_education(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''SELECT university, major, education FROM users WHERE username = ?''', (username,))
-    return (cursor.fetchall())
+    return cursor.fetchall()
+
+
+def fill_database(connection):
+    create_table(connection, user_table)
+    user = ("username2", "Password?2", "An", "Dinh", "English", "Don't Send Emails", "Don't Send SMS", "Don't Target Ads",
+            "Scrum Master", "Computer Science", "University of South Florida", "Blank",
+            "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user)
+    create_table(connection, job_table)
+    job_info = ("Scrum Master", "It is to manage people", "Bob", "Florida", 1, "An", "Dinh",)
+    create_row_in_jobs_table(connection, job_info)
+    create_table(connection, experience_table)
+    experience_info = ("Scrum Master", "Bob", "Florida", "It was boring", "2021-10-04", "2021-10-10", "username2",)
+    create_row_in_experience_table(connection, experience_info)
+
