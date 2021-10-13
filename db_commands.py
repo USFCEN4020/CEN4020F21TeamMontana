@@ -52,9 +52,8 @@ create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastn
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                                  VALUES(?,?,?,?,?,?,?) '''
 
-create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,location,description,start_date,end_date,username)
-                                    VALUES(?,?,?,?,?,?,?) '''
-
+create_new_job_experience_sql = ''' INSERT INTO experience(title,employer,location,description,start_date,end_date,username)
+                  VALUES(?,?,?,?,?,?,?) '''
 
 # Function for creating sqlite database
 def create_connection(db_name):
@@ -206,7 +205,6 @@ def User_Title(username, title):
     cursor.execute('''UPDATE users SET title = ? WHERE username = ?''', (title, username))
     connection.commit()
 
-
 def User_Major(username, major):
     connection = create_connection(database_name)
     cursor = connection.cursor()
@@ -233,7 +231,6 @@ def User_Education(username, education):
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET education = ? WHERE username = ?''', (education, username))
     connection.commit()
-
 
 # These are helper functions specifically to help testers and developers
 # Helper function for testing purposes
@@ -267,6 +264,24 @@ def delete_all_database_info(connection):
 
 
 # For testing purposes
+def query_student_title(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT title FROM users WHERE username = ?''', (username,))
+    return cursor.fetchall()
+
+def query_student_major(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT major FROM users WHERE username = ?''', (username,))
+    return cursor.fetchall()
+
+def query_student_university(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT university FROM users WHERE username = ?''', (username,))
+    return cursor.fetchall()
+
 def query_student_info(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
