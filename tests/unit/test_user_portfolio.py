@@ -37,7 +37,6 @@ def test_education(cache, capsys):
     db_commands.User_Education("username2", user_info)
     output = capsys.readouterr().out
     assert output == ""
-    print("test")
     assert ('Test User Info', 'Test User Info', 'Test User Info') == db_commands.query_education("username2")[0]
     #  if no output/no errors, the database successfully called
     # check by getting user info and comparing to user_info
