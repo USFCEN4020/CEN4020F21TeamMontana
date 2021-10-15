@@ -45,6 +45,15 @@ experience_table = """CREATE TABLE IF NOT EXISTS experiences (
     FOREIGN KEY(username) REFERENCES users(username)
     );"""
 
+friend_table = """CREATE TABLE IF NOT EXISTS friends (
+    sender text NOT NULL,
+    status text NOT NULL,
+    receiver text NOT NULL,
+    UNIQUE(sender, receiver)
+    FOREIGN KEY(receiver) REFERENCES users(receiver)
+    FOREIGN KEY(sender) REFERENCES users(sender)
+    );"""
+
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads,
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
@@ -55,6 +64,9 @@ create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,loc
 create_new_job_experience_sql = ''' INSERT INTO experience(title,employer,location,description,start_date,end_date,username)
                   VALUES(?,?,?,?,?,?,?) '''
 
+
+create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
+                  VALUES(?,?,?) '''
 # Function for creating sqlite database
 def create_connection(db_name):
     conn = None
@@ -95,10 +107,10 @@ def query_password(connection, userPass):
     rows = cursor.fetchall()
     # goes through all the usernames from the database
     for user in rows:
-        # userPass is used to search for the password that cooresponded to the username
+        # userPass is used to search for the password that corresponded to the username
         # did not use the query SELECT password FROM users WHERE username = 'userPass'
-        # because I think it would try to exactly search for a username that is named userPass, and not the actual username passed to the function parameter
-        if user[0]== userPass:
+        # because I think it would try to exactly search for a username that is named userPass,
+        # and not the actual username passed to the function parameter        if user[0]== userPass:
             password = user[1]
             return password
 
@@ -152,6 +164,14 @@ def query_list_of_experiences():
     return cursor.fetchall()
 
 
+# This gets the rows where someone is requesting to be your friend
+def query_list_of_friend_requests(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = PENDING''', (username,))
+    return cursor.fetchall()
+
+
 def create_row_in_jobs_table(connection, job_info):
     try:
         cursor = connection.cursor()
@@ -170,67 +190,90 @@ def create_row_in_experience_table(connection, experience_info):
         print(e)
 
 
+def create_row_in_friend_table(connection, friend_info):
+    try:
+        cursor = connection.cursor()
+        cursor.execute(create_new_friend_status_sql, friend_info)
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
 # These next 4 functions modify a User's privacy settings (ChangeLang, SendEmailsStatus, SendSMSStatus, TargetAdsStatus)
 def ChangeLang(username, lang):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET language = ? WHERE username = ?''', (lang, username))
+    cursor.execute('''UPDATE users SET language = ? WHERE username = ?''', (lang, username,))
     connection.commit()
 
 
 def SendEmailsStatus(username, status):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET emails = ? WHERE username = ?''', (status, username))
+    cursor.execute('''UPDATE users SET emails = ? WHERE username = ?''', (status, username,))
     connection.commit()
 
 
 def SendSMSStatus(username, status):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET sms = ? WHERE username = ?''', (status, username))
+    cursor.execute('''UPDATE users SET sms = ? WHERE username = ?''', (status, username,))
     connection.commit()
 
 
 def TargetAdsStatus(username, status):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET targetedads = ? WHERE username = ?''', (status, username))
+    cursor.execute('''UPDATE users SET targetedads = ? WHERE username = ?''', (status, username,))
     connection.commit()
 
 
 def User_Title(username, title):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET title = ? WHERE username = ?''', (title, username))
+    cursor.execute('''UPDATE users SET title = ? WHERE username = ?''', (title, username,))
     connection.commit()
 
 def User_Major(username, major):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET major = ? WHERE username = ?''', (major, username))
+    cursor.execute('''UPDATE users SET major = ? WHERE username = ?''', (major, username,))
     connection.commit()
 
 
 def User_University(username, university_name):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET university = ? WHERE username = ?''', (university_name, username))
+    cursor.execute('''UPDATE users SET university = ? WHERE username = ?''', (university_name, username,))
     connection.commit()
 
 
 def User_Info(username, student_info):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET studentinfo = ? WHERE username = ?''', (student_info, username))
+    cursor.execute('''UPDATE users SET studentinfo = ? WHERE username = ?''', (student_info, username,))
     connection.commit()
 
 
 def User_Education(username, education):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''UPDATE users SET education = ? WHERE username = ?''', (education, username))
+    cursor.execute('''UPDATE users SET education = ? WHERE username = ?''', (education, username,))
     connection.commit()
+
+
+def Friend_Status(sender, receiver, status):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    if status == "REJECT" or status == "DISCONNECT":
+        cursor.execute("DELETE * FROM friends WHERE sender = ? AND receiver = ?", (sender, receiver,))
+    elif status == "PENDING" or status == "ACCEPT":
+        cursor.execute("UPDATE friends SET status = ? WHERE sender = ? AND receiver = ?", (status, sender, receiver,))
+    # This is just so that only valid statuses are passed to this function.
+    else:
+        print("Not a valid status")
+    connection.commit()
+
 
 # These are helper functions specifically to help testers and developers
 # Helper function for testing purposes
@@ -244,11 +287,27 @@ def print_database(connection):
     print("Jobs table: ")
     print(cursor.fetchall())
 
+    cursor.execute("SELECT * FROM experiences")
+    print("Experiences table: ")
+    print(cursor.fetchall())
+
+    cursor.execute("SELECT * FROM friends")
+    print("Friends table: ")
+    print(cursor.fetchall())
+
 
 def print_experiences(connection, username):
     cursor = connection.cursor()
     cursor.execute('''SELECT * FROM experiences WHERE username = ?''', (username,))
     print("Users job experiences: ")
+    print(cursor.fetchall())
+
+
+
+def print_friends(connection, username):
+    cursor = connection.cursor()
+    cursor.execute('''SELECT * FROM friends WHERE sender = ? OR receiver = ?''', (username, username,))
+    print("Users friends: ")
     print(cursor.fetchall())
 
 
@@ -260,6 +319,8 @@ def delete_all_database_info(connection):
     cursor.execute("DELETE FROM jobs")
     connection.commit()
     cursor.execute("DELETE FROM experiences")
+    connection.commit()
+    cursor.execute("DELETE FROM friends")
     connection.commit()
 
 
@@ -296,6 +357,16 @@ def query_education(username):
     return cursor.fetchall()
 
 
+# This just returns the name of all your friends
+def query_friend(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    # Union the two cases where we are either the sender or receiver of a friend request, so we take the other username
+    # since that would be the friend, if they accepted our friend request
+    cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = ACCEPT UNION 
+                   SELECT receiver FROM friends WHERE sender = ? AND status = ACCEPT''', (username, username,))
+    return cursor.fetchall()
+
 # function to fill in values to the database for testing purposes primarily
 def fill_database(connection):
     create_table(connection, user_table)
@@ -309,4 +380,7 @@ def fill_database(connection):
     create_table(connection, experience_table)
     experience_info = ("Scrum Master", "Bob", "Florida", "It was boring", "2021-10-04", "2021-10-10", "username2",)
     create_row_in_experience_table(connection, experience_info)
+    experience_info = ("person_sending_request", "PENDING", "person_logged_in",)
+    create_row_in_experience_table(connection, experience_info)
+
 
