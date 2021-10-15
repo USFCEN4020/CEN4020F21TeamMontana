@@ -43,7 +43,7 @@ def user_login(username_input, password_input, existing_usernames, username_pass
 
 
 def username_meets_qualifications(username_input, existing_usernames):
-    if len(existing_usernames) >= 5:
+    if len(existing_usernames) >= 10:
         print("The system has too many users already.")
         return False
 

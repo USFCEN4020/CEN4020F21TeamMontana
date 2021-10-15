@@ -5,6 +5,7 @@ import random
 import job_commands
 import db_commands
 from user_portfolio import portfolio_options
+import friends_options
 
 
 def search_job(username):
@@ -71,14 +72,18 @@ def print_additional_options():
     print("1 - Post a job")
     print("2 - Search for a job")
     print("3 - Find someone you know")
-    print("4 - Learn a new skill")
-    print("5 - Useful links group options")
-    print("6 - InCollege important links group options")
-    print("7 - Edit user profile")
-    print("8 - Return to previous menu")
+    print("4 - Show my network")
+    print("5 - Learn a new skill")
+    print("6 - Useful links group options")
+    print("7 - InCollege important links group options")
+    print("8 - Edit user profile")
+    print("9 - Return to previous menu")
 
 
 def additional_options(username):
+    # Check to see if the user has any pending friend requests that were sent to them.
+    friends_options.check_friend_requests(username)
+
     while True:
         print_additional_options()
         user_choice_opt = input("Enter your selection here: ")
@@ -100,14 +105,16 @@ def additional_options(username):
             else:
                 print("They are not part of the InCollege system.")
         elif user_choice_opt == "4":
-            new_skill(username)
+            friends_options.show_network(username)
         elif user_choice_opt == "5":
-            useful_link()
+            new_skill(username)
         elif user_choice_opt == "6":
-            important_links_users(username)
+            useful_link()
         elif user_choice_opt == "7":
-            portfolio_options(username)
+            important_links_users(username)
         elif user_choice_opt == "8":
+            portfolio_options(username)
+        elif user_choice_opt == "9":
             break
         else:
             print("Not a valid input")
