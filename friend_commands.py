@@ -14,11 +14,25 @@ def create_friend_posting(sender):
             connection = db_commands.create_connection("userDB")
             cursor = connection.cursor()
             cursor.execute('''SELECT username FROM users WHERE lastname = ?''', (search_result,))
-            if cursor.fetchone() != None:
-                friend_information = (sender, status, cursor.fetchall())
-                db_commands.create_row_in_friend_table(friend_information)
-            else:
+            if cursor.fetchall() == None:
                 print("No users with the last name of " + search_result + " exists in our system")
+            else:
+                print("Here is a list of results:\n")
+                print(cursor.fetchall())
+                while (True):
+                    select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
+                    if 0 > select > len(cursor.fetchall()):
+                        print("Option selected is not part of the list.")
+                        continue
+                    elif select == 0:
+                        return
+                    elif select <= len(cursor.fetchall()):
+                        friend_information = (sender, status, cursor.fetchall()[select - 1])
+                    else:
+                        print("Please enter in a number as your choice")
+                        continue
+                    break
+                db_commands.create_row_in_friend_table(friend_information)
 
         elif user_choice_opt == "2":
             search_result = input("Please enter the users university.")
@@ -26,11 +40,25 @@ def create_friend_posting(sender):
             connection = db_commands.create_connection("userDB")
             cursor = connection.cursor()
             cursor.execute('''SELECT username FROM users WHERE university = ?''', (search_result,))
-            if cursor.fetchone() != None:
-                friend_information = (sender, status, cursor.fetchall())
-                db_commands.create_row_in_friend_table(friend_information)
-            else:
+            if cursor.fetchall() == None:
                 print("No users with the university of " + search_result + " exists in our system")
+            else:
+                print("Here is a list of results:\n")
+                print(cursor.fetchall())
+                while (True):
+                    select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
+                    if 0 > select > len(cursor.fetchall()):
+                        print("Option selected is not part of the list.")
+                        continue
+                    elif select == 0:
+                        return
+                    elif select <= len(cursor.fetchall()):
+                        friend_information = (sender, status, cursor.fetchall()[select - 1])
+                    else:
+                        print("Please enter in a number as your choice")
+                        continue
+                    break
+                db_commands.create_row_in_friend_table(friend_information)
 
         elif user_choice_opt == "3":
             search_result = input("Please enter the users major.")
@@ -38,11 +66,26 @@ def create_friend_posting(sender):
             connection = db_commands.create_connection("userDB")
             cursor = connection.cursor()
             cursor.execute('''SELECT username FROM users WHERE major = ?''', (search_result,))
-            if cursor.fetchone() != None:
-                friend_information = (sender, status, cursor.fetchall())
-                db_commands.create_row_in_friend_table(friend_information)
-            else:
+            if cursor.fetchall() == None:
                 print("No users with the major of " + search_result + " exists in our system")
+            else:
+                print("Here is a list of results:\n")
+                print(cursor.fetchall())
+                while(True):
+                    select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
+                    if 0 > select > len(cursor.fetchall()):
+                        print("Option selected is not part of the list.")
+                        continue
+                    elif select == 0:
+                        return
+                    elif select <= len(cursor.fetchall()):
+                        friend_information = (sender, status, cursor.fetchall()[select - 1])
+                    else:
+                        print("Please enter in a number as your choice")
+                        continue
+                    break
+                db_commands.create_row_in_friend_table(friend_information)
+
         elif user_choice_opt == "4":
             return
         else:
