@@ -64,9 +64,10 @@ create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,loc
 create_new_job_experience_sql = ''' INSERT INTO experience(title,employer,location,description,start_date,end_date,username)
                   VALUES(?,?,?,?,?,?,?) '''
 
-
 create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
                   VALUES(?,?,?) '''
+
+
 # Function for creating sqlite database
 def create_connection(db_name):
     conn = None
@@ -110,7 +111,8 @@ def query_password(connection, userPass):
         # userPass is used to search for the password that corresponded to the username
         # did not use the query SELECT password FROM users WHERE username = 'userPass'
         # because I think it would try to exactly search for a username that is named userPass,
-        # and not the actual username passed to the function parameter        if user[0]== userPass:
+        # and not the actual username passed to the function parameter
+        if user[0]== userPass:
             password = user[1]
             return password
 
@@ -168,7 +170,7 @@ def query_list_of_experiences():
 def query_list_of_friend_requests(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = PENDING''', (username,))
+    cursor.execute("SELECT sender FROM friends WHERE receiver = ? AND status = 'PENDING' ", (username,))
     return cursor.fetchall()
 
 
@@ -233,6 +235,7 @@ def User_Title(username, title):
     cursor = connection.cursor()
     cursor.execute('''UPDATE users SET title = ? WHERE username = ?''', (title, username,))
     connection.commit()
+
 
 def User_Major(username, major):
     connection = create_connection(database_name)
@@ -303,10 +306,9 @@ def print_experiences(connection, username):
     print(cursor.fetchall())
 
 
-
 def print_friends(connection, username):
     cursor = connection.cursor()
-    cursor.execute('''SELECT * FROM friends WHERE sender = ? OR receiver = ?''', (username, username,))
+    cursor.execute("SELECT * FROM friends WHERE sender = ? OR receiver = ? AND status = 'ACCEPT' ", (username, username,))
     print("Users friends: ")
     print(cursor.fetchall())
 
@@ -331,17 +333,20 @@ def query_student_title(username):
     cursor.execute('''SELECT title FROM users WHERE username = ?''', (username,))
     return cursor.fetchall()
 
+
 def query_student_major(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''SELECT major FROM users WHERE username = ?''', (username,))
     return cursor.fetchall()
 
+
 def query_student_university(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''SELECT university FROM users WHERE username = ?''', (username,))
     return cursor.fetchall()
+
 
 def query_student_info(username):
     connection = create_connection(database_name)
@@ -363,9 +368,10 @@ def query_friend(username):
     cursor = connection.cursor()
     # Union the two cases where we are either the sender or receiver of a friend request, so we take the other username
     # since that would be the friend, if they accepted our friend request
-    cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = ACCEPT UNION 
-                   SELECT receiver FROM friends WHERE sender = ? AND status = ACCEPT''', (username, username,))
+    cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = 'ACCEPT' UNION 
+                   SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
     return cursor.fetchall()
+
 
 # function to fill in values to the database for testing purposes primarily
 def fill_database(connection):
@@ -382,5 +388,3 @@ def fill_database(connection):
     create_row_in_experience_table(connection, experience_info)
     experience_info = ("person_sending_request", "PENDING", "person_logged_in",)
     create_row_in_experience_table(connection, experience_info)
-
-
