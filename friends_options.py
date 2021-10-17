@@ -1,4 +1,5 @@
 import db_commands
+import user_portfolio
 
 
 def check_friend_requests(username):
@@ -76,13 +77,21 @@ def show_network(username):
             continue
         elif user_choice_opt == 2:
             # checks to see if the users in friends_list has a profile or not
-            friends_list_with_profiles = db_commands.query_friend_profiles()
+            # returns a list of tuples. tuples being (friend username, "No profile" or "profile")
+            friends_list_with_profiles = db_commands.query_friend_profiles(friends_list)
+            profile_exist = []
+            for friend in friends_list_with_profiles:
+                if friend[1] == "profile":
+                    profile_exist.append(friend[0])
+                    print("{}   {}".format(friend[0], friend[1]))
+                else:
+                    print(friend[0])
             view_friend_profile = input("Enter who's profile you want to view:")
-            if view_friend_profile in friends_list_with_profiles:
-                # will delete friend row from the friends table where the user to disconnect from is your friend
-                db_commands.Friend_Status(disconnect_friend, username, status_disconnect)
+            if view_friend_profile in profile_exist:
+                # will view the friend's profile that was entered
+                user_portfolio.view_profile(view_friend_profile)
             else:
-                print("The user entered does not exist or did not send you a friend request.")
+                print("The user entered does not exist or does not currently have a profile")
             continue
         elif user_choice_opt == 3:
             return 0

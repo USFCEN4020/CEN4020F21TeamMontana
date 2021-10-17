@@ -67,6 +67,9 @@ create_new_job_experience_sql = ''' INSERT INTO experience(title,employer,locati
 create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
                   VALUES(?,?,?) '''
 
+create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
+                  VALUES(?,?,?) '''
+
 
 # Function for creating sqlite database
 def create_connection(db_name):
@@ -187,6 +190,15 @@ def create_row_in_experience_table(connection, experience_info):
     try:
         cursor = connection.cursor()
         cursor.execute(create_new_job_experience_sql, experience_info)
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
+def create_row_in_friend_table(connection, friend_info):
+    try:
+        cursor = connection.cursor()
+        cursor.execute(create_new_friend_status_sql, friend_info)
         connection.commit()
     except Error as e:
         print(e)
@@ -371,6 +383,35 @@ def query_friend(username):
     cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = 'ACCEPT' UNION 
                    SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
     return cursor.fetchall()
+
+
+# This just returns the name of all your friends
+def query_friend(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    # Union the two cases where we are either the sender or receiver of a friend request, so we take the other username
+    # since that would be the friend, if they accepted our friend request
+    cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = 'ACCEPT' UNION 
+                   SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
+    return cursor.fetchall()
+
+
+def query_friend_profiles(friends_list):
+    friends_list_profiles = []
+    for friend in friends_list:
+        # looking at each of friends individually and if any of their profile fields are empty
+        if (query_student_title(friend) == "TITLE:NULL" and
+                query_student_major(friend) == "MAJOR:NULL" and
+                    query_student_major(friend) == "MAJOR:NULL" and
+                        query_student_university(friend) == "UNIVERSITY:NULL" and
+                            query_student_info(friend) == "STUDENTINFO:NULL" and
+                                query_education(friend) == "education:NULL"):
+            # if all of the fields of the student profiles are not filled then the student does not have a
+            # profile that can be viewd by others
+            friends_list_profiles.append(friend, "No profile")
+        else:
+            friends_list_profiles.append(friend, "profile")
+    return friends_list_profiles
 
 
 # function to fill in values to the database for testing purposes primarily
