@@ -6,6 +6,7 @@ import job_commands
 import db_commands
 from user_portfolio import portfolio_options
 import friends_options
+import friend_commands
 
 
 def search_job(username):
@@ -77,7 +78,8 @@ def print_additional_options():
     print("6 - Useful links group options")
     print("7 - InCollege important links group options")
     print("8 - Edit user profile")
-    print("9 - Return to previous menu")
+    print("9 - Send friend request")
+    print("0 - Return to previous menu")
 
 
 def additional_options(username):
@@ -115,6 +117,8 @@ def additional_options(username):
         elif user_choice_opt == "8":
             portfolio_options(username)
         elif user_choice_opt == "9":
+            friend_commands.create_friend_posting(username)
+        elif user_choice_opt == "0":
             break
         else:
             print("Not a valid input")
