@@ -45,7 +45,7 @@ def create_account(connection):
     # Otherwise, safe to create username
     # tests if safe username
     while True:
-        if len(existing_usernames) > 5:
+        if len(existing_usernames) > 10:
             print("The system has too many users already.")
             return 0
         elif not account_define.username_meets_qualifications(username_input, existing_usernames):

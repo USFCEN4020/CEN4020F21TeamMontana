@@ -14,25 +14,27 @@ def create_friend_posting(sender):
             connection = db_commands.create_connection("userDB")
             cursor = connection.cursor()
             cursor.execute('''SELECT username FROM users WHERE lastname = ?''', (search_result,))
-            if cursor.fetchall() == None:
+            usernames = cursor.fetchall()
+            if len(usernames) == 0:
                 print("No users with the last name of " + search_result + " exists in our system")
             else:
                 print("Here is a list of results:\n")
-                print(cursor.fetchall())
+                print(usernames)
+                status = "PENDING"
                 while (True):
                     select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
-                    if 0 > select > len(cursor.fetchall()):
+                    if 0 > int(select) > len(usernames):
                         print("Option selected is not part of the list.")
                         continue
-                    elif select == 0:
+                    elif int(select) == 0:
                         return
-                    elif select <= len(cursor.fetchall()):
-                        friend_information = (sender, status, cursor.fetchall()[select - 1])
+                    elif int(select) <= len(usernames):
+                        friend_information = (sender, status, usernames[int(select) - 1])
                     else:
                         print("Please enter in a number as your choice")
                         continue
                     break
-                db_commands.create_row_in_friend_table(friend_information)
+                db_commands.create_row_in_friend_table(connection, friend_information)
 
         elif user_choice_opt == "2":
             search_result = input("Please enter the users university.")
@@ -40,20 +42,22 @@ def create_friend_posting(sender):
             connection = db_commands.create_connection("userDB")
             cursor = connection.cursor()
             cursor.execute('''SELECT username FROM users WHERE university = ?''', (search_result,))
-            if cursor.fetchall() == None:
+            usernames = cursor.fetchall()
+            if len(usernames) == 0:
                 print("No users with the university of " + search_result + " exists in our system")
             else:
                 print("Here is a list of results:\n")
-                print(cursor.fetchall())
+                print(usernames)
+                status = "PENDING"
                 while (True):
                     select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
-                    if 0 > select > len(cursor.fetchall()):
+                    if 0 > int(select) > len(usernames):
                         print("Option selected is not part of the list.")
                         continue
-                    elif select == 0:
+                    elif int(select) == 0:
                         return
-                    elif select <= len(cursor.fetchall()):
-                        friend_information = (sender, status, cursor.fetchall()[select - 1])
+                    elif int(select) <= len(usernames):
+                        friend_information = (sender, status, usernames[int(select) - 1])
                     else:
                         print("Please enter in a number as your choice")
                         continue
@@ -66,20 +70,22 @@ def create_friend_posting(sender):
             connection = db_commands.create_connection("userDB")
             cursor = connection.cursor()
             cursor.execute('''SELECT username FROM users WHERE major = ?''', (search_result,))
-            if cursor.fetchall() == None:
+            usernames = cursor.fetchall()
+            if len(usernames) == 0:
                 print("No users with the major of " + search_result + " exists in our system")
             else:
                 print("Here is a list of results:\n")
-                print(cursor.fetchall())
-                while(True):
+                print(usernames)
+                status = "PENDING"
+                while (True):
                     select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
-                    if 0 > select > len(cursor.fetchall()):
+                    if 0 > int(select) > len(usernames):
                         print("Option selected is not part of the list.")
                         continue
-                    elif select == 0:
+                    elif int(select) == 0:
                         return
-                    elif select <= len(cursor.fetchall()):
-                        friend_information = (sender, status, cursor.fetchall()[select - 1])
+                    elif int(select) <= len(usernames):
+                        friend_information = (sender, status, usernames[int(select) - 1])
                     else:
                         print("Please enter in a number as your choice")
                         continue
@@ -91,3 +97,7 @@ def create_friend_posting(sender):
         else:
             print("Invalid input. Please enter in a digit between 1 thru 4.")
             continue
+
+connection = db_commands.create_connection("userDB")
+db_commands.fill_database(connection)
+create_friend_posting("sender")
