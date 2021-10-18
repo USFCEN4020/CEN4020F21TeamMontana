@@ -3,15 +3,15 @@ import db_commands
 
 def job_meets_qualifications():
     job_titles = db_commands.query_list_of_jobs()
-    if len(job_titles) > 5:
-        print("There are already more than 5 job listings, our system cannot handle anymore.")
+    if len(job_titles) >= 10:
+        print("There are already more than 10 job listings, our system cannot handle anymore.")
         return False
     else:
         return True
 
 
 def create_job_posting(first_name, last_name):
-    # Check if there are > 5 job postings already
+    # Check if there are > 10 job postings already
     if not job_meets_qualifications():
         return False
 
