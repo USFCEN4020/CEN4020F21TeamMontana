@@ -1,3 +1,4 @@
+import random
 import sqlite3
 from sqlite3 import Error
 # This file is for storing database commands
@@ -6,10 +7,10 @@ database_name = "userDB"
 
 # create user table
 user_table = """CREATE TABLE IF NOT EXISTS users (
-    username text PRIMARY KEY,
+    username text,
     password text NOT NULL,
-    firstname text NOT NULL,
-    lastname text NOT NULL,
+    firstname text,
+    lastname text,
     language text NOT NULL,
     emails text NOT NULL,
     sms text NOT NULL,
@@ -19,10 +20,12 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     university text NOT NULL,
     studentinfo text NOT NULL,
     education text NOT NULL,
+    PRIMARY KEY(username),
     UNIQUE(firstname, lastname)
     );"""
 
 job_table = """CREATE TABLE IF NOT EXISTS jobs (
+    jobID INTEGER CHECK(jobID >= 0),
     title text NOT NULL,
     description text NOT NULL,
     employer text NOT NULL,
@@ -30,8 +33,18 @@ job_table = """CREATE TABLE IF NOT EXISTS jobs (
     salary INTEGER NOT NULL,
     firstname text NOT NULL,
     lastname text NOT NULL,
+    PRIMARY KEY(jobID),
     FOREIGN KEY(firstname) REFERENCES users(firstname),
     FOREIGN KEY(lastname) REFERENCES users(lastname)
+    );"""
+
+user_job_table = """CREATE TABLE IF NOT EXISTS job_applications (
+    username text,
+    jobID text,
+    status text NOT NULL,
+    PRIMARY KEY(username, jobID),
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY(jobID) REFERENCES jobs(jobID) ON DELETE CASCADE
     );"""
 
 experience_table = """CREATE TABLE IF NOT EXISTS experiences (
@@ -46,10 +59,10 @@ experience_table = """CREATE TABLE IF NOT EXISTS experiences (
     );"""
 
 friend_table = """CREATE TABLE IF NOT EXISTS friends (
-    sender text NOT NULL,
+    sender text,
     status text NOT NULL,
-    receiver text NOT NULL,
-    UNIQUE(sender, receiver)
+    receiver text,
+    PRIMARY KEY(sender, receiver)
     FOREIGN KEY(receiver) REFERENCES users(username)
     FOREIGN KEY(sender) REFERENCES users(username)
     );"""
@@ -58,8 +71,10 @@ create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastn
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
-create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
-                                 VALUES(?,?,?,?,?,?,?) '''
+create_new_job_posting_sql = ''' INSERT INTO jobs(jobID,title,description,employer,location,salary,firstname,lastname)
+                                 VALUES(?,?,?,?,?,?,?,?) '''
+
+create_new_user_job_relationship_sql = ''' INSERT INTO job_applications(username, jobID, status) VALUES(?,?,?) '''
 
 create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,location,description,start_date,end_date,username)
                   VALUES(?,?,?,?,?,?,?) '''
@@ -174,9 +189,28 @@ def query_list_of_friend_requests(username):
 
 
 def create_row_in_jobs_table(connection, job_info):
+    # randomly generates a 7 digit integer number for jobID
+    rand_job_id = random.randint(1000000, 9999999)
+    # make the generated integer to a tuple
+    job_id = (rand_job_id,)
+    # add the tuple to the beginning of the job_info tuple to create the table
+    job_info_with_id = (*job_id, job_info)
     try:
         cursor = connection.cursor()
-        cursor.execute(create_new_job_posting_sql, job_info)
+        cursor.execute(create_new_job_posting_sql, job_info_with_id)
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
+# the paramater user_job_info will contain the user that is interacting with jobs
+# it will also contain the jobID of the job that the user is interested in.
+# it will also contains the status how how the student is trying to interact with the job
+# user_job_info = (username, jobID, status)
+def create_row_in_user_job_table(connection, user_job_info):
+    try:
+        cursor = connection.cursor()
+        cursor.execute(create_new_friend_status_sql, user_job_info)
         connection.commit()
     except Error as e:
         print(e)
@@ -198,6 +232,7 @@ def create_row_in_friend_table(connection, friend_info):
         connection.commit()
     except Error as e:
         print(e)
+
 
 # These next 4 functions modify a User's privacy settings (ChangeLang, SendEmailsStatus, SendSMSStatus, TargetAdsStatus)
 def ChangeLang(username, lang):
@@ -370,6 +405,7 @@ def query_friend(username):
                    SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
     return cursor.fetchall()
 
+
 def query_friend_profiles(friends_list):
     friends_list_profiles = []
     for friend in friends_list:
@@ -386,6 +422,18 @@ def query_friend_profiles(friends_list):
         else:
             friends_list_profiles.append((friend, "profile"))
     return friends_list_profiles
+
+
+# paramaters are the user that wants to look at jobs they have applied to
+# and status is whether the user wants to check what jobs they have applied to or the ones they have yet to apply
+# or if that status is saved
+def query_applications(username, status):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    # come back later when the jobs relationship table between jobs and users are created
+    cursor.execute("SELECT * FROM job_applications WHERE username = ? AND status = ?", (username, status))
+    applications = cursor.fetchall()
+    return applications
 
 
 # function to fill in values to the database for testing purposes primarily
