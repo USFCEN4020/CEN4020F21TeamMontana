@@ -50,8 +50,8 @@ friend_table = """CREATE TABLE IF NOT EXISTS friends (
     status text NOT NULL,
     receiver text NOT NULL,
     UNIQUE(sender, receiver)
-    FOREIGN KEY(receiver) REFERENCES users(receiver)
-    FOREIGN KEY(sender) REFERENCES users(sender)
+    FOREIGN KEY(receiver) REFERENCES users(username)
+    FOREIGN KEY(sender) REFERENCES users(username)
     );"""
 
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads,
@@ -382,9 +382,9 @@ def query_friend_profiles(friends_list):
                                 query_education(friend) == "education:NULL"):
             # if all of the fields of the student profiles are not filled then the student does not have a
             # profile that can be viewd by others
-            friends_list_profiles.append(friend, "No profile")
+            friends_list_profiles.append((friend, "No profile"))
         else:
-            friends_list_profiles.append(friend, "profile")
+            friends_list_profiles.append((friend, "profile"))
     return friends_list_profiles
 
 

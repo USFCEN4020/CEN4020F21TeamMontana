@@ -86,8 +86,8 @@ def show_network(username):
         elif user_choice_opt == "2":
             # checks to see if the users in friends_list has a profile or not
             # returns a list of tuples. tuples being (friend username, "No profile" or "profile")
-            username_list = db_commands.query_friend_profiles(friends_list)
-            friends_list_with_profiles = [x[0] for x in username_list]
+            friends_list_with_profiles = db_commands.query_friend_profiles(friends_list)
+            
             profile_exist = []
             for friend in friends_list_with_profiles:
                 if friend[1] == "profile":
