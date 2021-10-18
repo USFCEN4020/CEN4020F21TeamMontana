@@ -1,103 +1,103 @@
 import db_commands
 
+connection = db_commands.create_connection("userDB")
+cursor = connection.cursor()
+def query_friend_paramater(username_paramater, search_parameter):
+    connection = db_commands.create_connection("userDB")
+    cursor = connection.cursor()
+    if search_parameter == "lastname":
+        cursor.execute("SELECT username FROM users WHERE lastname = ?", (username_paramater,))
+    elif search_parameter == "university":
+        cursor.execute("SELECT username FROM users WHERE university = ?", (username_paramater,))
+    elif search_parameter == "major":
+        cursor.execute("SELECT username FROM users WHERE major = ?", (username_paramater,))
+    usernames = cursor.fetchall()
+    # returns a list of usernames that match the paramter entered
+    return usernames
+
 
 def create_friend_posting(sender):
     print("Let's get started in sending a friend request")
     # There are no constraints on the actual experience posting
     status = "PENDING"
 
-    user_choice_opt = input("How do you want to search for the user? \n1 - By last name\n2 - By university\n3 - By major\n4 - Return to previous menu")
-    while(True):
+    while True:
+        user_choice_opt = input("How do you want to search for the user? \n1 - By last name\n2 - By university\n3 - By major\n4 - Return to previous menu\n")
         if user_choice_opt == "1":
-            search_result = input("Please enter the users last name.")
+            search_result = input("Please enter the users last name:\n")
+            #print(found_usernames)
+            search_parameter = "lastname"
+            username = query_friend_paramater(search_result, search_parameter)
+            found_usernames = [x[0] for x in username]
 
-            connection = db_commands.create_connection("userDB")
-            cursor = connection.cursor()
-            cursor.execute('''SELECT username FROM users WHERE lastname = ?''', (search_result,))
-            usernames = cursor.fetchall()
-            if len(usernames) == 0:
+            if len(found_usernames) == 0:
                 print("No users with the last name of " + search_result + " exists in our system")
-            else:
+                continue
+            elif len(found_usernames) > 0:
                 print("Here is a list of results:\n")
-                print(usernames)
-                status = "PENDING"
-                while (True):
-                    select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
-                    if 0 > int(select) > len(usernames):
-                        print("Option selected is not part of the list.")
-                        continue
-                    elif int(select) == 0:
-                        return
-                    elif int(select) <= len(usernames):
-                        friend_information = (sender, status, usernames[int(select) - 1])
+                print(*found_usernames, sep="\n")
+                while True:
+                    friend_receiver = input("\nEnter the username you want to send a friend request to, or enter exit to find another user.\n")
+                    if friend_receiver in found_usernames:
+                        friend_info = (sender, status, friend_receiver)
+                        db_commands.create_row_in_friend_table(db_commands.create_connection("userDB"), friend_info)
+                        break
+                    if friend_receiver == "exit":
+                        break
                     else:
-                        print("Please enter in a number as your choice")
+                        print("The user entered does not exist, you entered the username wrong, or did not specify to exit")
                         continue
-                    break
-                db_commands.create_row_in_friend_table(connection, friend_information)
 
         elif user_choice_opt == "2":
-            search_result = input("Please enter the users university.")
+            search_result = input("Please enter the users university:\n")
+            search_parameter = "university"
+            username = query_friend_paramater(search_result, search_parameter)
+            found_usernames = [x[0] for x in username]
 
-            connection = db_commands.create_connection("userDB")
-            cursor = connection.cursor()
-            cursor.execute('''SELECT username FROM users WHERE university = ?''', (search_result,))
-            usernames = cursor.fetchall()
-            if len(usernames) == 0:
+            if len(found_usernames) == 0:
                 print("No users with the university of " + search_result + " exists in our system")
-            else:
+                continue
+            elif len(found_usernames) > 0:
                 print("Here is a list of results:\n")
-                print(usernames)
-                status = "PENDING"
-                while (True):
-                    select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
-                    if 0 > int(select) > len(usernames):
-                        print("Option selected is not part of the list.")
-                        continue
-                    elif int(select) == 0:
-                        return
-                    elif int(select) <= len(usernames):
-                        friend_information = (sender, status, usernames[int(select) - 1])
+                print(*found_usernames, sep="\n")
+                while True:
+                    friend_receiver = input("\nEnter the username you want to send a friend request to, or enter exit to find another user.\n")
+                    if friend_receiver in found_usernames:
+                        friend_info = (sender, status, friend_receiver)
+                        db_commands.create_row_in_friend_table(db_commands.create_connection("userDB"), friend_info)
+                        break
+                    elif friend_receiver == "exit":
+                        break
                     else:
-                        print("Please enter in a number as your choice")
+                        print("The user entered does not exist, you entered the username wrong, or did not specify to exit")
                         continue
-                    break
-                db_commands.create_row_in_friend_table(friend_information)
 
         elif user_choice_opt == "3":
-            search_result = input("Please enter the users major.")
+            search_result = input("Please enter the users major:\n")
+            search_parameter == "major"
+            username = query_friend_paramater(search_result, search_parameter)
+            found_usernames = [x[0] for x in username]
 
-            connection = db_commands.create_connection("userDB")
-            cursor = connection.cursor()
-            cursor.execute('''SELECT username FROM users WHERE major = ?''', (search_result,))
-            usernames = cursor.fetchall()
-            if len(usernames) == 0:
+            if len(found_usernames) == 0:
                 print("No users with the major of " + search_result + " exists in our system")
-            else:
+                continue
+            elif len(found_usernames) > 0:
                 print("Here is a list of results:\n")
-                print(usernames)
-                status = "PENDING"
-                while (True):
-                    select = input("\nSelect which one you want to send the request to, or enter 0 to exit.\n")
-                    if 0 > int(select) > len(usernames):
-                        print("Option selected is not part of the list.")
-                        continue
-                    elif int(select) == 0:
-                        return
-                    elif int(select) <= len(usernames):
-                        friend_information = (sender, status, usernames[int(select) - 1])
+                print(*found_usernames, sep="\n")
+                while True:
+                    friend_receiver = input("\nEnter the username you want to send a friend request to, or enter exit to find another user.\n")
+                    if friend_receiver in found_usernames:
+                        friend_info = (sender, status, friend_receiver)
+                        db_commands.create_row_in_friend_table(db_commands.create_connection("userDB"), friend_info)
+                        break
+                    elif friend_receiver == "exit":
+                        break
                     else:
-                        print("Please enter in a number as your choice")
+                        print("The user entered does not exist, you entered the username wrong, or did not specify to exit")
                         continue
-                    break
-                db_commands.create_row_in_friend_table(friend_information)
 
         elif user_choice_opt == "4":
-            return
+            return 0
         else:
-            print("Invalid input. Please enter in a digit between 1 thru 4.")
+            print("Invalid input. Please enter in a digit between 1 thorugh 4.")
             continue
-
-connection = db_commands.create_connection("userDB")
-db_commands.fill_database(connection)
-create_friend_posting("sender")

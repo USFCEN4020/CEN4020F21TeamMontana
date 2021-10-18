@@ -6,10 +6,11 @@ def check_friend_requests(username):
     # function to call db_commands to find if the friends tables
     # FROM friends SELECT sender, status WHERE usernameRecipient = 'username' AND status = false;
     # friends contains all user that sent a friend request to the current user which has not been accepted
-    senders_usernames = db_commands.query_list_of_friend_requests(username)
+    username_list = db_commands.query_list_of_friend_requests(username)
     # If there are no pending friend request then the function returns back to additional_options
-    if len(senders_usernames) == 0:
+    if len(username_list) == 0:
         return 0
+    senders_usernames = [x[0] for x in username_list]
     print("Pending friend requests:")
     # prints each Friend request on a new line
     print(*senders_usernames, sep="\n")
@@ -49,12 +50,13 @@ def check_friend_requests(username):
 
 
 def show_network(username):
-    friends_list = db_commands.query_friend(username)
+    username_list = db_commands.query_friend(username)
     print("These are the people that you have connected with:")
-    if len(friends_list) == 0:
+    if len(username_list) == 0:
         print("You have not connected with anybody")
         print("Returning back to previous menu.")
         return 0
+    friends_list = [x[0] for x in username_list]
     print(*friends_list, sep="\n")
 
     print("How do you want to interact with your connections")
@@ -64,6 +66,12 @@ def show_network(username):
 3 - Exit Show my network (Return back to previous menu)
 """
     while True:
+        # checking to make sure in the case that the user diconnected from everyone on their list
+        check_username_list = db_commands.query_friend(username)
+        if len(check_username_list) == 0:
+            print("You have no more connections")
+            print("Returning back to previous menu.")
+            return 0
         print(menu)
         user_choice_opt = input("Enter your selection here: ")
         if user_choice_opt == 1:
@@ -78,7 +86,8 @@ def show_network(username):
         elif user_choice_opt == 2:
             # checks to see if the users in friends_list has a profile or not
             # returns a list of tuples. tuples being (friend username, "No profile" or "profile")
-            friends_list_with_profiles = db_commands.query_friend_profiles(friends_list)
+            username_list = db_commands.query_friend_profiles(friends_list)
+            friends_list_with_profiles = [x[0] for x in username_list]
             profile_exist = []
             for friend in friends_list_with_profiles:
                 if friend[1] == "profile":

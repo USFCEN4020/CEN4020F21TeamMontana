@@ -61,15 +61,11 @@ create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastn
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                                  VALUES(?,?,?,?,?,?,?) '''
 
-create_new_job_experience_sql = ''' INSERT INTO experience(title,employer,location,description,start_date,end_date,username)
+create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,location,description,start_date,end_date,username)
                   VALUES(?,?,?,?,?,?,?) '''
 
 create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
                   VALUES(?,?,?) '''
-
-create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
-                  VALUES(?,?,?) '''
-
 
 # Function for creating sqlite database
 def create_connection(db_name):
@@ -202,16 +198,6 @@ def create_row_in_friend_table(connection, friend_info):
         connection.commit()
     except Error as e:
         print(e)
-
-
-def create_row_in_friend_table(connection, friend_info):
-    try:
-        cursor = connection.cursor()
-        cursor.execute(create_new_friend_status_sql, friend_info)
-        connection.commit()
-    except Error as e:
-        print(e)
-
 
 # These next 4 functions modify a User's privacy settings (ChangeLang, SendEmailsStatus, SendSMSStatus, TargetAdsStatus)
 def ChangeLang(username, lang):
@@ -383,18 +369,6 @@ def query_friend(username):
     cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = 'ACCEPT' UNION 
                    SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
     return cursor.fetchall()
-
-
-# This just returns the name of all your friends
-def query_friend(username):
-    connection = create_connection(database_name)
-    cursor = connection.cursor()
-    # Union the two cases where we are either the sender or receiver of a friend request, so we take the other username
-    # since that would be the friend, if they accepted our friend request
-    cursor.execute('''SELECT sender FROM friends WHERE receiver = ? AND status = 'ACCEPT' UNION 
-                   SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
-    return cursor.fetchall()
-
 
 def query_friend_profiles(friends_list):
     friends_list_profiles = []
