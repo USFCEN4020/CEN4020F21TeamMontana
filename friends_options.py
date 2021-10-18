@@ -24,7 +24,7 @@ def check_friend_requests(username):
     while True:
         print(menu)
         user_choice_opt = input("Enter your selection here: ")
-        if user_choice_opt == 1:
+        if user_choice_opt == "1":
             status_accept = "ACCEPT"
             accept_friend = input("Enter which friend request you want to accept:")
             if accept_friend in senders_usernames:
@@ -33,7 +33,7 @@ def check_friend_requests(username):
             else:
                 print("The user entered does not exist or did not send you a friend request.")
             continue
-        elif user_choice_opt == 2:
+        elif user_choice_opt == "2":
             status_reject = "REJECT"
             reject_friend = input("Enter which friend request you want to reject:")
             if reject_friend in senders_usernames:
@@ -42,7 +42,7 @@ def check_friend_requests(username):
             else:
                 print("The user entered does not exist or did not send you a friend request.")
             continue
-        elif user_choice_opt == 3:
+        elif user_choice_opt == "3":
             return 0
         else:
             print("Invalid Input, Enter a value that is either 1, 2 or 3")
@@ -74,7 +74,7 @@ def show_network(username):
             return 0
         print(menu)
         user_choice_opt = input("Enter your selection here: ")
-        if user_choice_opt == 1:
+        if user_choice_opt == "1":
             status_disconnect = "DISCONNECT"
             disconnect_friend = input("Enter who you want to disconnect from:")
             if disconnect_friend in friends_list:
@@ -83,7 +83,7 @@ def show_network(username):
             else:
                 print("The user entered does not exist or did not send you a friend request.")
             continue
-        elif user_choice_opt == 2:
+        elif user_choice_opt == "2":
             # checks to see if the users in friends_list has a profile or not
             # returns a list of tuples. tuples being (friend username, "No profile" or "profile")
             username_list = db_commands.query_friend_profiles(friends_list)
@@ -102,7 +102,7 @@ def show_network(username):
             else:
                 print("The user entered does not exist or does not currently have a profile")
             continue
-        elif user_choice_opt == 3:
+        elif user_choice_opt == "3":
             return 0
         else:
             print("Invalid Input, Enter either the value 1, 2 or 3")
