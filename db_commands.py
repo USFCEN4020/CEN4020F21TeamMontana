@@ -25,7 +25,7 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     );"""
 
 job_table = """CREATE TABLE IF NOT EXISTS jobs (
-    jobID INTEGER CHECK(jobID >= 0),
+    jobID INTEGER PRIMARY KEY,
     title text NOT NULL,
     description text NOT NULL,
     employer text NOT NULL,
@@ -33,7 +33,6 @@ job_table = """CREATE TABLE IF NOT EXISTS jobs (
     salary INTEGER NOT NULL,
     firstname text NOT NULL,
     lastname text NOT NULL,
-    PRIMARY KEY(jobID),
     FOREIGN KEY(firstname) REFERENCES users(firstname),
     FOREIGN KEY(lastname) REFERENCES users(lastname)
     );"""
@@ -41,6 +40,9 @@ job_table = """CREATE TABLE IF NOT EXISTS jobs (
 user_job_table = """CREATE TABLE IF NOT EXISTS job_applications (
     username text,
     jobID text,
+    graduation_date text,
+    start_date text,
+    statement_of_purpose text,
     status text NOT NULL,
     PRIMARY KEY(username, jobID),
     FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE,
@@ -71,10 +73,12 @@ create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastn
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
-create_new_job_posting_sql = ''' INSERT INTO jobs(jobID,title,description,employer,location,salary,firstname,lastname)
-                                 VALUES(?,?,?,?,?,?,?,?) '''
+create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
+                                 VALUES(?,?,?,?,?,?,?) '''
 
-create_new_user_job_relationship_sql = ''' INSERT INTO job_applications(username, jobID, status) VALUES(?,?,?) '''
+create_new_job_application_sql = ''' INSERT INTO job_applications(username, jobID, graduation_date, start_date,
+                                    statement_of_purpose, status) 
+                                    VALUES(?,?,?,?,?,?) '''
 
 create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,location,description,start_date,end_date,username)
                   VALUES(?,?,?,?,?,?,?) '''
@@ -107,6 +111,30 @@ def create_table(connection, create_table_command):
 def query_usernames_list(connection):
     cursor = connection.cursor()
     cursor.execute("SELECT username FROM users")
+    rows = cursor.fetchall()
+    return rows
+
+
+# Queries for list of jobs
+def query_jobs_list(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM jobs")
+    rows = cursor.fetchall()
+    return rows
+
+
+def query_job_info_from_id(connection, jobID):
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT title FROM jobs WHERE jobID = ?", (jobID,))
+        return cursor.fetchall()
+    except Error as e:
+        print(e)
+
+
+def query_job_apps(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT username, jobID, status from job_applications")
     rows = cursor.fetchall()
     return rows
 
@@ -189,15 +217,27 @@ def query_list_of_friend_requests(username):
 
 
 def create_row_in_jobs_table(connection, job_info):
-    # randomly generates a 7 digit integer number for jobID
-    rand_job_id = random.randint(1000000, 9999999)
-    # make the generated integer to a tuple
-    job_id = (rand_job_id,)
-    # add the tuple to the beginning of the job_info tuple to create the table
-    job_info_with_id = (*job_id, job_info)
     try:
         cursor = connection.cursor()
-        cursor.execute(create_new_job_posting_sql, job_info_with_id)
+        cursor.execute(create_new_job_posting_sql, job_info)
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
+def create_row_in_job_applications_table(connection, job_app_info):
+    try:
+        cursor = connection.cursor()
+        cursor.execute(create_new_job_application_sql, job_app_info)
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
+def remove_row_in_job_applications_table(connection, username, jobID):
+    try:
+        cursor = connection.cursor()
+        cursor.execute('''DELETE FROM job_applications WHERE username = ? AND jobID = ?''', (username, jobID,))
         connection.commit()
     except Error as e:
         print(e)

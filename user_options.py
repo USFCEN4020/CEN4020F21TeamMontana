@@ -10,7 +10,7 @@ import friend_commands
 
 
 def search_job(username):
-    print("Under construction")
+    job_commands.search_all_jobs(username)
     return 0
 
 
@@ -85,6 +85,10 @@ def print_additional_options():
 def additional_options(username):
     # Check to see if the user has any pending friend requests that were sent to them.
     friends_options.check_friend_requests(username)
+
+    # Check for saved/applied jobs
+    job_commands.display_saved_jobs(username)
+    job_commands.display_applied_jobs(username)
 
     while True:
         print_additional_options()
