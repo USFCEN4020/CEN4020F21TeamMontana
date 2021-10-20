@@ -37,6 +37,7 @@ def main_menu():
     db_commands.create_table(connection, db_commands.user_table)
     db_commands.create_table(connection, db_commands.job_table)
     db_commands.create_table(connection, db_commands.user_job_table)
+    db_commands.create_table(connection, db_commands.deleted_jobs)
     db_commands.create_table(connection, db_commands.experience_table)
     db_commands.create_table(connection, db_commands.friend_table)
     # db_commands.print_database(connection)

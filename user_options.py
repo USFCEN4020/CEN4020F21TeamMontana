@@ -10,7 +10,7 @@ import friend_commands
 
 
 def search_job(username):
-    job_commands.search_all_jobs(username)
+    job_commands.jobs_menu(username)
     return 0
 
 
@@ -70,7 +70,7 @@ def new_skill(username):
 
 def print_additional_options():
     print("Please choose from the following menu:")
-    print("1 - Post a job")
+    print("1 - Post/Delete a job")
     print("2 - Search for a job")
     print("3 - Find someone you know")
     print("4 - Show my network")
@@ -96,9 +96,18 @@ def additional_options(username):
 
         # Potentially use switch
         if user_choice_opt == "1":
-            first_name_input = input("Enter the first name: ")
-            last_name_input = input("Enter the last name: ")
-            job_commands.create_job_posting(first_name_input, last_name_input)
+            print("Do you want to post or delete a job?\n"
+                  "1 - Post a job\n"
+                  "2 - Delete a job I posted")
+            user_choice_opt = input("Enter your selection here: ")
+            if user_choice_opt == "1":
+                user_first_last = db_commands.query_names_user(username, db_commands.create_connection(db_commands.database_name))
+                job_commands.create_job_posting(user_first_last[0], user_first_last[1])
+            elif user_choice_opt == "2":
+                user_first_last = db_commands.query_names_user(username, db_commands.create_connection(db_commands.database_name))
+                job_commands.delete_job_posting(user_first_last[0], user_first_last[1])
+            else:
+                print("Invalid Input, Enter either the value 1 or 2")
         elif user_choice_opt == "2":
             search_job(username)
         elif user_choice_opt == "3":

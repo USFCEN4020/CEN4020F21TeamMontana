@@ -49,6 +49,17 @@ user_job_table = """CREATE TABLE IF NOT EXISTS job_applications (
     FOREIGN KEY(jobID) REFERENCES jobs(jobID) ON DELETE CASCADE
     );"""
 
+# this table is to hold all of the jobs that was deleted until all of the users that appolied to the job is notified.
+deleted_jobs = """CREATE TABLE IF NOT EXISTS deleted_jobs (
+    username text,
+    title text NOT NULL,
+    description text NOT NULL,
+    employer text NOT NULL,
+    location text NOT NULL,
+    salary INTEGER NOT NULL,
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE, 
+    );"""
+
 experience_table = """CREATE TABLE IF NOT EXISTS experiences (
     title text NOT NULL,
     employer text NOT NULL,
@@ -77,14 +88,19 @@ create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,loc
                                  VALUES(?,?,?,?,?,?,?) '''
 
 create_new_job_application_sql = ''' INSERT INTO job_applications(username, jobID, graduation_date, start_date,
-                                    statement_of_purpose, status) 
-                                    VALUES(?,?,?,?,?,?) '''
+                                     statement_of_purpose, status) 
+                                     VALUES(?,?,?,?,?,?) '''
+
+create_new_deleted_notification_sql = ''' INSERT INTO deleted_jobs(username, title, description, employer, location,
+                                          salary)
+                                          VALUES(?,?,?,?,?,?)'''
 
 create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,location,description,start_date,end_date,username)
-                  VALUES(?,?,?,?,?,?,?) '''
+                                    VALUES(?,?,?,?,?,?,?) '''
 
 create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
-                  VALUES(?,?,?) '''
+                                   VALUES(?,?,?) '''
+
 
 # Function for creating sqlite database
 def create_connection(db_name):
@@ -182,6 +198,12 @@ def query_names(connection):
     cursor = connection.cursor()
     cursor.execute("SELECT firstname,lastname FROM users")
     return cursor.fetchall()
+
+
+def query_names_user(username, connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT firstname,lastname FROM users WHERE username = ?", (username,))
+    return cursor.fetchone()
 
 
 def find_names_from_username(username):
@@ -342,7 +364,7 @@ def Friend_Status(sender, receiver, status):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     if status == "REJECT" or status == "DISCONNECT":
-        cursor.execute("DELETE * FROM friends WHERE sender = ? AND receiver = ?", (sender, receiver,))
+        cursor.execute("DELETE FROM friends WHERE sender = ? AND receiver = ?", (sender, receiver,))
     elif status == "PENDING" or status == "ACCEPT":
         cursor.execute("UPDATE friends SET status = ? WHERE sender = ? AND receiver = ?", (status, sender, receiver,))
     # This is just so that only valid statuses are passed to this function.
@@ -470,10 +492,17 @@ def query_friend_profiles(friends_list):
 def query_applications(username, status):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    # come back later when the jobs relationship table between jobs and users are created
-    cursor.execute("SELECT * FROM job_applications WHERE username = ? AND status = ?", (username, status))
-    applications = cursor.fetchall()
-    return applications
+    # this does not search for the status in the tables, but if the user wants to find the jobs that they have not applied
+    # for, we will use a different query that will look for rows in jobs table where the user where the relationship
+    # between user and job is not applied.
+    if status == "NOT APPLIED":
+        # we first get the query for the jobs that the user applied to and returns the jobID of that
+        # then we querty for the jobs that does not have that jobID, or it other words the jobs that user has not applied to
+        # this is only for spplications, so it will still show jobs that the user has saved.
+        cursor.execute("SELECT * FROM jobs WHERE NOT EXISTS(SELECT jobID FROM job_applications WHERE username = ? AND status = 'APPLIED')", (username, ))
+    else:
+        cursor.execute("SELECT * FROM job_applications WHERE username = ? AND status = ?", (username, status))
+    return cursor.fetchall()
 
 
 # function to fill in values to the database for testing purposes primarily
