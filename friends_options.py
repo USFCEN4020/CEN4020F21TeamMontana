@@ -29,7 +29,7 @@ def check_friend_requests(username):
             accept_friend = input("Enter which friend request you want to accept:")
             if accept_friend in senders_usernames:
                 # will update friends status to ACCEPT
-                db_commands.Friend_Status(accept_friend, username, status_accept)
+                db_commands.Friend_Status(username, accept_friend,  status_accept)
             else:
                 print("The user entered does not exist or did not send you a friend request.")
             continue
@@ -79,7 +79,7 @@ def show_network(username):
             disconnect_friend = input("Enter who you want to disconnect from:")
             if disconnect_friend in friends_list:
                 # will delete friend row from the friends table where the user to disconnect from is your friend
-                db_commands.Friend_Status(disconnect_friend, username, status_disconnect)
+                db_commands.Friend_Status(username, disconnect_friend,  status_disconnect)
             else:
                 print("The user entered does not exist or did not send you a friend request.")
             continue
