@@ -419,6 +419,8 @@ def delete_all_database_info(connection):
     connection.commit()
     cursor.execute("DELETE FROM friends")
     connection.commit()
+    cursor.execute("DELETE FROM job_applications")
+    connection.commit()
 
 
 # For testing purposes
@@ -499,7 +501,7 @@ def query_applications(username, status):
         # we first get the query for the jobs that the user applied to and returns the jobID of that
         # then we querty for the jobs that does not have that jobID, or it other words the jobs that user has not applied to
         # this is only for spplications, so it will still show jobs that the user has saved.
-        cursor.execute("SELECT * FROM jobs WHERE NOT EXISTS(SELECT jobID FROM job_applications WHERE username = ? AND status = 'APPLIED')", (username, ))
+        cursor.execute("SELECT * FROM jobs WHERE NOT EXISTS(SELECT jobID FROM job_applications WHERE username = ? AND status = 'APPLIED' AND jobs.jobID = job_applications.jobID)", (username, ))
     else:
         cursor.execute("SELECT * FROM job_applications WHERE username = ? AND status = ?", (username, status))
     return cursor.fetchall()
