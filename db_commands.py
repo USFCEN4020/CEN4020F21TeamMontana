@@ -385,6 +385,7 @@ def print_database(connection):
     print("Jobs table: ")
     print(cursor.fetchall())
 
+
     cursor.execute("SELECT * FROM experiences")
     print("Experiences table: ")
     print(cursor.fetchall())
@@ -409,6 +410,7 @@ def print_friends(connection, username):
 
 
 # commit the deletes to remove all the data in each table.
+
 def delete_all_database_info(connection):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM users")
