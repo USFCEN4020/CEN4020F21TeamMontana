@@ -15,16 +15,35 @@ import important_links_group
 database_name = "userDB"
 
 
+def print_start_menu():
+    start_menu = """
+            Please choose from the following menu:
+            1 - Log into an existing account
+            2 - Create an account
+            3 - Play a video
+            4 - Find a contact in InCollege
+            5 - Useful Links Group
+            6 - InCollege Important Links Group
+            7 - Exit the program
+
+            """
+    print(start_menu)
+
+
 # Main function
 def main_menu():
     connection = db_commands.create_connection(database_name)
     # Create tables if not exist
     db_commands.create_table(connection, db_commands.user_table)
     db_commands.create_table(connection, db_commands.job_table)
+    db_commands.create_table(connection, db_commands.user_job_table)
+    db_commands.create_table(connection, db_commands.deleted_jobs)
+    db_commands.create_table(connection, db_commands.experience_table)
+    db_commands.create_table(connection, db_commands.friend_table)
     # db_commands.print_database(connection)
 
     user_story = start_options.succ_story("Student_story.txt")
-
+    # log_in_status = False
     # Welcome everyone to InCollege, a story of success student
     # Prompt user for either logging in or creating an account <- if neither happens they quit
     print("Welcome to inCollege by Team Montana!")
@@ -32,19 +51,9 @@ def main_menu():
     print("")
     print("Why you should join in InCollege? Watch the video!")
     print("")
-    start_menu = """
-        Please choose from the following menu:
-        1 - Log into an existing account
-        2 - Create an account
-        3 - Play a video
-        4 - Find a contact in InCollege
-        5 - Useful Links Group
-        6 - InCollege Important Links Group
-        7 - Exit the program
 
-        """
     while True:
-        print(start_menu)
+        print_start_menu()
         user_choice = start_options.get_user_option(1, 7)
         while user_choice < 1 or user_choice > 7:
             print("Invalid input. Try again")
@@ -68,7 +77,7 @@ def main_menu():
             useful_links_options.useful_link()
             continue
         elif user_choice == 6:
-            important_links_group.important_link()
+            important_links_group.important_links_visitors()
             continue
         else:
             print("Exit the program.")

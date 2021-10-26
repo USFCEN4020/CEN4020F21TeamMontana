@@ -5,22 +5,26 @@ database_name = "userDB"
 connection = db_commands.create_connection(database_name)
 
 
-def general_link():
+def print_general_link():
     links = """
-    General links available:
-    1. Sign Up
-    2. Help Center
-    3. About
-    4. Press
-    5. Blog
-    6. Careers
-    7. Developers
-    8. Go Back
+        General links available:
+        1. Sign Up
+        2. Help Center
+        3. About
+        4. Press
+        5. Blog
+        6. Careers
+        7. Developers
+        8. Go Back
 
-    """
+        """
     print(links)
+
+
+def general_link():
+
     while True:
-        general_link()
+        print_general_link()
         options = start_options.get_user_option(1, 8)
         while options < 1 or options > 8:
             print("Invalid input. Try again")
@@ -49,22 +53,26 @@ def general_link():
             continue
         elif options == 8:
             print("Going back to 'Useful Links' Menu")
-            useful_link()
             return False
 
 
-def useful_link():
+def print_useful_link():
     links = """
-    Useful links available:
-    1. General
-    2. Browse InCollege
-    3. Business Solutions
-    4. Directories
-    5. Go Back
+        Useful links available:
+        1. General
+        2. Browse InCollege
+        3. Business Solutions
+        4. Directories
+        5. Go Back
 
-    """
+        """
+    print(links)
+
+
+def useful_link():
+
     while True:
-        print(links)
+        print_useful_link()
         option = start_options.get_user_option(1, 5)
         while option < 1 or option > 5:
             print("Invalid input. Try again")
@@ -72,13 +80,13 @@ def useful_link():
         if option == 1:
             general_link()
         elif option == 2:
-            print("Under construction")
+            print("Under Construction")
             
         elif option == 3:
-            print("Under construction")
+            print("Under Construction")
             
         elif option == 4:
-            print("Under construction")
+            print("Under Construction")
            
         elif option == 5:
             print("Going back to the Main Menu")

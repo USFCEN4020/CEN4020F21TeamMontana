@@ -16,23 +16,25 @@ def succ_story(filename):
 
 def login_account(connection):
     # variable used to continue the attempt by the user to login
-    succLogin = False
+    succ_login = False
     # returns usernames from the database
     existing_usernames = db_commands.query_usernames_list(connection)
     username_password_tuples = db_commands.query_username_password(connection)
     username_input = None
     password_input = None
-    # Need to implement later on for user to go back, in that case we can just have a while true loop in main that encompasses all the code.
+    # Need to implement later on for user to go back, in that case we can
+    # just have a while true loop in main that encompasses all the code.
     # And break out of this statement if for another user input like "Back", which will break out of this while loop
-    while succLogin is False and username_input != "Q":
+    while succ_login is False and username_input != "Q":
         username_input = input("Enter your username, or Q to quit the program: ")
         if username_input == "Q":
             exit()
         else:
             password_input = input("Enter your password: ")
-            # If userLogin continues to return false then keep running this while loop and ask for usernames or if the user wants to quit the program
-            succLogin = account_define.userLogin(username_input, password_input, existing_usernames,
-                                                 username_password_tuples)
+            # If userLogin continues to return false then keep running this while loop
+            # and ask for usernames or if the user wants to quit the program
+            succ_login = account_define.user_login(username_input, password_input, existing_usernames,
+                                                   username_password_tuples)
 
 
 def create_account(connection):
@@ -43,7 +45,7 @@ def create_account(connection):
     # Otherwise, safe to create username
     # tests if safe username
     while True:
-        if len(existing_usernames) > 5:
+        if len(existing_usernames) > 10:
             print("The system has too many users already.")
             return 0
         elif not account_define.username_meets_qualifications(username_input, existing_usernames):
@@ -66,17 +68,19 @@ def create_account(connection):
         # Prompt for second name
         lastname_input = input("Please enter your last name: ")
         # Check if those are in the system
-        if account_define.does_user_exist(firstname_input, lastname_input):
+        if user_options.does_user_exist(firstname_input, lastname_input):
             print("That name already exists in our system. Do you have a nickname you go by?")
         else:
             break
 
     # Create row in users table
-    user_information = (username_input, password_input, firstname_input, lastname_input)
+    # Adds English as Language and sets defaults for Privacy settings
+    user_information = (username_input, password_input, firstname_input, lastname_input,
+                        "English", "Send Emails", "Send SMS", "Target Ads", "TITLE:NULL", "MAJOR:NULL", "UNIVERSITY:NULL", "STUDENTINFO:NULL", "EDUCATION:NULL")
     db_commands.create_row_in_users_table(connection, user_information)
 
     print("Successfully created your account. You are now logged in.")
-    user_options.additional_options(username_input, firstname_input, lastname_input)
+    user_options.additional_options(username_input)
 
 
 def play_video():
@@ -86,7 +90,7 @@ def play_video():
 
 
 def join_contact(contact_firstname, contact_lastname, connection):
-    contact_exist = account_define.does_user_exist(contact_firstname, contact_lastname)
+    contact_exist = user_options.does_user_exist(contact_firstname, contact_lastname)
     if contact_exist is True:
         print("They are part of the InCollege system.")
         print("Do you want to connect with this contact?")
@@ -103,6 +107,8 @@ def join_contact(contact_firstname, contact_lastname, connection):
     else:
         print("They are not part of the InCollege system.")
         return 0
+
+
 def get_user_option(limit1, limit2):
     while True:
         try:

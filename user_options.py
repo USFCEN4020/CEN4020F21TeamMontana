@@ -1,13 +1,16 @@
-from important_links_group import important_link
+from important_links_group import important_links_users
 from useful_links_options import useful_link
 import account_define
 import random
 import job_commands
 import db_commands
+from user_portfolio import portfolio_options
+import friends_options
+import friend_commands
 
 
 def search_job(username):
-    print("Under construction")
+    job_commands.jobs_menu(username)
     return 0
 
 
@@ -65,23 +68,46 @@ def new_skill(username):
     return 0
 
 
+def print_additional_options():
+    print("Please choose from the following menu:")
+    print("1 - Post/Delete a job")
+    print("2 - Search for a job")
+    print("3 - Find someone you know")
+    print("4 - Show my network")
+    print("5 - Learn a new skill")
+    print("6 - Useful links group options")
+    print("7 - InCollege important links group options")
+    print("8 - Edit user profile")
+    print("9 - Send friend request")
+    print("0 - Return to previous menu")
+
+
 def additional_options(username):
+    # Check to see if the user has any pending friend requests that were sent to them.
+    friends_options.check_friend_requests(username)
+
+    # Check for saved/applied jobs
+    job_commands.display_saved_jobs(username)
+    job_commands.display_applied_jobs(username)
+
     while True:
-        print("Please choose from the following menu:")
-        print("1 - Post a job")
-        print("2 - Search for a job")
-        print("3 - Find someone you know")
-        print("4 - Learn a new skill")
-        print("5 - Useful links group options")
-        print("6 - InCollege important links group options")
-        print("7 - Return to previous menu")
+        print_additional_options()
         user_choice_opt = input("Enter your selection here: ")
 
         # Potentially use switch
         if user_choice_opt == "1":
-            first_name_input = input("Enter the first name: ")
-            last_name_input = input("Enter the last name: ")
-            job_commands.create_job_posting(first_name_input, last_name_input)
+            print("Do you want to post or delete a job?\n"
+                  "1 - Post a job\n"
+                  "2 - Delete a job I posted")
+            user_choice_opt = input("Enter your selection here: ")
+            if user_choice_opt == "1":
+                user_first_last = db_commands.query_names_user(username, db_commands.create_connection(db_commands.database_name))
+                job_commands.create_job_posting(user_first_last[0], user_first_last[1])
+            elif user_choice_opt == "2":
+                user_first_last = db_commands.query_names_user(username, db_commands.create_connection(db_commands.database_name))
+                job_commands.delete_job_posting(user_first_last[0], user_first_last[1])
+            else:
+                print("Invalid Input, Enter either the value 1 or 2")
         elif user_choice_opt == "2":
             search_job(username)
         elif user_choice_opt == "3":
@@ -94,14 +120,19 @@ def additional_options(username):
             else:
                 print("They are not part of the InCollege system.")
         elif user_choice_opt == "4":
-            new_skill(username)
+            friends_options.show_network(username)
         elif user_choice_opt == "5":
-            useful_link()
+            new_skill(username)
         elif user_choice_opt == "6":
-            important_link()
+            useful_link()
         elif user_choice_opt == "7":
+            important_links_users(username)
+        elif user_choice_opt == "8":
+            portfolio_options(username)
+        elif user_choice_opt == "9":
+            friend_commands.create_friend_posting(username)
+        elif user_choice_opt == "0":
             break
         else:
             print("Not a valid input")
     return 0
-

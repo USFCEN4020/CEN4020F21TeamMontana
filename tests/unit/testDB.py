@@ -1,5 +1,5 @@
 import sqlite3
-
+import db_commands
 
 # operations to get data from the temporary database
 class CacheDB:
@@ -37,4 +37,40 @@ class CacheDB:
 
     def delete_job(self, first_name, last_name):
         self.session.execute('DELETE FROM jobs WHERE firstname = ? AND lastname = ?', (first_name, last_name,))
+
+    def get_experience(self, username):
+        self.session.execute("SELECT * FROM experiences WHERE username = ?", (username,))
+        return self.session.fetchone()
+    
+    def get_all_experience(self):
+        self.session.execute("SELECT * FROM experiences")
+        return self.session.fetchall()
+
+    def change_language_prefs(self, username, lang):
+        self.session.execute('''UPDATE users SET language = ? WHERE username = ?''', (lang, username))
+
+    def get_user_lang(self, username):
+        self.session.execute("SELECT language FROM users WHERE username = ?", (username,))
+        return self.session.fetchone()
+
+    def change_email_prefs(self, username, email):
+        self.session.execute('''UPDATE users SET emails = ? WHERE username = ?''', (email, username))
+
+    def get_user_email(self, username):
+        self.session.execute("SELECT emails FROM users WHERE username = ?", (username,))
+        return self.session.fetchone()
+
+    def change_sms_prefs(self, username, sms):
+        self.session.execute('''UPDATE users SET sms = ? WHERE username = ?''', (sms, username))
+
+    def get_user_sms(self, username):
+        self.session.execute("SELECT sms FROM users WHERE username = ?", (username,))
+        return self.session.fetchone()
+
+    def change_ads_prefs(self, username, ads):
+        self.session.execute('''UPDATE users SET targetedads = ? WHERE username = ?''', (ads, username))
+
+    def get_user_ads(self, username):
+        self.session.execute("SELECT targetedads FROM users WHERE username = ?", (username,))
+        return self.session.fetchone()
 
