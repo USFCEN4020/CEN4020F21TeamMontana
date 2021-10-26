@@ -11,6 +11,7 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     password text NOT NULL,
     firstname text,
     lastname text,
+    tier text, 
     language text NOT NULL,
     emails text NOT NULL,
     sms text NOT NULL,
@@ -80,9 +81,9 @@ friend_table = """CREATE TABLE IF NOT EXISTS friends (
     FOREIGN KEY(sender) REFERENCES users(username)
     );"""
 
-create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,language,emails,sms,targetedads,
+create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,tier, language,emails,sms,targetedads,
                              title,major,university,studentinfo,education)
-                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                                  VALUES(?,?,?,?,?,?,?) '''
@@ -385,7 +386,6 @@ def print_database(connection):
     print("Jobs table: ")
     print(cursor.fetchall())
 
-
     cursor.execute("SELECT * FROM experiences")
     print("Experiences table: ")
     print(cursor.fetchall())
@@ -410,7 +410,6 @@ def print_friends(connection, username):
 
 
 # commit the deletes to remove all the data in each table.
-
 def delete_all_database_info(connection):
     cursor = connection.cursor()
     cursor.execute("DELETE FROM users")
