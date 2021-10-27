@@ -50,6 +50,15 @@ user_job_table = """CREATE TABLE IF NOT EXISTS job_applications (
     FOREIGN KEY(jobID) REFERENCES jobs(jobID) ON DELETE CASCADE
     );"""
 
+messages_table = """CREATE TABLE IF NOT EXISTS messages (
+    sender text,
+    recipient text,
+    message text,
+    messageID INTEGER PRIMARY KEY,
+    FOREIGN KEY(sender) REFERENCES users(username)
+    FOREIGN KEY(recipient) REFERENCES users(username)
+    );"""
+
 # this table is to hold all of the jobs that was deleted until all of the users that appolied to the job is notified.
 deleted_jobs = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     username text,
@@ -58,7 +67,7 @@ deleted_jobs = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     employer text NOT NULL,
     location text NOT NULL,
     salary INTEGER NOT NULL,
-    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE, 
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE
     );"""
 
 experience_table = """CREATE TABLE IF NOT EXISTS experiences (
@@ -84,6 +93,9 @@ friend_table = """CREATE TABLE IF NOT EXISTS friends (
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,tier, language,emails,sms,targetedads,
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+
+create_message_sql = ''' INSERT INTO messages(sender,recipient,message)
+                             VALUES(?,?,?) '''
 
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                                  VALUES(?,?,?,?,?,?,?) '''
@@ -194,6 +206,17 @@ def create_row_in_users_table(connection, user):
         print(e)
 
 
+# Called when a user sends a message
+# Message formatting: sender, recipient, message
+def create_row_in_message_table(connection, message):
+    try:
+        cursor = connection.cursor()
+        cursor.execute(create_message_sql, message)
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
 # Queries for first names
 def query_names(connection):
     cursor = connection.cursor()
@@ -261,6 +284,16 @@ def remove_row_in_job_applications_table(connection, username, jobID):
     try:
         cursor = connection.cursor()
         cursor.execute('''DELETE FROM job_applications WHERE username = ? AND jobID = ?''', (username, jobID,))
+        connection.commit()
+    except Error as e:
+        print(e)
+
+
+def remove_row_in_message_table(sender, recipient, message):
+    connection = create_connection(database_name)
+    try:
+        cursor = connection.cursor()
+        cursor.execute('''DELETE FROM messages WHERE sender = ? AND recipient = ? AND message = ?''', (sender, recipient, message,))
         connection.commit()
     except Error as e:
         print(e)
@@ -368,6 +401,9 @@ def Friend_Status(sender, receiver, status):
         cursor.execute("DELETE FROM friends WHERE sender = ? AND receiver = ?", (sender, receiver,))
     elif status == "PENDING" or status == "ACCEPT":
         cursor.execute("UPDATE friends SET status = ? WHERE sender = ? AND receiver = ?", (status, sender, receiver,))
+        connection.commit()
+        cursor.execute("SELECT * FROM friends")
+        print(cursor.fetchall())
     # This is just so that only valid statuses are passed to this function.
     else:
         print("Not a valid status")
@@ -392,6 +428,10 @@ def print_database(connection):
 
     cursor.execute("SELECT * FROM friends")
     print("Friends table: ")
+    print(cursor.fetchall())
+
+    cursor.execute("SELECT * FROM messages")
+    print("Messages table: ")
     print(cursor.fetchall())
 
 
@@ -423,6 +463,13 @@ def delete_all_database_info(connection):
     cursor.execute("DELETE FROM job_applications")
     connection.commit()
 
+
+# Messages
+def query_user_has_messages(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT sender, message FROM messages WHERE recipient = ?''', (username,))
+    return cursor.fetchall()
 
 # For testing purposes
 def query_student_title(username):
@@ -523,3 +570,10 @@ def fill_database(connection):
     create_row_in_experience_table(connection, experience_info)
     experience_info = ("person_sending_request", "PENDING", "person_logged_in",)
     create_row_in_experience_table(connection, experience_info)
+
+# This returns your status - premium or not
+def query_membership_status(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT tier FROM users WHERE username = ?''', (username,))
+    return cursor.fetchone()

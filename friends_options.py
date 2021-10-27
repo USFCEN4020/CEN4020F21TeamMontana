@@ -29,7 +29,8 @@ def check_friend_requests(username):
             accept_friend = input("Enter which friend request you want to accept:")
             if accept_friend in senders_usernames:
                 # will update friends status to ACCEPT
-                db_commands.Friend_Status(username, accept_friend,  status_accept)
+                db_commands.Friend_Status(accept_friend, username,  status_accept)
+                return 0
             else:
                 print("The user entered does not exist or did not send you a friend request.")
             continue
@@ -54,8 +55,8 @@ def show_network(username):
     print("These are the people that you have connected with:")
     if len(username_list) == 0:
         print("You have not connected with anybody")
-        print("Returning back to previous menu.")
-        return 0
+        print("If you are a premium member, you can still send messages to people not in your friends")
+        print(" ")
     friends_list = [x[0] for x in username_list]
     print(*friends_list, sep="\n")
 
@@ -63,15 +64,16 @@ def show_network(username):
     menu = """Please choose from the following menu:
 1 - Disconnect from someone on the list
 2 - View profile of one your friends (Display list of friends with a profile)
-3 - Exit Show my network (Return back to previous menu)
+3 - Send a message to one of your friends
+4 - Exit Show my network (Return back to previous menu)
 """
     while True:
         # checking to make sure in the case that the user diconnected from everyone on their list
         check_username_list = db_commands.query_friend(username)
         if len(check_username_list) == 0:
-            print("You have no more connections")
-            print("Returning back to previous menu.")
-            return 0
+            print("You have not connected with anybody")
+            print("If you are a premium member, you can still send messages to people not in your friends")
+            print(" ")
         print(menu)
         user_choice_opt = input("Enter your selection here: ")
         if user_choice_opt == "1":
@@ -103,7 +105,85 @@ def show_network(username):
                 print("The user entered does not exist or does not currently have a profile")
             continue
         elif user_choice_opt == "3":
+            # Add code here for sending a message
+            # Get if we are a premium member or not
+            membership_status = db_commands.query_membership_status(username)
+            connection = db_commands.create_connection(db_commands.database_name)
+            if membership_status[0] == "Standard":
+                # Standard members can only send messages if they are friends
+                print("\nYou are a Standard user, so you can only send messages to your friends.")
+                print("Please choose a friend:\n\n")
+                print(*friends_list, sep="\n")
+                print()
+
+                friend_to_message = input("Enter which friend you want to message:")
+                if friend_to_message in friends_list:
+                    message = input("What message do you want to send?\n")
+                    info = (username, friend_to_message, message)
+                    db_commands.create_row_in_message_table(connection, info)
+                    print("\nMessage successfully sent\n")
+                else:
+                    print("I'm sorry, you are not friends with that person")
+            elif membership_status[0] == "Plus":
+                print("\nYou are a Plus user, so you can send messages to anyone.")
+                print("Please choose someone:\n\n")
+                users_list = db_commands.query_usernames_list(connection)
+                usernames_list = [x[0] for x in users_list]
+                usernames_list.remove(username)
+                print(*usernames_list, sep="\n")
+                person_to_message = input("Enter which person you want to message:")
+                if person_to_message in usernames_list:
+                    print()
+                    message = input("What message do you want to send?\n")
+                    info = (username, person_to_message, message)
+                    db_commands.create_row_in_message_table(connection, info)
+                    print("\nMessage successfully sent\n")
+                else:
+                    print("Person does not exist")
+
+        elif user_choice_opt == "4":
             return 0
         else:
             print("Invalid Input, Enter either the value 1, 2 or 3")
             continue
+
+# Display user's inbox
+def display_inbox(username):
+    # Checks if user is recipient of any messages
+    messages = db_commands.query_user_has_messages(username)
+    if len(messages) == 0:
+        print("Sorry, you have an empty inbox. Returning to previous menu\n")
+        return 0
+    else:
+        print("You have", len(messages), "messages!\n")
+        for message in messages:
+            # Print this out so they select which message they want to response/delete
+            print(messages.index(message)+1, end=". ")
+            print("Message from:", message[0])
+            print("Message:")
+            print(message[1])
+            print()
+        # Options here for responding and deleting
+        while True:
+            print("\nPlease choose an option:")
+            print("1 - Delete a message")
+            print("2 - Reply to a message")
+            user_choice = input("Please choose an option: ")
+            if user_choice == "1":
+                # Delete message
+                user_choice_delete = input("Which message do you want to delete?")
+                if int(user_choice_delete) >= len(messages):
+                    print("Deleting message", user_choice_delete, "\n")
+                    # Sender, Recipient, Message
+                    db_commands.remove_row_in_message_table(messages[int(user_choice_delete)-1][0], username, messages[int(user_choice_delete)-1][1])
+                else:
+                    print("Please enter a valid number from the list")
+                    continue
+                return 0
+            elif user_choice == "2":
+                # Reply to a message
+                print("Under construction")
+                return 0
+            else:
+                print("Invalid command, returning to previous menu")
+                return 0

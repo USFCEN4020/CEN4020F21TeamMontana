@@ -70,6 +70,7 @@ def new_skill(username):
 
 def print_additional_options():
     print("Please choose from the following menu:")
+    print("0 - View your inbox")
     print("1 - Post/Delete a job")
     print("2 - Search for a job")
     print("3 - Find someone you know")
@@ -79,7 +80,7 @@ def print_additional_options():
     print("7 - InCollege important links group options")
     print("8 - Edit user profile")
     print("9 - Send friend request")
-    print("0 - Return to previous menu")
+    print("10 - Return to previous menu")
 
 
 def additional_options(username):
@@ -95,7 +96,10 @@ def additional_options(username):
         user_choice_opt = input("Enter your selection here: ")
 
         # Potentially use switch
-        if user_choice_opt == "1":
+        if user_choice_opt == "0":
+            # Display inbox
+            friends_options.display_inbox(username)
+        elif user_choice_opt == "1":
             print("Do you want to post or delete a job?\n"
                   "1 - Post a job\n"
                   "2 - Delete a job I posted")
@@ -131,7 +135,7 @@ def additional_options(username):
             portfolio_options(username)
         elif user_choice_opt == "9":
             friend_commands.create_friend_posting(username)
-        elif user_choice_opt == "0":
+        elif user_choice_opt == "10":
             break
         else:
             print("Not a valid input")
