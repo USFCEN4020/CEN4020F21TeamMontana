@@ -7,6 +7,7 @@ import db_commands
 from user_portfolio import portfolio_options
 import friends_options
 import friend_commands
+import message_options
 
 
 def search_job(username):
@@ -70,7 +71,7 @@ def new_skill(username):
 
 def print_additional_options():
     print("Please choose from the following menu:")
-    print("0 - View your inbox")
+    print("0 - Message options")
     print("1 - Post/Delete a job")
     print("2 - Search for a job")
     print("3 - Find someone you know")
@@ -90,16 +91,18 @@ def additional_options(username):
     # Check for saved/applied jobs
     job_commands.display_saved_jobs(username)
     job_commands.display_applied_jobs(username)
-
+    
+    # Check if user has new message to read
+    message_options.check_new_message(username)
     while True:
         print_additional_options()
         user_choice_opt = input("Enter your selection here: ")
 
         # Potentially use switch
         if user_choice_opt == "0":
-            # Display inbox
-            friends_options.display_inbox(username)
-        elif user_choice_opt == "1":
+            # Message options
+            message_options.member_options(username)
+        if user_choice_opt == "1":
             print("Do you want to post or delete a job?\n"
                   "1 - Post a job\n"
                   "2 - Delete a job I posted")

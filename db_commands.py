@@ -10,8 +10,8 @@ user_table = """CREATE TABLE IF NOT EXISTS users (
     username text,
     password text NOT NULL,
     firstname text,
-    lastname text,
-    tier text, 
+    lastname text, 
+    tier text,
     language text NOT NULL,
     emails text NOT NULL,
     sms text NOT NULL,
@@ -50,15 +50,17 @@ user_job_table = """CREATE TABLE IF NOT EXISTS job_applications (
     FOREIGN KEY(jobID) REFERENCES jobs(jobID) ON DELETE CASCADE
     );"""
 
+
 messages_table = """CREATE TABLE IF NOT EXISTS messages (
     sender text,
     recipient text,
     message text,
     messageID INTEGER PRIMARY KEY,
+    status text NOT NULL,
     FOREIGN KEY(sender) REFERENCES users(username)
     FOREIGN KEY(recipient) REFERENCES users(username)
     );"""
-
+    
 # this table is to hold all of the jobs that was deleted until all of the users that appolied to the job is notified.
 deleted_jobs = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     username text,
@@ -67,7 +69,7 @@ deleted_jobs = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     employer text NOT NULL,
     location text NOT NULL,
     salary INTEGER NOT NULL,
-    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE, 
     );"""
 
 experience_table = """CREATE TABLE IF NOT EXISTS experiences (
@@ -94,8 +96,8 @@ create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastn
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
-create_message_sql = ''' INSERT INTO messages(sender,recipient,message)
-                             VALUES(?,?,?) '''
+create_message_sql = ''' INSERT INTO messages(sender,recipient,message, status)
+                             VALUES(?,?,?,?) '''
 
 create_new_job_posting_sql = ''' INSERT INTO jobs(title,description,employer,location,salary,firstname,lastname)
                                  VALUES(?,?,?,?,?,?,?) '''
@@ -261,6 +263,11 @@ def query_list_of_friend_requests(username):
     cursor.execute("SELECT sender FROM friends WHERE receiver = ? AND status = 'PENDING' ", (username,))
     return cursor.fetchall()
 
+def query_list_of_new_meesage(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute("SELECT sender, message FROM messages WHERE recipient = ? AND status = 'NEW' ", (username,))
+    return cursor.fetchall()
 
 def create_row_in_jobs_table(connection, job_info):
     try:
@@ -287,7 +294,6 @@ def remove_row_in_job_applications_table(connection, username, jobID):
         connection.commit()
     except Error as e:
         print(e)
-
 
 def remove_row_in_message_table(sender, recipient, message):
     connection = create_connection(database_name)
@@ -401,14 +407,22 @@ def Friend_Status(sender, receiver, status):
         cursor.execute("DELETE FROM friends WHERE sender = ? AND receiver = ?", (sender, receiver,))
     elif status == "PENDING" or status == "ACCEPT":
         cursor.execute("UPDATE friends SET status = ? WHERE sender = ? AND receiver = ?", (status, sender, receiver,))
-        connection.commit()
-        cursor.execute("SELECT * FROM friends")
-        print(cursor.fetchall())
     # This is just so that only valid statuses are passed to this function.
     else:
         print("Not a valid status")
     connection.commit()
 
+def message_status(sender, recipient, status):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    if status == "DELETE":
+        cursor.execute("DELETE FROM messages WHERE sender = ? AND recipient = ?", (sender, recipient,))
+    elif status == "NEW" or status == "READ":
+        cursor.execute("UPDATE messages SET status = ? WHERE sender = ? AND recipient = ?", (status, sender, recipient,))
+    # This is just so that only valid statuses are passed to this function.
+    else:
+        print("Not a valid status")
+    connection.commit()
 
 # These are helper functions specifically to help testers and developers
 # Helper function for testing purposes
@@ -428,10 +442,6 @@ def print_database(connection):
 
     cursor.execute("SELECT * FROM friends")
     print("Friends table: ")
-    print(cursor.fetchall())
-
-    cursor.execute("SELECT * FROM messages")
-    print("Messages table: ")
     print(cursor.fetchall())
 
 
@@ -558,7 +568,7 @@ def query_applications(username, status):
 # function to fill in values to the database for testing purposes primarily
 def fill_database(connection):
     create_table(connection, user_table)
-    user = ("username2", "Password?2", "An", "Dinh", "English", "Don't Send Emails", "Don't Send SMS", "Don't Target Ads",
+    user = ("username2", "Password?2", "An", "Dinh", "Standard", "English", "Don't Send Emails", "Don't Send SMS", "Don't Target Ads",
             "Scrum Master", "Computer Science", "University of South Florida", "Blank",
             "You attended USF for 4 years to get a degree in BCS",)
     create_row_in_users_table(connection, user)
@@ -577,3 +587,9 @@ def query_membership_status(username):
     cursor = connection.cursor()
     cursor.execute('''SELECT tier FROM users WHERE username = ?''', (username,))
     return cursor.fetchone()
+
+def print_query_tiers(username):
+    connection = create_connection(database_name)
+    cursor = connection.cursor()
+    cursor.execute('''SELECT username, tier FROM users WHERE username = ?''', (username,))
+    print(cursor.fetchone()) 
