@@ -74,3 +74,6 @@ class CacheDB:
         self.session.execute("SELECT targetedads FROM users WHERE username = ?", (username,))
         return self.session.fetchone()
 
+    def get_messages(self, username):
+        self.session.execute("SELECT * FROM messages WHERE recipient = ?", (username,))
+        return self.session.fetchall()
