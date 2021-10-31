@@ -61,8 +61,8 @@ messages_table = """CREATE TABLE IF NOT EXISTS messages (
     FOREIGN KEY(recipient) REFERENCES users(username)
     );"""
     
-# this table is to hold all of the jobs that was deleted until all of the users that appolied to the job is notified.
-deleted_jobs = """CREATE TABLE IF NOT EXISTS deleted_jobs (
+# this table is to hold all of the jobs that was deleted until all of the users that applied to the job is notified.
+deleted_jobs_table = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     username text,
     title text NOT NULL,
     description text NOT NULL,
@@ -88,8 +88,8 @@ friend_table = """CREATE TABLE IF NOT EXISTS friends (
     status text NOT NULL,
     receiver text,
     PRIMARY KEY(sender, receiver)
-    FOREIGN KEY(receiver) REFERENCES users(username)
     FOREIGN KEY(sender) REFERENCES users(username)
+    FOREIGN KEY(receiver) REFERENCES users(username)
     );"""
 
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,tier, language,emails,sms,targetedads,
@@ -263,11 +263,13 @@ def query_list_of_friend_requests(username):
     cursor.execute("SELECT sender FROM friends WHERE receiver = ? AND status = 'PENDING' ", (username,))
     return cursor.fetchall()
 
+
 def query_list_of_new_meesage(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute("SELECT sender, message FROM messages WHERE recipient = ? AND status = 'NEW' ", (username,))
+    cursor.execute("SELECT sender, message, messageID FROM messages WHERE recipient = ? AND status = 'NEW' ", (username,))
     return cursor.fetchall()
+
 
 def create_row_in_jobs_table(connection, job_info):
     try:
@@ -294,6 +296,7 @@ def remove_row_in_job_applications_table(connection, username, jobID):
         connection.commit()
     except Error as e:
         print(e)
+
 
 def remove_row_in_message_table(sender, recipient, message):
     connection = create_connection(database_name)
@@ -412,17 +415,21 @@ def Friend_Status(sender, receiver, status):
         print("Not a valid status")
     connection.commit()
 
-def message_status(sender, recipient, status):
+
+def message_status(sender, recipient, status, messageID):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     if status == "DELETE":
-        cursor.execute("DELETE FROM messages WHERE sender = ? AND recipient = ?", (sender, recipient,))
+        cursor.execute("DELETE FROM messages WHERE sender = ? AND recipient = ? AND messageID = ?",
+                       (sender, recipient, messageID,))
     elif status == "NEW" or status == "READ":
-        cursor.execute("UPDATE messages SET status = ? WHERE sender = ? AND recipient = ?", (status, sender, recipient,))
+        cursor.execute("UPDATE messages SET status = ? WHERE sender = ? AND recipient = ? AND messageID = ?",
+                       (status, sender, recipient, messageID,))
     # This is just so that only valid statuses are passed to this function.
     else:
         print("Not a valid status")
     connection.commit()
+
 
 # These are helper functions specifically to help testers and developers
 # Helper function for testing purposes
@@ -459,27 +466,13 @@ def print_friends(connection, username):
     print(cursor.fetchall())
 
 
-# commit the deletes to remove all the data in each table.
-def delete_all_database_info(connection):
-    cursor = connection.cursor()
-    cursor.execute("DELETE FROM users")
-    connection.commit()
-    cursor.execute("DELETE FROM jobs")
-    connection.commit()
-    cursor.execute("DELETE FROM experiences")
-    connection.commit()
-    cursor.execute("DELETE FROM friends")
-    connection.commit()
-    cursor.execute("DELETE FROM job_applications")
-    connection.commit()
-
-
 # Messages
 def query_user_has_messages(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''SELECT sender, message FROM messages WHERE recipient = ?''', (username,))
     return cursor.fetchall()
+
 
 # For testing purposes
 def query_student_title(username):
@@ -565,22 +558,6 @@ def query_applications(username, status):
     return cursor.fetchall()
 
 
-# function to fill in values to the database for testing purposes primarily
-def fill_database(connection):
-    create_table(connection, user_table)
-    user = ("username2", "Password?2", "An", "Dinh", "Standard", "English", "Don't Send Emails", "Don't Send SMS", "Don't Target Ads",
-            "Scrum Master", "Computer Science", "University of South Florida", "Blank",
-            "You attended USF for 4 years to get a degree in BCS",)
-    create_row_in_users_table(connection, user)
-    create_table(connection, job_table)
-    job_info = ("Scrum Master", "It is to manage people", "Bob", "Florida", 1, "An", "Dinh",)
-    create_row_in_jobs_table(connection, job_info)
-    create_table(connection, experience_table)
-    experience_info = ("Scrum Master", "Bob", "Florida", "It was boring", "2021-10-04", "2021-10-10", "username2",)
-    create_row_in_experience_table(connection, experience_info)
-    experience_info = ("person_sending_request", "PENDING", "person_logged_in",)
-    create_row_in_experience_table(connection, experience_info)
-
 # This returns your status - premium or not
 def query_membership_status(username):
     connection = create_connection(database_name)
@@ -588,8 +565,91 @@ def query_membership_status(username):
     cursor.execute('''SELECT tier FROM users WHERE username = ?''', (username,))
     return cursor.fetchone()
 
+
 def print_query_tiers(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     cursor.execute('''SELECT username, tier FROM users WHERE username = ?''', (username,))
-    print(cursor.fetchone()) 
+    print(cursor.fetchone())
+
+
+# commit the deletes to remove all the data in each table.
+def delete_all_database_info(connection):
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM users")
+    connection.commit()
+    cursor.execute("DELETE FROM jobs")
+    connection.commit()
+    cursor.execute("DELETE FROM job_applications")
+    connection.commit()
+    cursor.execute("DELETE FROM experiences")
+    connection.commit()
+    cursor.execute("DELETE FROM friends")
+    connection.commit()
+    cursor.execute("DELETE FROM messages")
+    connection.commit()
+
+
+# function to fill in values to the database for testing purposes primarily
+def fill_database(connection):
+    create_table(connection, user_table)
+    user1 = ("username2", "Password?2", "An", "Dinh", "Standard", "English", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Scrum Master", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user1)
+    user2 = ("username3", "Password?3", "Nyan", "Cat", "Plus", "English", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Tester", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user2)
+    user3 = ("username4", "Password?4", "John", "Smith", "Standard", "Spanish", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Tester", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user3)
+    user4 = ("username5", "Password?5", "Bob", "Guy", "Plus", "English", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Software Developer", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user4)
+
+    create_table(connection, job_table)
+    job_info1 = ("Scrum Master", "It is to manage people", "Bob", "Florida", 1, "An", "Dinh",)
+    create_row_in_jobs_table(connection, job_info1)
+    job_info2 = ("Scrum Master", "Make sure people are doing work", "Guy", "Florida", 10, "An", "Dinh",)
+    create_row_in_jobs_table(connection, job_info2)
+    job_info3 = ("Tester", "Make sure code works", "Flo", "Florida", 1000000, "Nyan", "Cat",)
+    create_row_in_jobs_table(connection, job_info3)
+    job_info4 = ("Software Developer", "Write code that works", "Rida", "Florida", 54145, "Bob", "Guy",)
+    create_row_in_jobs_table(connection, job_info4)
+
+    create_table(connection, user_job_table)
+
+    create_table(connection, experience_table)
+    experience_info1 = ("Scrum Master", "Bob", "Florida", "It was boring", "2021-10-04", "2021-10-10", "username2",)
+    create_row_in_experience_table(connection, experience_info1)
+    experience_info2 = ("Tester", "Bob", "Florida", "It was okay", "2021-10-25", "2021-10-31", "username2",)
+    create_row_in_experience_table(connection, experience_info2)
+    experience_info3 = ("Software Developer", "Bob", "Florida", "Me write code",
+                        "2021-10-25", "2021-10-31", "username3",)
+    create_row_in_experience_table(connection, experience_info3)
+    experience_info4 = ("Software Developer", "Bob", "Florida", "I write good code",
+                        "2021-10-25", "2021-10-31", "username4",)
+    create_row_in_experience_table(connection, experience_info4)
+    experience_info5 = ("Software Developer", "Bob", "Florida", "My code sucks, but works.",
+                        "2021-10-25", "2021-10-31", "username5",)
+    create_row_in_experience_table(connection, experience_info5)
+
+    create_table(connection, friend_table)
+    friend_info1 = ("username2", "PENDING", "username3",)
+    create_row_in_friend_table(connection, friend_info1)
+    friend_info2 = ("username2", "ACCEPT", "username4",)
+    create_row_in_friend_table(connection, friend_info2)
+    friend_info3 = ("username2", "PENDING", "username5",)
+    create_row_in_friend_table(connection, friend_info3)
+
+    create_table(connection, messages_table)
+    message_info1 = ("username3", "username2", "Test Message, reply to this message with Cat", "NEW")
+    create_row_in_message_table(connection, message_info1)
+    message_info2 = ("username3", "username2", "Test Message number 2 in case you did not read number 1", "NEW")
+    create_row_in_message_table(connection, message_info2)
+    message_info3 = ("username4", "username2", "This is John, reply back with Smith", "NEW")
+    create_row_in_message_table(connection, message_info3)
+
