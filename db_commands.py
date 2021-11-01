@@ -1,6 +1,7 @@
 import random
 import sqlite3
 from sqlite3 import Error
+
 # This file is for storing database commands
 database_name = "userDB"
 # SQLite queries
@@ -50,7 +51,6 @@ user_job_table = """CREATE TABLE IF NOT EXISTS job_applications (
     FOREIGN KEY(jobID) REFERENCES jobs(jobID) ON DELETE CASCADE
     );"""
 
-
 messages_table = """CREATE TABLE IF NOT EXISTS messages (
     sender text,
     recipient text,
@@ -60,7 +60,7 @@ messages_table = """CREATE TABLE IF NOT EXISTS messages (
     FOREIGN KEY(sender) REFERENCES users(username)
     FOREIGN KEY(recipient) REFERENCES users(username)
     );"""
-    
+
 # this table is to hold all of the jobs that was deleted until all of the users that applied to the job is notified.
 deleted_jobs_table = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     username text,
@@ -185,7 +185,7 @@ def query_password(connection, userPass):
         # did not use the query SELECT password FROM users WHERE username = 'userPass'
         # because I think it would try to exactly search for a username that is named userPass,
         # and not the actual username passed to the function parameter
-        if user[0]== userPass:
+        if user[0] == userPass:
             password = user[1]
             return password
 
@@ -267,7 +267,7 @@ def query_list_of_friend_requests(username):
 def query_list_of_new_meesage(username):
     connection = create_connection(database_name)
     cursor = connection.cursor()
-    cursor.execute("SELECT sender, message, messageID FROM messages WHERE recipient = ? AND status = 'NEW' ", (username,))
+    cursor.execute("SELECT sender, message FROM messages WHERE recipient = ? AND status = 'NEW' ", (username,))
     return cursor.fetchall()
 
 
@@ -302,7 +302,8 @@ def remove_row_in_message_table(sender, recipient, message):
     connection = create_connection(database_name)
     try:
         cursor = connection.cursor()
-        cursor.execute('''DELETE FROM messages WHERE sender = ? AND recipient = ? AND message = ?''', (sender, recipient, message,))
+        cursor.execute('''DELETE FROM messages WHERE sender = ? AND recipient = ? AND message = ?''',
+                       (sender, recipient, message,))
         connection.commit()
     except Error as e:
         print(e)
@@ -416,15 +417,14 @@ def Friend_Status(sender, receiver, status):
     connection.commit()
 
 
-def message_status(sender, recipient, status, messageID):
+def message_status(sender, recipient, status):
     connection = create_connection(database_name)
     cursor = connection.cursor()
     if status == "DELETE":
-        cursor.execute("DELETE FROM messages WHERE sender = ? AND recipient = ? AND messageID = ?",
-                       (sender, recipient, messageID,))
+        cursor.execute("DELETE FROM messages WHERE sender = ? AND recipient = ?", (sender, recipient,))
     elif status == "NEW" or status == "READ":
-        cursor.execute("UPDATE messages SET status = ? WHERE sender = ? AND recipient = ? AND messageID = ?",
-                       (status, sender, recipient, messageID,))
+        cursor.execute("UPDATE messages SET status = ? WHERE sender = ? AND recipient = ?",
+                       (status, sender, recipient,))
     # This is just so that only valid statuses are passed to this function.
     else:
         print("Not a valid status")
@@ -461,7 +461,8 @@ def print_experiences(connection, username):
 
 def print_friends(connection, username):
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM friends WHERE sender = ? OR receiver = ? AND status = 'ACCEPT' ", (username, username,))
+    cursor.execute("SELECT * FROM friends WHERE sender = ? OR receiver = ? AND status = 'ACCEPT' ",
+                   (username, username,))
     print("Users friends: ")
     print(cursor.fetchall())
 
@@ -527,10 +528,10 @@ def query_friend_profiles(friends_list):
         # looking at each of friends individually and if any of their profile fields are empty
         if (query_student_title(friend) == "TITLE:NULL" and
                 query_student_major(friend) == "MAJOR:NULL" and
-                    query_student_major(friend) == "MAJOR:NULL" and
-                        query_student_university(friend) == "UNIVERSITY:NULL" and
-                            query_student_info(friend) == "STUDENTINFO:NULL" and
-                                query_education(friend) == "education:NULL"):
+                query_student_major(friend) == "MAJOR:NULL" and
+                query_student_university(friend) == "UNIVERSITY:NULL" and
+                query_student_info(friend) == "STUDENTINFO:NULL" and
+                query_education(friend) == "education:NULL"):
             # if all of the fields of the student profiles are not filled then the student does not have a
             # profile that can be viewd by others
             friends_list_profiles.append((friend, "No profile"))
@@ -552,7 +553,9 @@ def query_applications(username, status):
         # we first get the query for the jobs that the user applied to and returns the jobID of that
         # then we querty for the jobs that does not have that jobID, or it other words the jobs that user has not applied to
         # this is only for spplications, so it will still show jobs that the user has saved.
-        cursor.execute("SELECT * FROM jobs WHERE NOT EXISTS(SELECT jobID FROM job_applications WHERE username = ? AND status = 'APPLIED' AND jobs.jobID = job_applications.jobID)", (username, ))
+        cursor.execute(
+            "SELECT * FROM jobs WHERE NOT EXISTS(SELECT jobID FROM job_applications WHERE username = ? AND status = 'APPLIED' AND jobs.jobID = job_applications.jobID)",
+            (username,))
     else:
         cursor.execute("SELECT * FROM job_applications WHERE username = ? AND status = ?", (username, status))
     return cursor.fetchall()
@@ -646,10 +649,9 @@ def fill_database(connection):
     create_row_in_friend_table(connection, friend_info3)
 
     create_table(connection, messages_table)
-    message_info1 = ("username3", "username2", "Test Message, reply to this message with Cat", "NEW")
+    message_info1 = ("username3", "username2", "Test Message, reply to this message with Cat", "Plus")
     create_row_in_message_table(connection, message_info1)
-    message_info2 = ("username3", "username2", "Test Message number 2 in case you did not read number 1", "NEW")
+    message_info2 = ("username3", "username2", "Test Message number 2 in case you did not read number 1", "Plus")
     create_row_in_message_table(connection, message_info2)
-    message_info3 = ("username4", "username2", "This is John, reply back with Smith", "NEW")
+    message_info3 = ("username4", "username2", "This is John, reply back with Smith", "Standard")
     create_row_in_message_table(connection, message_info3)
-
