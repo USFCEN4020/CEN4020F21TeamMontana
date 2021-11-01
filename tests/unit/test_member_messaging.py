@@ -36,8 +36,22 @@ def send_message_test(username, friend_to_message, message):
             print("\nMessage successfully sent\n")
     return 0
 
+def member_options_test(username):
+    membership_status = db_commands.query_membership_status(username)
+    if membership_status[0] == "Standard":
+        message_options.list_friend_member(username)
+    elif membership_status[0] == "Plus":
+        message_options.list_member(username)
+    else:
+        print("Invalid member status.")
+
 db_commands.delete_all_database_info(db_commands.create_connection("userDB"))
 db_commands.fill_database(db_commands.create_connection("userDB"))
+
+member_options_test("username2") #Should only list friends
+member_options_test("username3") #Should list all members
+member_options_test("username4") #Should only list friends
+member_options_test("username5") #Should list all members
 
 send_message_test("username2","username3","test2") #This should say it can't send a message (Standard messaging options)
 send_message_test("username3","username5","test3") #This should send (Plus messaging options)
