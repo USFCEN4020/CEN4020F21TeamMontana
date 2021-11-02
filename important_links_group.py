@@ -186,6 +186,7 @@ def important_links_users(username):
                 if user_menu_choice == "1":
                     guest_options(username)
                 elif user_menu_choice == "0":
+                    return 0
 
 def important_link():
     while True:
@@ -252,15 +253,13 @@ def important_link():
                 else:
                     print("Invalid Input")
                     continue
-
-
-        elif user_menu_choice == "6":
+        elif userMenuChoice == "6":
             print("Cookie Policy")
             continue
-        elif user_menu_choice == "7":
+        elif userMenuChoice == "7":
             print("Brand Policy")
             continue
-        elif user_menu_choice == "8":
+        elif userMenuChoice == "8":
             print("Going back to 'User Options' Menu")
             break
         else:
@@ -298,21 +297,5 @@ def important_links_visitors():
             print("Invalid Input")
             continue
 
-        elif userMenuChoice == "6":
-            print("Accept Cookie Policy\n")
-            continue
-        elif userMenuChoice == "7":
-            print("Accept Brand Policy\n")
-            continue
-        elif userMenuChoice == "8":
-            print("Guest Controls\n")
-            continue
-        elif userMenuChoice == "9":
-            print("Languages\n")
-            continue
-        elif userMenuChoice == "0":
-            break
-        else:
-            print("Invalid Input")
-            break
+
 

@@ -72,17 +72,19 @@ def create_account(connection):
             print("That name already exists in our system. Do you have a nickname you go by?")
         else:
             break
-
+    #Choose tier of membership
+    print("You are signing up for an InCollege account. You can now choose to be a Standard or Plus membership.")
+    student_mem = tier_member()
     # Create row in users table
     # Adds English as Language and sets defaults for Privacy settings
-    user_information = (username_input, password_input, firstname_input, lastname_input,
+    #Add tier of student to user table
+    user_information = (username_input, password_input, firstname_input, lastname_input, student_mem, 
                         "English", "Send Emails", "Send SMS", "Target Ads", "TITLE:NULL", "MAJOR:NULL", "UNIVERSITY:NULL", "STUDENTINFO:NULL", "EDUCATION:NULL")
     db_commands.create_row_in_users_table(connection, user_information)
 
     print("Successfully created your account. You are now logged in.")
     user_options.additional_options(username_input)
-
-
+ 
 def play_video():
     # end='' removes the new line that comes after the print statement
     print("Video is now playing.", end='')
@@ -117,3 +119,23 @@ def get_user_option(limit1, limit2):
             return option1
         except ValueError:
             print("Input has to be an integer")
+
+#Epic 7
+def tier_member():
+    message = '''Please choose tier of membership:
+    1 - Standard for free
+    2 - Plus for 10$/month'''
+    print(message)
+    
+    while True:
+        user_choice = input("Enter your selection here: ")
+        if user_choice == "1":
+            member_tier = "Standard"
+            break
+        elif user_choice == "2":
+            member_tier = "Plus"
+            break
+        else:
+            print("Invalid input. Please enter 1 for Standard, or 2 for Plus member.")
+    return member_tier
+###   

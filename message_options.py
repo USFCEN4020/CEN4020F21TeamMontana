@@ -54,7 +54,7 @@ def display_inbox(username):
             print("Message from:", message[0])
             print("Message:\n", message[1])
             print()
-           
+
 def check_new_message(receiver):
     options = '''Do you want to read the message?
     1 - Yes
@@ -92,10 +92,10 @@ def check_new_message(receiver):
                         status = "READ"
                         db_commands.message_status(message[0], receiver, status)
                         break
-                    elif user_choice == "2":     
-                        #Delete the message   
+                    elif user_choice == "2":
+                        #Delete the message
                         status = "DELETE"
-                        db_commands.message_status(message[0], receiver, status)          
+                        db_commands.message_status(message[0], receiver, status)
                         db_commands.remove_row_in_message_table(message[0], receiver, message[1])
                         print("Message deleted!")
                         break
@@ -107,12 +107,12 @@ def check_new_message(receiver):
                         info = (receiver, message[0], message_reply, status)
                         db_commands.create_row_in_message_table(connection, info)
                         print("\nMessage successfully sent\n")
-                        break                       
+                        break
                     elif user_choice == "4":
                         return 0
                     else:
                         print("Invalid command, please enter 1, 2, 3 or 4")
-                    
+
             elif selection == "2":
                 status = "NEW"
                 db_commands.message_status(message[0], receiver, status)
@@ -129,10 +129,11 @@ def list_friend_member(username):
         db_commands.print_query_tiers(friend)
 
 def list_member(username):
-    # User has Plus member can generate a list of all InCollege members 
+    # User has Plus member can generate a list of all InCollege members
     print("All member of InCollege system:")
-    username_list = db_commands.query_usernames_list(username)
-    for user in username_list:
+    username_list = db_commands.query_usernames_list(db_commands.create_connection(db_commands.database_name))
+    members = [x[0] for x in username_list]
+    for user in members:
         db_commands.print_query_tiers(user)
 
 def member_options(username):
@@ -141,7 +142,7 @@ def member_options(username):
     2 - Generate list of the member
     3 - Display your inbox
     4 - Return to previous menu'''
-    
+
     while True:
         print(member_option)
         choice = input("Please enter your choice: ")
@@ -153,7 +154,7 @@ def member_options(username):
                 list_friend_member(username)
             elif membership_status[0] == "Plus":
                 list_member(username)
-            else: 
+            else:
                 print("Invalid member status.")
         elif choice == "3":
             display_inbox(username)
