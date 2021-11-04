@@ -5,12 +5,30 @@ from sqlite3 import Error
 # Format: id, title, description, employer, location, salary, first/last name
 import start_options
 
+# After we query for all the deleted jobs that the user has applied to we will save it and return that
+# And since the rows of tuples are saved then we can delete the jobs as well.
+def query_and_delete_deleted_jobs(username):
+    connection = db_commands.create_connection(db_commands.database_name)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM deleted_jobs WHERE username = ?", (username,))
+        deleted_jobs_for_user = cursor.fetchall()
+        cursor.execute("DELETE FROM deleted_jobs WHERE username = ?", (username,))
+        return deleted_jobs_for_user
+    except Error:
+        print()
+
+
+def remove_row_in_jobs_table(connection, jobID):
+    try:
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM jobs WHERE jobID = ?", (jobID, ))
+        connection.commit()
+    except Error as e:
+        print(e)
 
 def jobs_menu(username):
-    print("These jobs that you have applied for have been deleted.")
-    deleted_jobs_for_user = query_and_delete_deleted_jobs(username)
-    print(*deleted_jobs_for_user, sep="\n")
-
+    
     menu = """Please choose from the following menu:
 1 - View jobs you have applied to
 2 - View jobs you have not applied to yet
@@ -236,26 +254,6 @@ def create_row_in_deleted_jobs_table(connection, jobID):
         for notification in notify_job_deletion_list:
             cursor.execute(db_commands.create_new_deleted_notification_sql, notification)
             connection.commit()
-    except Error as e:
-        print(e)
-
-
-# After we query for all the deleted jobs that the user has applied to we will save it and return that
-# And since the rows of tuples are saved then we can delete the jobs as well.
-def query_and_delete_deleted_jobs(username):
-    connection = db_commands.create_connection(db_commands.database_name)
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM deleted_jobs WHERE username = ?", (username,))
-    deleted_jobs_for_user = cursor.fetchall()
-    cursor.execute("DELETE FROM deleted_jobs WHERE username = ?", (username,))
-    return deleted_jobs_for_user
-
-
-def remove_row_in_jobs_table(connection, jobID):
-    try:
-        cursor = connection.cursor()
-        cursor.execute("DELETE FROM jobs WHERE jobID = ?", (jobID, ))
-        connection.commit()
     except Error as e:
         print(e)
 

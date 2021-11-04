@@ -168,8 +168,7 @@ def query_job_apps(connection):
     cursor.execute("SELECT username, jobID, status from job_applications")
     rows = cursor.fetchall()
     return rows
-
-
+ 
 # Queries for the password of the username
 # Useful for finding the password connected to the username passed to function parameter.
 # Created this function to return the password string associated with the username,
@@ -521,17 +520,15 @@ def query_friend(username):
                    SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
     return cursor.fetchall()
 
-
 def query_friend_profiles(friends_list):
     friends_list_profiles = []
     for friend in friends_list:
         # looking at each of friends individually and if any of their profile fields are empty
         if (query_student_title(friend) == "TITLE:NULL" and
                 query_student_major(friend) == "MAJOR:NULL" and
-                query_student_major(friend) == "MAJOR:NULL" and
                 query_student_university(friend) == "UNIVERSITY:NULL" and
                 query_student_info(friend) == "STUDENTINFO:NULL" and
-                query_education(friend) == "education:NULL"):
+                query_education(friend) == "EDUCATION:NULL"):
             # if all of the fields of the student profiles are not filled then the student does not have a
             # profile that can be viewd by others
             friends_list_profiles.append((friend, "No profile"))

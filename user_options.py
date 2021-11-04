@@ -8,6 +8,7 @@ from user_portfolio import portfolio_options
 import friends_options
 import friend_commands
 import message_options
+import user_notification
 
 
 def search_job(username):
@@ -94,6 +95,10 @@ def additional_options(username):
     
     # Check if user has new message to read
     message_options.check_new_message(username)
+
+    #check if profile is already created
+    user_notification.print_notification(username)
+    
     while True:
         print_additional_options()
         user_choice_opt = input("Enter your selection here: ")
@@ -103,6 +108,7 @@ def additional_options(username):
             # Message options
             message_options.member_options(username)
         if user_choice_opt == "1":
+            user_notification.job_applied_notifiction(username)
             print("Do you want to post or delete a job?\n"
                   "1 - Post a job\n"
                   "2 - Delete a job I posted")
@@ -116,6 +122,7 @@ def additional_options(username):
             else:
                 print("Invalid Input, Enter either the value 1 or 2")
         elif user_choice_opt == "2":
+            user_notification.job_applied_notifiction(username)
             search_job(username)
         elif user_choice_opt == "3":
             print("Looking for someone you know?")
