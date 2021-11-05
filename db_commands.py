@@ -1,5 +1,6 @@
 import random
 import sqlite3
+
 from sqlite3 import Error
 
 # This file is for storing database commands
@@ -69,7 +70,7 @@ deleted_jobs_table = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     employer text NOT NULL,
     location text NOT NULL,
     salary INTEGER NOT NULL,
-    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE, 
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE
     );"""
 
 experience_table = """CREATE TABLE IF NOT EXISTS experiences (
@@ -465,6 +466,12 @@ def print_friends(connection, username):
     print("Users friends: ")
     print(cursor.fetchall())
 
+def print_deleted_jobs(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM deleted_jobs"
+                   )
+    print(cursor.fetchall())
+
 
 # Messages
 def query_user_has_messages(username):
@@ -588,6 +595,8 @@ def delete_all_database_info(connection):
     connection.commit()
     cursor.execute("DELETE FROM messages")
     connection.commit()
+    cursor.execute("DELETE FROM deleted_jobs")
+    connection.commit()
 
 
 # function to fill in values to the database for testing purposes primarily
@@ -652,3 +661,14 @@ def fill_database(connection):
     create_row_in_message_table(connection, message_info2)
     message_info3 = ("username4", "username2", "This is John, reply back with Smith", "Standard")
     create_row_in_message_table(connection, message_info3)
+
+    create_table(connection, user_job_table)
+    job_app1 = ["username3", 1, "00/00/0000", "00/00/0000", "please hire me", "APPLIED"]
+    create_row_in_job_applications_table(connection, job_app1)
+    create_table(connection, deleted_jobs_table)
+    cursor = connection.cursor()
+
+
+
+
+
