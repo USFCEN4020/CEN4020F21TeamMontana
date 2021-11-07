@@ -1,6 +1,5 @@
 import random
 import sqlite3
-
 from sqlite3 import Error
 
 # This file is for storing database commands
@@ -70,7 +69,7 @@ deleted_jobs_table = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     employer text NOT NULL,
     location text NOT NULL,
     salary INTEGER NOT NULL,
-    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE, 
     );"""
 
 experience_table = """CREATE TABLE IF NOT EXISTS experiences (
@@ -92,7 +91,26 @@ friend_table = """CREATE TABLE IF NOT EXISTS friends (
     FOREIGN KEY(sender) REFERENCES users(username)
     FOREIGN KEY(receiver) REFERENCES users(username)
     );"""
-
+# ========
+# Epic 8
+# Holds time when account was first created, when they logged out, and the last time they applied for a job
+logout_times_table = """CREATE TABLE IF NOT EXISTS logout_times (
+                       username text NOT NULL,
+                       firstname text NOT NULL,
+                       lastname text NOT NULL,
+                       registertime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       logouttime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       appliedjobtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       PRIMARY KEY(username)
+                       );"""
+# Holds name of job
+job_notifications_table = """CREATE TABLE IF NOT EXISTS job_notifications (
+                             firstname text NOT NULL,
+                             lastname text NOT NULL,
+                             title text NOT NULL
+                             );"""
+# End Epic 8
+# ============
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,tier, language,emails,sms,targetedads,
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
@@ -116,8 +134,15 @@ create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,locat
 
 create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
                                    VALUES(?,?,?) '''
+# =========
+# Epic 8
+create_logout_times_table = '''INSERT INTO logout_times(username,firstname,lastname,registertime,logouttime)
+                             VALUES(?,?,?,?,?)'''
 
-
+create_job_notifications_sql = '''INSERT INTO job_notifications(firstname,lastname,title)
+                                  VALUES(?,?,?)'''
+# End Epic 8
+# ============
 # Function for creating sqlite database
 def create_connection(db_name):
     conn = None
@@ -169,7 +194,56 @@ def query_job_apps(connection):
     cursor.execute("SELECT username, jobID, status from job_applications")
     rows = cursor.fetchall()
     return rows
- 
+
+# =======
+# Epic 8
+def create_row_in_logout_times_table(connection, user):
+    cursor = connection.cursor()
+    cursor.execute(create_logout_times_table, user)
+    connection.commit()
+
+def update_logout_time(connection, user, time):
+    cursor = connection.cursor()
+    cursor.execute("UPDATE logout_times SET logouttime = ? WHERE username = ?", (time, user))
+    connection.commit()
+
+def print_logout_times_table(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM logout_times")
+    print(cursor.fetchall())
+
+def query_all_logout_times(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT firstname,lastname,registertime,logouttime FROM logout_times")
+    return cursor.fetchall()
+
+def query_user_logout_time(connection, user):
+    cursor = connection.cursor()
+    cursor.execute("SELECT firstname,lastname,logouttime FROM logout_times WHERE username = ?", (user,))
+    return cursor.fetchone()
+
+def create_row_in_job_notifications_table(connection, job):
+    cursor = connection.cursor()
+    cursor.execute(create_job_notifications_sql, job)
+    connection.commit()
+
+def query_all_job_notifications(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT title FROM job_notifications")
+    return cursor.fetchall()
+
+def update_user_apply_time(connection, user, time):
+    cursor = connection.cursor()
+    cursor.execute("UPDATE logout_times SET appliedjobtime = ? WHERE username = ?", (time, user,))
+    connection.commit()
+
+def query_user_applied_time(connection, user):
+    cursor = connection.cursor()
+    cursor.execute("SELECT appliedjobtime FROM logout_times WHERE username = ?", (user,))
+    return cursor.fetchone()
+# End Epic 8
+# ============
+
 # Queries for the password of the username
 # Useful for finding the password connected to the username passed to function parameter.
 # Created this function to return the password string associated with the username,
@@ -451,6 +525,14 @@ def print_database(connection):
     print("Friends table: ")
     print(cursor.fetchall())
 
+    cursor.execute("SELECT * FROM logout_times")
+    print("logout_times table: ")
+    print(cursor.fetchall())
+
+    cursor.execute("SELECT * FROM job_notifications")
+    print("job_notifications table: ")
+    print(cursor.fetchall())
+
 
 def print_experiences(connection, username):
     cursor = connection.cursor()
@@ -464,12 +546,6 @@ def print_friends(connection, username):
     cursor.execute("SELECT * FROM friends WHERE sender = ? OR receiver = ? AND status = 'ACCEPT' ",
                    (username, username,))
     print("Users friends: ")
-    print(cursor.fetchall())
-
-def print_deleted_jobs(connection):
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM deleted_jobs"
-                   )
     print(cursor.fetchall())
 
 
@@ -595,8 +671,6 @@ def delete_all_database_info(connection):
     connection.commit()
     cursor.execute("DELETE FROM messages")
     connection.commit()
-    cursor.execute("DELETE FROM deleted_jobs")
-    connection.commit()
 
 
 # function to fill in values to the database for testing purposes primarily
@@ -661,14 +735,3 @@ def fill_database(connection):
     create_row_in_message_table(connection, message_info2)
     message_info3 = ("username4", "username2", "This is John, reply back with Smith", "Standard")
     create_row_in_message_table(connection, message_info3)
-
-    create_table(connection, user_job_table)
-    job_app1 = ["username3", 1, "00/00/0000", "00/00/0000", "please hire me", "APPLIED"]
-    create_row_in_job_applications_table(connection, job_app1)
-    create_table(connection, deleted_jobs_table)
-    cursor = connection.cursor()
-
-
-
-
-

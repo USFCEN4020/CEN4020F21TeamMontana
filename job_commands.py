@@ -1,4 +1,5 @@
 import db_commands
+import new_job_notifications
 from sqlite3 import Error
 
 # Prints the jobs
@@ -60,13 +61,14 @@ def search_all_jobs(username):
             print(i + 1, ":", jobs[i][1])
         print()
         user_selection = input("Enter selection: ")
-        if user_selection < 1 or user_selection > len(jobs):
+        # Modified this to asses whether input is a int or string
+        if user_selection.isdigit() and (int(user_selection) < 1 or int(user_selection) > len(jobs)):
             print("Invalid input. Try again")
             continue
         elif user_selection == "Q":
             return 0
         else:
-            job = jobs[user_selection -1]
+            job = jobs[int(user_selection) -1]
             display_job(job)
             # After displaying the job, prompt user to apply
             print("1 - Apply for this job")
@@ -158,6 +160,10 @@ def job_application(job, username, connection):
             break
     description = input("Please enter why you would be a good fit for this job: ")
     job_app = [username, job[0], graduation_date, start_date, description, "APPLIED"]
+
+    # Epic 8
+    new_job_notifications.update_applied_job_time(connection, username)
+
     db_commands.create_row_in_job_applications_table(connection, job_app)
     print("Application sent successfully!\n")
 
@@ -232,6 +238,10 @@ def create_job_posting(first_name, last_name):
         return
 
     job_information = (title, description, employer, location, salary, first_name, last_name,)
+
+    # Epic 8
+
+    new_job_notifications.add_job_notifications(db_commands.create_connection(db_commands.database_name), first_name, last_name, title)
     db_commands.create_row_in_jobs_table(db_commands.create_connection(db_commands.database_name), job_information)
 
 
