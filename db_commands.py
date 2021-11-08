@@ -671,6 +671,10 @@ def delete_all_database_info(connection):
     connection.commit()
     cursor.execute("DELETE FROM messages")
     connection.commit()
+    cursor.execute("DELETE FROM logout_times")
+    connection.commit()
+    cursor.execute("DELETE FROM job_notifications")
+    connection.commit()
 
 
 # function to fill in values to the database for testing purposes primarily
@@ -692,6 +696,14 @@ def fill_database(connection):
              "Don't Target Ads", "Software Developer", "Computer Science", "University of South Florida", "Blank",
              "You attended USF for 4 years to get a degree in BCS",)
     create_row_in_users_table(connection, user4)
+    user5 = ("username6", "Password?5", "New", "Guy", "Standard", "English", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Intern", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user5)
+    user6 = ("username7", "Password?5", "New", "Girl", "Plus", "English", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Intern", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user6)
 
     create_table(connection, job_table)
     job_info1 = ("Scrum Master", "It is to manage people", "Bob", "Florida", 1, "An", "Dinh",)
@@ -702,6 +714,8 @@ def fill_database(connection):
     create_row_in_jobs_table(connection, job_info3)
     job_info4 = ("Software Developer", "Write code that works", "Rida", "Florida", 54145, "Bob", "Guy",)
     create_row_in_jobs_table(connection, job_info4)
+    job_info5 = ("Intern", "Who knows", "New", "Florida", 0, "Guy", "Guy",)
+    create_row_in_jobs_table(connection, job_info5)
 
     create_table(connection, user_job_table)
 
@@ -735,3 +749,18 @@ def fill_database(connection):
     create_row_in_message_table(connection, message_info2)
     message_info3 = ("username4", "username2", "This is John, reply back with Smith", "Standard")
     create_row_in_message_table(connection, message_info3)
+
+    create_table(connection, logout_times_table)
+    logout_time_info1 = ("username2", "An", "Dinh", "2021-10-25 00:00:00", "2021-11-06 00:00:00")
+    create_row_in_logout_times_table(connection, logout_time_info1)
+    logout_time_info2 = ("username6", "New", "Guy", "2021-11-07 00:00:00", "2021-11-07 00:00:00")
+    create_row_in_logout_times_table(connection, logout_time_info2)
+    logout_time_info3 = ("username7", "New", "Girl", "2021-11-07 00:00:00", "2021-11-07 00:00:00")
+    create_row_in_logout_times_table(connection, logout_time_info3)
+
+    create_table(connection, job_notifications_table)
+    job_notif_info1 = ("Guy", "Guy", "Intern")
+    create_row_in_job_notifications_table(connection, job_notif_info1)
+    job_notif_info2 = ("Girl", "Girl", "Intern")
+    create_row_in_job_notifications_table(connection, job_notif_info2)
+
