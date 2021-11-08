@@ -1,7 +1,8 @@
 import db_commands
 import account_define
 import user_options
-
+import new_user_notifications
+from datetime import datetime
 
 def succ_story(filename):
     try:
@@ -35,6 +36,9 @@ def login_account(connection):
             # and ask for usernames or if the user wants to quit the program
             succ_login = account_define.user_login(username_input, password_input, existing_usernames,
                                                    username_password_tuples)
+            if succ_login == True:
+                # Epic 8
+                new_user_notifications.update_logout_time(connection, username_input)
 
 
 def create_account(connection):
@@ -82,9 +86,15 @@ def create_account(connection):
                         "English", "Send Emails", "Send SMS", "Target Ads", "TITLE:NULL", "MAJOR:NULL", "UNIVERSITY:NULL", "STUDENTINFO:NULL", "EDUCATION:NULL")
     db_commands.create_row_in_users_table(connection, user_information)
 
+    # Epic 8
+    new_user_notifications.add_user_logout_times(connection, username_input, firstname_input, lastname_input)
+
     print("Successfully created your account. You are now logged in.")
     user_options.additional_options(username_input)
- 
+
+    # Epic 8
+    new_user_notifications.update_logout_time(connection, username_input)
+
 def play_video():
     # end='' removes the new line that comes after the print statement
     print("Video is now playing.", end='')

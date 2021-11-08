@@ -36,8 +36,7 @@ def view_profile(username):
     print("Education: ", education)
 
     db_commands.print_experiences(connection, username)
-
-
+ 
 def print_portfolio_options():
     print("Please choose which options to modify")
     print("1 - Enter Title")
@@ -130,7 +129,7 @@ def Enter_Student_Info(username):
 
 def Enter_Education(username):
     while True:
-        print("Would you like to enter your")
+        print("Would you like to enter your Education")
         print("1 - Enter Education")
         print("0 - Exit")
 

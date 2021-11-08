@@ -1,16 +1,35 @@
 import db_commands
+import new_job_notifications
 from sqlite3 import Error
 
 # Prints the jobs
 # Format: id, title, description, employer, location, salary, first/last name
 import start_options
 
+# After we query for all the deleted jobs that the user has applied to we will save it and return that
+# And since the rows of tuples are saved then we can delete the jobs as well.
+def query_and_delete_deleted_jobs(username):
+    connection = db_commands.create_connection(db_commands.database_name)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM deleted_jobs WHERE username = ?", (username,))
+        deleted_jobs_for_user = cursor.fetchall()
+        cursor.execute("DELETE FROM deleted_jobs WHERE username = ?", (username,))
+        return deleted_jobs_for_user
+    except Error:
+        print()
+
+
+def remove_row_in_jobs_table(connection, jobID):
+    try:
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM jobs WHERE jobID = ?", (jobID, ))
+        connection.commit()
+    except Error as e:
+        print(e)
 
 def jobs_menu(username):
-    print("These jobs that you have applied for have been deleted.")
-    deleted_jobs_for_user = query_and_delete_deleted_jobs(username)
-    print(*deleted_jobs_for_user, sep="\n")
-
+    
     menu = """Please choose from the following menu:
 1 - View jobs you have applied to
 2 - View jobs you have not applied to yet
@@ -42,13 +61,14 @@ def search_all_jobs(username):
             print(i + 1, ":", jobs[i][1])
         print()
         user_selection = input("Enter selection: ")
-        if user_selection < 1 or user_selection > len(jobs):
+        # Modified this to asses whether input is a int or string
+        if user_selection.isdigit() and (int(user_selection) < 1 or int(user_selection) > len(jobs)):
             print("Invalid input. Try again")
             continue
         elif user_selection == "Q":
             return 0
         else:
-            job = jobs[user_selection -1]
+            job = jobs[int(user_selection) -1]
             display_job(job)
             # After displaying the job, prompt user to apply
             print("1 - Apply for this job")
@@ -140,6 +160,10 @@ def job_application(job, username, connection):
             break
     description = input("Please enter why you would be a good fit for this job: ")
     job_app = [username, job[0], graduation_date, start_date, description, "APPLIED"]
+
+    # Epic 8
+    new_job_notifications.update_applied_job_time(connection, username)
+
     db_commands.create_row_in_job_applications_table(connection, job_app)
     print("Application sent successfully!\n")
 
@@ -214,6 +238,10 @@ def create_job_posting(first_name, last_name):
         return
 
     job_information = (title, description, employer, location, salary, first_name, last_name,)
+
+    # Epic 8
+
+    new_job_notifications.add_job_notifications(db_commands.create_connection(db_commands.database_name), first_name, last_name, title)
     db_commands.create_row_in_jobs_table(db_commands.create_connection(db_commands.database_name), job_information)
 
 
@@ -236,26 +264,6 @@ def create_row_in_deleted_jobs_table(connection, jobID):
         for notification in notify_job_deletion_list:
             cursor.execute(db_commands.create_new_deleted_notification_sql, notification)
             connection.commit()
-    except Error as e:
-        print(e)
-
-
-# After we query for all the deleted jobs that the user has applied to we will save it and return that
-# And since the rows of tuples are saved then we can delete the jobs as well.
-def query_and_delete_deleted_jobs(username):
-    connection = db_commands.create_connection(db_commands.database_name)
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM deleted_jobs WHERE username = ?", (username,))
-    deleted_jobs_for_user = cursor.fetchall()
-    cursor.execute("DELETE FROM deleted_jobs WHERE username = ?", (username,))
-    return deleted_jobs_for_user
-
-
-def remove_row_in_jobs_table(connection, jobID):
-    try:
-        cursor = connection.cursor()
-        cursor.execute("DELETE FROM jobs WHERE jobID = ?", (jobID, ))
-        connection.commit()
     except Error as e:
         print(e)
 

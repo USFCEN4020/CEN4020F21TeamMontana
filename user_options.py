@@ -8,6 +8,9 @@ from user_portfolio import portfolio_options
 import friends_options
 import friend_commands
 import message_options
+import user_notification
+import new_user_notifications
+import new_job_notifications
 
 
 def search_job(username):
@@ -94,6 +97,15 @@ def additional_options(username):
     
     # Check if user has new message to read
     message_options.check_new_message(username)
+    #check if profile is already created
+    user_notification.print_notification(username)
+
+    # Epic 8
+    # Shows Notifications for new users and jobs and reminders
+    new_user_notifications.show_new_user_notifications(username)
+    new_job_notifications.show_new_jobs(db_commands.create_connection(db_commands.database_name))
+    new_job_notifications.check_applied_job_time(db_commands.create_connection(db_commands.database_name), username)
+
     while True:
         print_additional_options()
         user_choice_opt = input("Enter your selection here: ")
@@ -103,6 +115,7 @@ def additional_options(username):
             # Message options
             message_options.member_options(username)
         if user_choice_opt == "1":
+            user_notification.job_applied_notifiction(username)
             print("Do you want to post or delete a job?\n"
                   "1 - Post a job\n"
                   "2 - Delete a job I posted")
@@ -116,6 +129,7 @@ def additional_options(username):
             else:
                 print("Invalid Input, Enter either the value 1 or 2")
         elif user_choice_opt == "2":
+            user_notification.job_applied_notifiction(username)
             search_job(username)
         elif user_choice_opt == "3":
             print("Looking for someone you know?")

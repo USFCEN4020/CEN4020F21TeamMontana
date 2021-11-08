@@ -91,7 +91,26 @@ friend_table = """CREATE TABLE IF NOT EXISTS friends (
     FOREIGN KEY(sender) REFERENCES users(username)
     FOREIGN KEY(receiver) REFERENCES users(username)
     );"""
-
+# ========
+# Epic 8
+# Holds time when account was first created, when they logged out, and the last time they applied for a job
+logout_times_table = """CREATE TABLE IF NOT EXISTS logout_times (
+                       username text NOT NULL,
+                       firstname text NOT NULL,
+                       lastname text NOT NULL,
+                       registertime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       logouttime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       appliedjobtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       PRIMARY KEY(username)
+                       );"""
+# Holds name of job
+job_notifications_table = """CREATE TABLE IF NOT EXISTS job_notifications (
+                             firstname text NOT NULL,
+                             lastname text NOT NULL,
+                             title text NOT NULL
+                             );"""
+# End Epic 8
+# ============
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,tier, language,emails,sms,targetedads,
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
@@ -115,8 +134,15 @@ create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,locat
 
 create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
                                    VALUES(?,?,?) '''
+# =========
+# Epic 8
+create_logout_times_table = '''INSERT INTO logout_times(username,firstname,lastname,registertime,logouttime)
+                             VALUES(?,?,?,?,?)'''
 
-
+create_job_notifications_sql = '''INSERT INTO job_notifications(firstname,lastname,title)
+                                  VALUES(?,?,?)'''
+# End Epic 8
+# ============
 # Function for creating sqlite database
 def create_connection(db_name):
     conn = None
@@ -169,6 +195,54 @@ def query_job_apps(connection):
     rows = cursor.fetchall()
     return rows
 
+# =======
+# Epic 8
+def create_row_in_logout_times_table(connection, user):
+    cursor = connection.cursor()
+    cursor.execute(create_logout_times_table, user)
+    connection.commit()
+
+def update_logout_time(connection, user, time):
+    cursor = connection.cursor()
+    cursor.execute("UPDATE logout_times SET logouttime = ? WHERE username = ?", (time, user))
+    connection.commit()
+
+def print_logout_times_table(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM logout_times")
+    print(cursor.fetchall())
+
+def query_all_logout_times(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT firstname,lastname,registertime,logouttime FROM logout_times")
+    return cursor.fetchall()
+
+def query_user_logout_time(connection, user):
+    cursor = connection.cursor()
+    cursor.execute("SELECT firstname,lastname,logouttime FROM logout_times WHERE username = ?", (user,))
+    return cursor.fetchone()
+
+def create_row_in_job_notifications_table(connection, job):
+    cursor = connection.cursor()
+    cursor.execute(create_job_notifications_sql, job)
+    connection.commit()
+
+def query_all_job_notifications(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT title FROM job_notifications")
+    return cursor.fetchall()
+
+def update_user_apply_time(connection, user, time):
+    cursor = connection.cursor()
+    cursor.execute("UPDATE logout_times SET appliedjobtime = ? WHERE username = ?", (time, user,))
+    connection.commit()
+
+def query_user_applied_time(connection, user):
+    cursor = connection.cursor()
+    cursor.execute("SELECT appliedjobtime FROM logout_times WHERE username = ?", (user,))
+    return cursor.fetchone()
+# End Epic 8
+# ============
 
 # Queries for the password of the username
 # Useful for finding the password connected to the username passed to function parameter.
@@ -451,6 +525,14 @@ def print_database(connection):
     print("Friends table: ")
     print(cursor.fetchall())
 
+    cursor.execute("SELECT * FROM logout_times")
+    print("logout_times table: ")
+    print(cursor.fetchall())
+
+    cursor.execute("SELECT * FROM job_notifications")
+    print("job_notifications table: ")
+    print(cursor.fetchall())
+
 
 def print_experiences(connection, username):
     cursor = connection.cursor()
@@ -521,17 +603,15 @@ def query_friend(username):
                    SELECT receiver FROM friends WHERE sender = ? AND status = 'ACCEPT' ''', (username, username,))
     return cursor.fetchall()
 
-
 def query_friend_profiles(friends_list):
     friends_list_profiles = []
     for friend in friends_list:
         # looking at each of friends individually and if any of their profile fields are empty
         if (query_student_title(friend) == "TITLE:NULL" and
                 query_student_major(friend) == "MAJOR:NULL" and
-                query_student_major(friend) == "MAJOR:NULL" and
                 query_student_university(friend) == "UNIVERSITY:NULL" and
                 query_student_info(friend) == "STUDENTINFO:NULL" and
-                query_education(friend) == "education:NULL"):
+                query_education(friend) == "EDUCATION:NULL"):
             # if all of the fields of the student profiles are not filled then the student does not have a
             # profile that can be viewd by others
             friends_list_profiles.append((friend, "No profile"))
@@ -591,6 +671,10 @@ def delete_all_database_info(connection):
     connection.commit()
     cursor.execute("DELETE FROM messages")
     connection.commit()
+    cursor.execute("DELETE FROM logout_times")
+    connection.commit()
+    cursor.execute("DELETE FROM job_notifications")
+    connection.commit()
 
 
 # function to fill in values to the database for testing purposes primarily
@@ -612,6 +696,14 @@ def fill_database(connection):
              "Don't Target Ads", "Software Developer", "Computer Science", "University of South Florida", "Blank",
              "You attended USF for 4 years to get a degree in BCS",)
     create_row_in_users_table(connection, user4)
+    user5 = ("username6", "Password?5", "New", "Guy", "Standard", "English", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Intern", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user5)
+    user6 = ("username7", "Password?5", "New", "Girl", "Plus", "English", "Don't Send Emails", "Don't Send SMS",
+             "Don't Target Ads", "Intern", "Computer Science", "University of South Florida", "Blank",
+             "You attended USF for 4 years to get a degree in BCS",)
+    create_row_in_users_table(connection, user6)
 
     create_table(connection, job_table)
     job_info1 = ("Scrum Master", "It is to manage people", "Bob", "Florida", 1, "An", "Dinh",)
@@ -622,6 +714,8 @@ def fill_database(connection):
     create_row_in_jobs_table(connection, job_info3)
     job_info4 = ("Software Developer", "Write code that works", "Rida", "Florida", 54145, "Bob", "Guy",)
     create_row_in_jobs_table(connection, job_info4)
+    job_info5 = ("Intern", "Who knows", "New", "Florida", 0, "Guy", "Guy",)
+    create_row_in_jobs_table(connection, job_info5)
 
     create_table(connection, user_job_table)
 
@@ -655,3 +749,18 @@ def fill_database(connection):
     create_row_in_message_table(connection, message_info2)
     message_info3 = ("username4", "username2", "This is John, reply back with Smith", "Standard")
     create_row_in_message_table(connection, message_info3)
+
+    create_table(connection, logout_times_table)
+    logout_time_info1 = ("username2", "An", "Dinh", "2021-10-25 00:00:00", "2021-11-06 00:00:00")
+    create_row_in_logout_times_table(connection, logout_time_info1)
+    logout_time_info2 = ("username6", "New", "Guy", "2021-11-07 00:00:00", "2021-11-07 00:00:00")
+    create_row_in_logout_times_table(connection, logout_time_info2)
+    logout_time_info3 = ("username7", "New", "Girl", "2021-11-07 00:00:00", "2021-11-07 00:00:00")
+    create_row_in_logout_times_table(connection, logout_time_info3)
+
+    create_table(connection, job_notifications_table)
+    job_notif_info1 = ("Guy", "Guy", "Intern")
+    create_row_in_job_notifications_table(connection, job_notif_info1)
+    job_notif_info2 = ("Girl", "Girl", "Intern")
+    create_row_in_job_notifications_table(connection, job_notif_info2)
+

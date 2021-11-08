@@ -41,6 +41,8 @@ def main_menu():
     db_commands.create_table(connection, db_commands.experience_table)
     db_commands.create_table(connection, db_commands.friend_table)
     db_commands.create_table(connection, db_commands.messages_table)
+    db_commands.create_table(connection, db_commands.logout_times_table)
+    db_commands.create_table(connection, db_commands.job_notifications_table)
     db_commands.print_database(connection)
 
     user_story = start_options.succ_story("Student_story.txt")
