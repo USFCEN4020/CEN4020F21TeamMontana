@@ -11,6 +11,7 @@ import user_options
 import start_options
 import useful_links_options
 import important_links_group
+import bas_training
 
 database_name = "userDB"
 
@@ -107,6 +108,7 @@ def main_menu():
     db_commands.create_table(connection, db_commands.messages_table)
     db_commands.create_table(connection, db_commands.logout_times_table)
     db_commands.create_table(connection, db_commands.job_notifications_table)
+    db_commands.create_table(connection, db_commands.trainings_table)
     db_commands.print_database(connection)
 
     user_story = start_options.succ_story("Student_story.txt")

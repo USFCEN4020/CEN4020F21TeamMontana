@@ -85,14 +85,15 @@ def create_account(connection):
     user_information = (username_input, password_input, firstname_input, lastname_input, student_mem, 
                         "English", "Send Emails", "Send SMS", "Target Ads", "TITLE:NULL", "MAJOR:NULL", "UNIVERSITY:NULL", "STUDENTINFO:NULL", "EDUCATION:NULL")
     db_commands.create_row_in_users_table(connection, user_information)
-
-    # Epic 8
     new_user_notifications.add_user_logout_times(connection, username_input, firstname_input, lastname_input)
+
+    training_info = (username_input, )
+    db_commands.create_row_in_trainings_table(connection, training_info)
 
     print("Successfully created your account. You are now logged in.")
     user_options.additional_options(username_input)
 
-    # Epic 8
+    # Updates users log out time
     new_user_notifications.update_logout_time(connection, username_input)
 
 def play_video():

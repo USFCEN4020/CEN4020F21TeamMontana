@@ -91,8 +91,7 @@ friend_table = """CREATE TABLE IF NOT EXISTS friends (
     FOREIGN KEY(sender) REFERENCES users(username)
     FOREIGN KEY(receiver) REFERENCES users(username)
     );"""
-# ========
-# Epic 8
+
 # Holds time when account was first created, when they logged out, and the last time they applied for a job
 logout_times_table = """CREATE TABLE IF NOT EXISTS logout_times (
                        username text NOT NULL,
@@ -109,8 +108,19 @@ job_notifications_table = """CREATE TABLE IF NOT EXISTS job_notifications (
                              lastname text NOT NULL,
                              title text NOT NULL
                              );"""
-# End Epic 8
 # ============
+# Epic 9
+# Holds what trainings a user has done
+trainings_table = """CREATE TABLE IF NOT EXISTS trainings (
+                        username text NOT NULL,
+                        incollegelearning text DEFAULT 'UNFINISHED' NOT NULL,
+                        trainthetrainer text DEFAULT 'UNFINISHED' NOT NULL,
+                        gamification text DEFAULT 'UNFINISHED' NOT NULL,
+                        architecture text DEFAULT 'UNFINISHED' NOT NULL,
+                        projectmanagement text DEFAULT 'UNFINISHED' NOT NULL
+                        );"""
+# ===========
+
 create_new_account_sql = ''' INSERT INTO users(username,password,firstname,lastname,tier, language,emails,sms,targetedads,
                              title,major,university,studentinfo,education)
                              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
@@ -134,15 +144,17 @@ create_new_job_experience_sql = ''' INSERT INTO experiences(title,employer,locat
 
 create_new_friend_status_sql = ''' INSERT INTO friends(sender,status,receiver)
                                    VALUES(?,?,?) '''
-# =========
-# Epic 8
+
 create_logout_times_table = '''INSERT INTO logout_times(username,firstname,lastname,registertime,logouttime)
                              VALUES(?,?,?,?,?)'''
 
 create_job_notifications_sql = '''INSERT INTO job_notifications(firstname,lastname,title)
                                   VALUES(?,?,?)'''
-# End Epic 8
-# ============
+# ======
+# Epic 9
+create_trainings_table_sql = '''INSERT INTO trainings(username)
+                            VALUES(?)'''
+# =======
 # Function for creating sqlite database
 def create_connection(db_name):
     conn = None
@@ -241,8 +253,53 @@ def query_user_applied_time(connection, user):
     cursor = connection.cursor()
     cursor.execute("SELECT appliedjobtime FROM logout_times WHERE username = ?", (user,))
     return cursor.fetchone()
-# End Epic 8
 # ============
+
+# ========
+# Epic 9
+def create_row_in_trainings_table(connection, user):
+    cursor = connection.cursor()
+    cursor.execute(create_trainings_table_sql, user)
+    connection.commit()
+
+# username, incollegelearning, trainthetrainer, gamification, architecture, projectmanagement
+def update_trainings(connection, username, trainingNum):
+    cursor = connection.cursor()
+
+    if trainingNum == 1:
+        cursor.execute("UPDATE trainings SET incollegelearning = 'FINISHED' WHERE username = ?", (username, ))
+        connection.commit()
+    elif trainingNum == 2:
+        cursor.execute("UPDATE trainings SET trainthetrainer = 'FINISHED' WHERE username = ?", (username, ))
+        connection.commit()
+    elif trainingNum == 3:
+        cursor.execute("UPDATE trainings SET gamification = 'FINISHED' WHERE username = ?", (username, ))
+        connection.commit()
+    elif trainingNum == 4:
+        cursor.execute("UPDATE trainings SET architecture = 'FINISHED' WHERE username = ?", (username, ))
+        connection.commit()
+    elif trainingNum == 5:
+        cursor.execute("UPDATE trainings SET projectmanagement = 'FINISHED' WHERE username = ?", (username, ))
+        connection.commit()
+
+def get_trainings_status(connection, username, trainingNum):
+    cursor = connection.cursor()
+
+    if trainingNum == 1:
+        cursor.execute("SELECT incollegelearning FROM trainings WHERE username = ?", (username, ))
+        return cursor.fetchone()
+    elif trainingNum == 2:
+        cursor.execute("SELECT trainthetrainer FROM trainings WHERE username = ?", (username, ))
+        return cursor.fetchone()
+    elif trainingNum == 3:
+        cursor.execute("SELECT gamification FROM trainings WHERE username = ?", (username, ))
+        return cursor.fetchone()
+    elif trainingNum == 4:
+        cursor.execute("SELECT architecture FROM trainings WHERE username = ?", (username, ))
+        return cursor.fetchone()
+    elif trainingNum == 5:
+        cursor.execute("SELECT projectmanagement FROM trainings WHERE username = ?", (username, ))
+        return cursor.fetchone()
 
 # Queries for the password of the username
 # Useful for finding the password connected to the username passed to function parameter.
@@ -531,6 +588,10 @@ def print_database(connection):
 
     cursor.execute("SELECT * FROM job_notifications")
     print("job_notifications table: ")
+    print(cursor.fetchall())
+
+    cursor.execute("SELECT * FROM trainings")
+    print("Trainings table: ")
     print(cursor.fetchall())
 
 
