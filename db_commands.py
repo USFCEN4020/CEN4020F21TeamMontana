@@ -825,3 +825,8 @@ def fill_database(connection):
     job_notif_info2 = ("Girl", "Girl", "Intern")
     create_row_in_job_notifications_table(connection, job_notif_info2)
 
+    # Training table has to be manually set up for every user
+    create_table(connection, trainings_table)
+    training_info = ("username1",)
+    create_row_in_trainings_table(connection, training_info)
+

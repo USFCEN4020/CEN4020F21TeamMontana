@@ -11,7 +11,6 @@ import user_options
 import start_options
 import useful_links_options
 import important_links_group
-import bas_training
 
 database_name = "userDB"
 
