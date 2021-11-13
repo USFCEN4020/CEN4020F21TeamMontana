@@ -29,10 +29,10 @@ def business_analysis_strategy_menu():
 
     while True:
         print(business_analysis_strategy)
-        user_choice = start_options.get_user_option(1, 3)
-        while user_choice < 1 or user_choice > 3:
+        user_choice = start_options.get_user_option(1, 4)
+        while user_choice < 1 or user_choice > 4:
             print("Invalid input. Try again")
-            user_choice = start_options.get_user_option(1, 3)
+            user_choice = start_options.get_user_option(1, 4)
         # come back later to implement a way for the user to go back to the lines above
         if user_choice == 1:
             start_options.login_account(connection)
@@ -42,6 +42,7 @@ def business_analysis_strategy_menu():
             start_options.login_account(connection)
         else:
             print("Returning to main menu...")
+            break
 
 
 def training_menu():
