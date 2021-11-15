@@ -97,6 +97,32 @@ def test_complete_training(cache, monkeypatch, capsys):
         assert output == desired_output
 
 
+# Test when student completes training that has already been completed
+def test_training_if_already_done(cache, monkeypatch, capsys):
+    desired_output = "You have now completed this training! (InCollege Learning)"
+    desired_output += """"
+                Please select a training option or enter 5 to return:
+                1 - Training and Education
+                2 - IT Help Desk
+                3 - Business Analysis and Strategy
+                4 - Security
+                5 - Return to main menu
+
+                """
+    desired_output += """You have already taken this course, do you want to take it again
+                        0 - No
+                        1 - Yes"""
+    desired_output += "You have now completed this training! (InCollege Learning)"
+    inputs = iter(["1", "1", "0", "0"])
+    monkeypatch.setattr('builtins.input', lambda _="": next(inputs))
+    try:
+        incollege_learning.incollege_training_options("username1")
+        incollege_learning.incollege_training_options("username1")
+    except StopIteration:
+        output = capsys.readouterr().out
+        assert output == desired_output
+
+
 
 
 
