@@ -11,6 +11,7 @@ import message_options
 import user_notification
 import new_user_notifications
 import new_job_notifications
+import incollege_learning
 
 
 def search_job(username):
@@ -84,7 +85,8 @@ def print_additional_options():
     print("7 - InCollege important links group options")
     print("8 - Edit user profile")
     print("9 - Send friend request")
-    print("10 - Return to previous menu")
+    print("10 - InCollege Learning ")
+    print("11 - Return to previous menu")
 
 
 def additional_options(username):
@@ -153,6 +155,8 @@ def additional_options(username):
         elif user_choice_opt == "9":
             friend_commands.create_friend_posting(username)
         elif user_choice_opt == "10":
+            incollege_learning.incollege_training_options(username)
+        elif user_choice_opt == "11":
             break
         else:
             print("Not a valid input")

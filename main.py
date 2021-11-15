@@ -4,7 +4,7 @@ import sqlite3
 from sqlite3 import Error
 from typing import Match
 import db_commands
-#import search_job
+# import search_job
 import random
 import account_define
 import user_options
@@ -13,6 +13,70 @@ import useful_links_options
 import important_links_group
 
 database_name = "userDB"
+
+
+def business_analysis_strategy_menu():
+    business_analysis_strategy = """
+            Please select a training option or enter 5 to return:
+            1 - How to use In College learning
+            2 - Train the trainer
+            3 - Gamification of learning
+
+            Not seeing what you're looking for? Sign in to see all 7,609 results.
+            """
+
+    connection = db_commands.create_connection(database_name)
+
+    while True:
+        print(business_analysis_strategy)
+        user_choice = start_options.get_user_option(1, 4)
+        while user_choice < 1 or user_choice > 4:
+            print("Invalid input. Try again")
+            user_choice = start_options.get_user_option(1, 4)
+        # come back later to implement a way for the user to go back to the lines above
+        if user_choice == 1:
+            start_options.login_account(connection)
+        elif user_choice == 2:
+            start_options.login_account(connection)
+        elif user_choice == 3:
+            start_options.login_account(connection)
+        else:
+            print("Returning to main menu...")
+            break
+
+
+def training_menu():
+    menu = """
+            Please select a training option or enter 5 to return:
+            1 - Training and Education
+            2 - IT Help Desk
+            3 - Business Analysis and Strategy
+            4 - Security
+            5 - Return to main menu
+
+            """
+    while True:
+        print(menu)
+        user_choice = start_options.get_user_option(1, 5)
+        while user_choice < 1 or user_choice > 5:
+            print("Invalid input. Try again")
+            user_choice = start_options.get_user_option(1, 5)
+        # come back later to implement a way for the user to go back to the lines above
+        if user_choice == 1:
+            print("Under Construction")
+            continue
+        elif user_choice == 2:
+            print("Coming Soon")
+            continue
+        elif user_choice == 3:
+            business_analysis_strategy_menu()
+            continue
+        elif user_choice == 4:
+            print("Coming Soon")
+            continue
+        else:
+            print("Returning to main menu...")
+            break
 
 
 def print_start_menu():
@@ -24,7 +88,8 @@ def print_start_menu():
             4 - Find a contact in InCollege
             5 - Useful Links Group
             6 - InCollege Important Links Group
-            7 - Exit the program
+            7 - Training
+            8 - Exit the program
 
             """
     print(start_menu)
@@ -43,6 +108,7 @@ def main_menu():
     db_commands.create_table(connection, db_commands.messages_table)
     db_commands.create_table(connection, db_commands.logout_times_table)
     db_commands.create_table(connection, db_commands.job_notifications_table)
+    db_commands.create_table(connection, db_commands.trainings_table)
     db_commands.print_database(connection)
 
     user_story = start_options.succ_story("Student_story.txt")
@@ -57,10 +123,10 @@ def main_menu():
 
     while True:
         print_start_menu()
-        user_choice = start_options.get_user_option(1, 7)
-        while user_choice < 1 or user_choice > 7:
+        user_choice = start_options.get_user_option(1, 8)
+        while user_choice < 1 or user_choice > 8:
             print("Invalid input. Try again")
-            user_choice = start_options.get_user_option(1, 7)
+            user_choice = start_options.get_user_option(1, 8)
         # come back later to implement a way for the user to go back to the lines above
         if user_choice == 1:
             start_options.login_account(connection)
@@ -81,6 +147,9 @@ def main_menu():
             continue
         elif user_choice == 6:
             important_links_group.important_links_visitors()
+            continue
+        elif user_choice == 7:
+            training_menu()
             continue
         else:
             print("Exit the program.")
