@@ -11,6 +11,7 @@ import user_options
 import start_options
 import useful_links_options
 import important_links_group
+import student_account_txt
 
 database_name = "userDB"
 
@@ -29,10 +30,10 @@ def business_analysis_strategy_menu():
 
     while True:
         print(business_analysis_strategy)
-        user_choice = start_options.get_user_option(1, 4)
-        while user_choice < 1 or user_choice > 4:
+        user_choice = start_options.get_user_option(1, 3)
+        while user_choice < 1 or user_choice > 3:
             print("Invalid input. Try again")
-            user_choice = start_options.get_user_option(1, 4)
+            user_choice = start_options.get_user_option(1, 3)
         # come back later to implement a way for the user to go back to the lines above
         if user_choice == 1:
             start_options.login_account(connection)
@@ -42,7 +43,6 @@ def business_analysis_strategy_menu():
             start_options.login_account(connection)
         else:
             print("Returning to main menu...")
-            break
 
 
 def training_menu():
@@ -108,8 +108,10 @@ def main_menu():
     db_commands.create_table(connection, db_commands.messages_table)
     db_commands.create_table(connection, db_commands.logout_times_table)
     db_commands.create_table(connection, db_commands.job_notifications_table)
-    db_commands.create_table(connection, db_commands.trainings_table)
     db_commands.print_database(connection)
+
+    student_account_txt.create_mycollege_users()
+    student_account_txt.create_student_accounts()
 
     user_story = start_options.succ_story("Student_story.txt")
     # log_in_status = False
