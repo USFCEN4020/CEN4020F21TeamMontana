@@ -1,8 +1,8 @@
 import db_commands
 import account_define
 import user_options
-import new_user_notifications
-from datetime import datetime
+import student_account_txt
+
 
 def succ_story(filename):
     try:
@@ -36,9 +36,6 @@ def login_account(connection):
             # and ask for usernames or if the user wants to quit the program
             succ_login = account_define.user_login(username_input, password_input, existing_usernames,
                                                    username_password_tuples)
-            if succ_login == True:
-                # Epic 8
-                new_user_notifications.update_logout_time(connection, username_input)
 
 
 def create_account(connection):
@@ -76,25 +73,17 @@ def create_account(connection):
             print("That name already exists in our system. Do you have a nickname you go by?")
         else:
             break
-    #Choose tier of membership
-    print("You are signing up for an InCollege account. You can now choose to be a Standard or Plus membership.")
-    student_mem = tier_member()
+
     # Create row in users table
     # Adds English as Language and sets defaults for Privacy settings
-    #Add tier of student to user table
-    user_information = (username_input, password_input, firstname_input, lastname_input, student_mem, 
+    user_information = (username_input, password_input, firstname_input, lastname_input,
                         "English", "Send Emails", "Send SMS", "Target Ads", "TITLE:NULL", "MAJOR:NULL", "UNIVERSITY:NULL", "STUDENTINFO:NULL", "EDUCATION:NULL")
     db_commands.create_row_in_users_table(connection, user_information)
-    new_user_notifications.add_user_logout_times(connection, username_input, firstname_input, lastname_input)
-
-    training_info = (username_input, )
-    db_commands.create_row_in_trainings_table(connection, training_info)
 
     print("Successfully created your account. You are now logged in.")
     user_options.additional_options(username_input)
+    student_account_txt.create_mycollege_users()
 
-    # Updates users log out time
-    new_user_notifications.update_logout_time(connection, username_input)
 
 def play_video():
     # end='' removes the new line that comes after the print statement
@@ -130,23 +119,3 @@ def get_user_option(limit1, limit2):
             return option1
         except ValueError:
             print("Input has to be an integer")
-
-#Epic 7
-def tier_member():
-    message = '''Please choose tier of membership:
-    1 - Standard for free
-    2 - Plus for 10$/month'''
-    print(message)
-    
-    while True:
-        user_choice = input("Enter your selection here: ")
-        if user_choice == "1":
-            member_tier = "Standard"
-            break
-        elif user_choice == "2":
-            member_tier = "Plus"
-            break
-        else:
-            print("Invalid input. Please enter 1 for Standard, or 2 for Plus member.")
-    return member_tier
-###   
