@@ -117,7 +117,7 @@ trainings_table = """CREATE TABLE IF NOT EXISTS trainings (
                         IT_Help_Desk text DEFAULT 'UNFINISHED' NOT NULL,
                         In_College_Learning text DEFAULT 'UNFINISHED' NOT NULL,
                         Train_The_Trainer text DEFAULT 'UNFINISHED' NOT NULL,
-                        Gamification_Of_Learning text DEFAULT 'UNFINISHED' NOT NULL
+                        Gamification_Of_Learning text DEFAULT 'UNFINISHED' NOT NULL,
                         Security text DEFAULT 'UNFINISHED' NOT NULL
                         );"""
 # ===========
