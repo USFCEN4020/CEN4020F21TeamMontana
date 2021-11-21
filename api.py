@@ -100,10 +100,11 @@ def output_profiles():
             temp_experience = ["Title: {}\n".format(experiences[0]), "Employer: {}\n".format(experiences[1]),
                                "Location: {}\n".format(experiences[2]), "Description: {}\n".format(experiences[3]),
                                "Start Date: {}\n".format(experiences[4]), "End Date: {}\n".format(experiences[5])]
-            temp_profile.append(temp_experience)
-        temp_profile.append("Education: {}\n".format(profile[5]))
-        temp_profile.append("=====\n")
+            file.writelines(temp_experience)
+            # temp_profile.append(temp_experience)
         file.writelines(temp_profile)
+        temp_profile_education = ["Education: {}\n".format(profile[5]), "=====\n"]
+        file.writelines(temp_profile_education)
     file.close()
     return 0
 
