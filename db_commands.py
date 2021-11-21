@@ -113,12 +113,11 @@ job_notifications_table = """CREATE TABLE IF NOT EXISTS job_notifications (
 # Holds what trainings a user has done
 trainings_table = """CREATE TABLE IF NOT EXISTS trainings (
                         username text NOT NULL,
-                        Training_and_Education text DEFAULT 'UNFINISHED' NOT NULL,
-                        IT_Help_Desk text DEFAULT 'UNFINISHED' NOT NULL,
-                        In_College_Learning text DEFAULT 'UNFINISHED' NOT NULL,
-                        Train_The_Trainer text DEFAULT 'UNFINISHED' NOT NULL,
-                        Gamification_Of_Learning text DEFAULT 'UNFINISHED' NOT NULL,
-                        Security text DEFAULT 'UNFINISHED' NOT NULL
+                        incollegelearning text DEFAULT 'UNFINISHED' NOT NULL,
+                        trainthetrainer text DEFAULT 'UNFINISHED' NOT NULL,
+                        gamification text DEFAULT 'UNFINISHED' NOT NULL,
+                        architecture text DEFAULT 'UNFINISHED' NOT NULL,
+                        projectmanagement text DEFAULT 'UNFINISHED' NOT NULL
                         );"""
 # ===========
 
@@ -264,66 +263,42 @@ def create_row_in_trainings_table(connection, user):
     connection.commit()
 
 # username, incollegelearning, trainthetrainer, gamification, architecture, projectmanagement
-def update_trainings(connection, trainingNum):
+def update_trainings(connection, username, trainingNum):
     cursor = connection.cursor()
 
-    username_input = None
-    succ_login = False
-    existing_usernames = query_usernames_list(connection)
-    valid_username = False
-
-    while succ_login is False and username_input != "Q":
-        username_input = input("Enter your username, or Q to quit the program: ")
-        if username_input == "Q":
-            exit()
-        else:
-            for user in existing_usernames:
-                if user[0] == username_input:
-                    valid_username = True
-
-    if trainingNum == 1 and valid_username == True:
-        cursor.execute("UPDATE trainings SET Training_and_Education = 'FINISHED' WHERE username = ?", (username_input, ))
+    if trainingNum == 1:
+        cursor.execute("UPDATE trainings SET incollegelearning = 'FINISHED' WHERE username = ?", (username, ))
         connection.commit()
-    elif trainingNum == 2 and valid_username == True:
-        cursor.execute("UPDATE trainings SET IT_Help_Desk = 'FINISHED' WHERE username = ?", (username_input, ))
+    elif trainingNum == 2:
+        cursor.execute("UPDATE trainings SET trainthetrainer = 'FINISHED' WHERE username = ?", (username, ))
         connection.commit()
-    elif trainingNum == 3 and valid_username == True:
-        cursor.execute("UPDATE trainings SET In_College_Learning = 'FINISHED' WHERE username = ?", (username_input, ))
+    elif trainingNum == 3:
+        cursor.execute("UPDATE trainings SET gamification = 'FINISHED' WHERE username = ?", (username, ))
         connection.commit()
-    elif trainingNum == 4 and valid_username == True:
-        cursor.execute("UPDATE trainings SET Train_The_Trainer = 'FINISHED' WHERE username = ?", (username_input, ))
+    elif trainingNum == 4:
+        cursor.execute("UPDATE trainings SET architecture = 'FINISHED' WHERE username = ?", (username, ))
         connection.commit()
-    elif trainingNum == 5 and valid_username == True:
-        cursor.execute("UPDATE trainings SET Gamification_Of_Learning = 'FINISHED' WHERE username = ?", (username_input, ))
+    elif trainingNum == 5:
+        cursor.execute("UPDATE trainings SET projectmanagement = 'FINISHED' WHERE username = ?", (username, ))
         connection.commit()
-    elif trainingNum == 6 and valid_username == True:
-        cursor.execute("UPDATE trainings SET Security = 'FINISHED' WHERE username = ?", (username_input, ))
-        connection.commit()
-    elif valid_username == False:
-        print("Username doesn't exist")
-        return
-    print("Training has been updated to FINISHED status")
 
 def get_trainings_status(connection, username, trainingNum):
     cursor = connection.cursor()
 
     if trainingNum == 1:
-        cursor.execute("SELECT Training_and_Education FROM trainings WHERE username = ?", (username, ))
+        cursor.execute("SELECT incollegelearning FROM trainings WHERE username = ?", (username, ))
         return cursor.fetchone()
     elif trainingNum == 2:
-        cursor.execute("SELECT IT_Help_Desk FROM trainings WHERE username = ?", (username, ))
+        cursor.execute("SELECT trainthetrainer FROM trainings WHERE username = ?", (username, ))
         return cursor.fetchone()
     elif trainingNum == 3:
-        cursor.execute("SELECT In_College_Learning FROM trainings WHERE username = ?", (username, ))
+        cursor.execute("SELECT gamification FROM trainings WHERE username = ?", (username, ))
         return cursor.fetchone()
     elif trainingNum == 4:
-        cursor.execute("SELECT Train_The_Trainer FROM trainings WHERE username = ?", (username, ))
+        cursor.execute("SELECT architecture FROM trainings WHERE username = ?", (username, ))
         return cursor.fetchone()
     elif trainingNum == 5:
-        cursor.execute("SELECT Gamification_Of_Learning FROM trainings WHERE username = ?", (username, ))
-        return cursor.fetchone()
-    elif trainingNum == 6:
-        cursor.execute("SELECT Security FROM trainings WHERE username = ?", (username, ))
+        cursor.execute("SELECT projectmanagement FROM trainings WHERE username = ?", (username, ))
         return cursor.fetchone()
 
 # Queries for the password of the username
@@ -705,6 +680,46 @@ def query_friend_profiles(friends_list):
             friends_list_profiles.append((friend, "profile"))
     return friends_list_profiles
 
+# Epic 10
+
+
+def query_profiles(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT username, title, major, university, studentinfo, education FROM users")
+    return cursor.fetchall()
+
+
+def query_user_experiences(connection, username):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM experiences WHERE username = ?", (username,))
+    return cursor.fetchall()
+
+
+def query_jobs_title_id(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT jobID,title FROM jobs")
+    rows = cursor.fetchall()
+    return rows
+
+
+def query_job_application_users(connection, jobID):
+    cursor = connection.cursor()
+    cursor.execute("SELECT username,statement_of_purpose FROM job_applications WHERE jobID = ? AND status = 'APPLIED'", (jobID,))
+    return cursor.fetchall()
+
+
+def query_saved_jobs_users(connection):
+    cursor = connection.cursor()
+    cursor.execute("SELECT username FROM job_applications WHERE status = 'SAVED'")
+    return cursor.fetchall()
+
+
+def query_user_saved_jobs(connection, username):
+    cursor = connection.cursor()
+    cursor.execute("SELECT title FROM job_applications NATURAL JOIN jobs WHERE username = ? AND status = 'SAVED'", (username,))
+    return cursor.fetchall()
+
+# End of Epic 10 edits
 
 # paramaters are the user that wants to look at jobs they have applied to
 # and status is whether the user wants to check what jobs they have applied to or the ones they have yet to apply
