@@ -69,7 +69,7 @@ deleted_jobs_table = """CREATE TABLE IF NOT EXISTS deleted_jobs (
     employer text NOT NULL,
     location text NOT NULL,
     salary INTEGER NOT NULL,
-    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE, 
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE
     );"""
 
 experience_table = """CREATE TABLE IF NOT EXISTS experiences (

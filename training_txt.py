@@ -76,17 +76,20 @@ def create_mycollege_raining():
             i = 1
             line = "\n"
             while i < 6:
-                if (db_commands.get_trainings_status(db_commands.create_connection(db_commands.database_name), user[0], i))[0] == 'FINISHED':
-                    if i == 1:
-                        line += "In College Learning" + "\n"
-                    elif i == 2:
-                        line += "Train the Trainer"+ "\n"
-                    elif i == 3:
-                        line += "Gamification"+ "\n"
-                    elif i == 4:
-                        line += "Architecture"+ "\n"
-                    elif i == 5:
-                        line += "Project Management"+ "\n"
+                try:
+                    if (db_commands.get_trainings_status(db_commands.create_connection(db_commands.database_name), user[0], i))[0] == 'FINISHED':
+                        if i == 1:
+                            line += "In College Learning" + "\n"
+                        elif i == 2:
+                            line += "Train the Trainer"+ "\n"
+                        elif i == 3:
+                            line += "Gamification"+ "\n"
+                        elif i == 4:
+                            line += "Architecture"+ "\n"
+                        elif i == 5:
+                            line += "Project Management"+ "\n"
+                except:
+                    line = "This user has no training"
                 i += 1
             user_info = [user[0] + " " + line + "\n" + "=====" + "\n"]
             file.writelines(user_info)
