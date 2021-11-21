@@ -94,6 +94,7 @@ def output_profiles():
         # experiences of the current profile of the user at this iteration
         temp_profile = ["Title: {}\n".format(profile[1]), "Major: {}\n".format(profile[2]),
                         "University Name: {}\n".format(profile[3]), "About: {}\n".format(profile[4]), "Experiences:\n"]
+        file.writelines(temp_profile)
         # since a user can have multiple experiences I have to fetch all of the experiences and append them to the list above
         profile_experience_list = db_commands.query_user_experiences(connection, profile[0])
         for experiences in profile_experience_list:
@@ -101,8 +102,6 @@ def output_profiles():
                                "Location: {}\n".format(experiences[2]), "Description: {}\n".format(experiences[3]),
                                "Start Date: {}\n".format(experiences[4]), "End Date: {}\n".format(experiences[5])]
             file.writelines(temp_experience)
-            # temp_profile.append(temp_experience)
-        file.writelines(temp_profile)
         temp_profile_education = ["Education: {}\n".format(profile[5]), "=====\n"]
         file.writelines(temp_profile_education)
     file.close()
@@ -114,7 +113,7 @@ def output_applied_jobs():
     # returns list of tuples that each contain (jobID, title)
     jobs_list = db_commands.query_jobs_title_id(connection)
     for job in jobs_list:
-        temp_job = ["Job Title: {}\n".format(job[1])]
+        file.write("Job Title: {}\n".format(job[1]))
         # query the application for that job that matches the jobID of the current job
         # returns list of tuple that contain (username, statement_of_purpose)
         job_application_list = db_commands.query_job_application_users(connection, job[0])
@@ -122,8 +121,6 @@ def output_applied_jobs():
             temp_application = ["Username: {}\n".format(application[0]),
                                 "Reason for why they are the right candidate: {}\n".format(application[1]), "=====\n"]
             file.writelines(temp_application)
-            # temp_job.append(temp_application)
-        file.writelines(temp_job)
     file.close()
     return 0
 
@@ -133,13 +130,12 @@ def output_saved_jobs():
     # fetches list of user that are in the from (username,)
     users_who_saved_jobs_list = db_commands.query_saved_jobs_users(connection)
     for user in users_who_saved_jobs_list:
-        temp_user = ["Username: {}\n".format(user[0])]
+        file.write("Username: {}\n".format(user[0]))
         # returns a list of job titles that the user has saved in a form as a list of tuples where each tuple is (title,)
         user_saved_jobs_list = db_commands.query_user_saved_jobs(connection, user[0])
-        temp_job = ["Job Titles that {} has saved: \n".format(user[0])]
+        file.write("Job Titles that {} has saved: \n".format(user[0]))
         for job in user_saved_jobs_list:
-            temp_job.append("{}\n".format(job[0]))
-        temp_job.append("=====\n")
-        file.writelines(temp_user)
+            file.write("{}\n".format(job[0]))
+        file.write("=====\n")
     file.close()
     return 0
