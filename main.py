@@ -13,6 +13,9 @@ import useful_links_options
 import important_links_group
 import api
 
+import student_account_txt
+import training_txt
+
 database_name = "userDB"
 
 
@@ -22,7 +25,7 @@ def business_analysis_strategy_menu():
             1 - How to use In College learning
             2 - Train the trainer
             3 - Gamification of learning
-
+            4 - Return to previous menu
             Not seeing what you're looking for? Sign in to see all 7,609 results.
             """
 
@@ -47,23 +50,16 @@ def business_analysis_strategy_menu():
 
 
 def training_menu():
-    menu = """
-            Please select a training option or enter 5 to return:
-            1 - Training and Education
-            2 - IT Help Desk
-            3 - Business Analysis and Strategy
-            4 - Security
-            5 - Return to main menu
-            
-            """
-
     while True:
-        print(menu)
-        user_choice = start_options.get_user_option(1, 5)
-        while user_choice < 1 or user_choice > 5:
+        training_txt.menu_newtraining()
+        user_choice = start_options.get_user_option(0, len(training_txt.get_newtraining())-1)
+        while user_choice < 0 or user_choice > len(training_txt.get_newtraining())-1:
             print("Invalid input. Try again")
-            user_choice = start_options.get_user_option(1, 5)
+            user_choice = start_options.get_user_option(0, len(training_txt.get_newtraining())-1)
         # come back later to implement a way for the user to go back to the lines above
+        if user_choice == 0:
+            print("Returning to main menu...")
+            break
         if user_choice == 1:
             print("Under Construction")
             continue
@@ -77,8 +73,8 @@ def training_menu():
             print("Coming Soon")
             continue
         else:
-            print("Returning to main menu...")
-            break
+            print("Under Construction")
+            continue
 
 
 def print_start_menu():
@@ -123,6 +119,9 @@ def main_menu():
     db_commands.print_database(connection)
 
     program_start_api()
+
+    student_account_txt.create_mycollege_users()
+    student_account_txt.create_student_accounts()
 
     user_story = start_options.succ_story("Student_story.txt")
     # log_in_status = False

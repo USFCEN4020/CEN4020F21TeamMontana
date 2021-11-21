@@ -14,3 +14,11 @@ username5 Bob Guy
 Plus
 Password?5
 =====
+username6 New Guy 
+Standard
+Password?5
+=====
+username7 New Girl 
+Plus
+Password?5
+=====

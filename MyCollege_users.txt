@@ -2,3 +2,5 @@ username2 Standard
 username3 Plus
 username4 Standard
 username5 Plus
+username6 Standard
+username7 Plus

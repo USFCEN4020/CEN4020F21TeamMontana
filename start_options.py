@@ -103,7 +103,8 @@ def create_account(connection):
 
 def play_video():
     # end='' removes the new line that comes after the print statement
-    print("Video is now playing.", end='')
+    video_message = "Video is now playing."
+    print(video_message.strip())
     return 0
 
 
