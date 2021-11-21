@@ -53,8 +53,9 @@ def training_menu():
             3 - Business Analysis and Strategy
             4 - Security
             5 - Return to main menu
-
+            
             """
+
     while True:
         print(menu)
         user_choice = start_options.get_user_option(1, 5)
