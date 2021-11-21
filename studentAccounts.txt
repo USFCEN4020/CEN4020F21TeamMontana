@@ -1,24 +1,8 @@
-username2 An Dinh 
+username2 FName LName 
 Standard
 Password?2
 =====
-username3 Nyan Cat 
+username3 LaName FirstLastName 
 Plus
 Password?3
-=====
-username4 John Smith 
-Standard
-Password?4
-=====
-username5 Bob Guy 
-Plus
-Password?5
-=====
-username6 New Guy 
-Standard
-Password?5
-=====
-username7 New Girl 
-Plus
-Password?5
 =====
