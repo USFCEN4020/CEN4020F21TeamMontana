@@ -6,7 +6,7 @@ import db_commands
 
 def test_jobs_input_api():
     try:
-        file = open("newJobs.txt", "r")
+        file = open("../../newJobs.txt", "r")
     except IOError:
         # print("Error: File could not open or does not exist.")
         return 0
