@@ -12,6 +12,7 @@ import user_notification
 import new_user_notifications
 import new_job_notifications
 import incollege_learning
+import api
 
 
 def search_job(username):
@@ -125,9 +126,11 @@ def additional_options(username):
             if user_choice_opt == "1":
                 user_first_last = db_commands.query_names_user(username, db_commands.create_connection(db_commands.database_name))
                 job_commands.create_job_posting(user_first_last[0], user_first_last[1])
+                api.output_jobs()
             elif user_choice_opt == "2":
                 user_first_last = db_commands.query_names_user(username, db_commands.create_connection(db_commands.database_name))
                 job_commands.delete_job_posting(user_first_last[0], user_first_last[1])
+                api.output_jobs()
             else:
                 print("Invalid Input, Enter either the value 1 or 2")
         elif user_choice_opt == "2":
@@ -152,6 +155,7 @@ def additional_options(username):
             important_links_users(username)
         elif user_choice_opt == "8":
             portfolio_options(username)
+            api.output_profiles()
         elif user_choice_opt == "9":
             friend_commands.create_friend_posting(username)
         elif user_choice_opt == "10":

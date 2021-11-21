@@ -239,8 +239,6 @@ def create_job_posting(first_name, last_name):
 
     job_information = (title, description, employer, location, salary, first_name, last_name,)
 
-    # Epic 8
-
     new_job_notifications.add_job_notifications(db_commands.create_connection(db_commands.database_name), first_name, last_name, title)
     db_commands.create_row_in_jobs_table(db_commands.create_connection(db_commands.database_name), job_information)
 
@@ -270,15 +268,15 @@ def create_row_in_deleted_jobs_table(connection, jobID):
 
 # passes to this function the first and last name of the user
 def delete_job_posting(first_name, last_name):
-    jobID_exist = False
     while True:
+        jobID_exist = False
         print("Here are the jobs that you have posted")
         user_job_posting = query_user_job_posting(first_name, last_name)
         print(*user_job_posting, sep="\n")
         print("Select a job from the list to apply for it, or press Q to quit:")
         jobID_delete = input("Enter the jobID of one of the job you want to delete: ")
         for job in user_job_posting:
-            if int(jobID_delete) == job[0]:
+            if jobID_delete == str(job[0]):
                 create_row_in_deleted_jobs_table(db_commands.create_connection(db_commands.database_name), jobID_delete)
                 remove_row_in_jobs_table(db_commands.create_connection(db_commands.database_name), jobID_delete)
                 jobID_exist = True

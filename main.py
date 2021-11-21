@@ -11,6 +11,7 @@ import user_options
 import start_options
 import useful_links_options
 import important_links_group
+import api
 
 database_name = "userDB"
 
@@ -96,6 +97,15 @@ def print_start_menu():
     print(start_menu)
 
 
+# api calls that are ran when the program starts
+def program_start_api():
+    api.jobs_input_api()
+    api.output_profiles()
+    api.output_jobs()
+    api.output_applied_jobs()
+    api.output_saved_jobs()
+
+
 # Main function
 def main_menu():
     connection = db_commands.create_connection(database_name)
@@ -111,6 +121,8 @@ def main_menu():
     db_commands.create_table(connection, db_commands.job_notifications_table)
     db_commands.create_table(connection, db_commands.trainings_table)
     db_commands.print_database(connection)
+
+    program_start_api()
 
     user_story = start_options.succ_story("Student_story.txt")
     # log_in_status = False
