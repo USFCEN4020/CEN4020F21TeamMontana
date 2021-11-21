@@ -74,14 +74,20 @@ def create_mycollege_raining():
     with open("MyCollege_training.txt", "w") as file:
         for user in username_list:
             i = 1
-            line = ""
-            while i < 7:
-                line = "z"
-                #line += (db_commands.get_trainings_status(db_commands.create_connection(db_commands.database_name), user, i) + " ")
+            line = "\n"
+            while i < 6:
+                if (db_commands.get_trainings_status(db_commands.create_connection(db_commands.database_name), user[0], i))[0] == 'FINISHED':
+                    if i == 1:
+                        line += "In College Learning" + "\n"
+                    elif i == 2:
+                        line += "Train the Trainer"+ "\n"
+                    elif i == 3:
+                        line += "Gamification"+ "\n"
+                    elif i == 4:
+                        line += "Architecture"+ "\n"
+                    elif i == 5:
+                        line += "Project Management"+ "\n"
                 i += 1
             user_info = [user[0] + " " + line + "\n" + "=====" + "\n"]
             file.writelines(user_info)
 
-db_commands.delete_all_database_info(db_commands.create_connection(db_commands.database_name))
-db_commands.fill_database(db_commands.create_connection(db_commands.database_name))
-#create_mycollege_raining()
