@@ -11,9 +11,72 @@ import user_options
 import start_options
 import useful_links_options
 import important_links_group
-import training_txt
 
 database_name = "userDB"
+
+
+def business_analysis_strategy_menu():
+    business_analysis_strategy = """
+            Please select a training option or enter 5 to return:
+            1 - How to use In College learning
+            2 - Train the trainer
+            3 - Gamification of learning
+
+            Not seeing what you're looking for? Sign in to see all 7,609 results.
+            """
+
+    connection = db_commands.create_connection(database_name)
+
+    while True:
+        print(business_analysis_strategy)
+        user_choice = start_options.get_user_option(1, 4)
+        while user_choice < 1 or user_choice > 4:
+            print("Invalid input. Try again")
+            user_choice = start_options.get_user_option(1, 4)
+        # come back later to implement a way for the user to go back to the lines above
+        if user_choice == 1:
+            start_options.login_account(connection)
+        elif user_choice == 2:
+            start_options.login_account(connection)
+        elif user_choice == 3:
+            start_options.login_account(connection)
+        else:
+            print("Returning to main menu...")
+            break
+
+
+def training_menu():
+    menu = """
+            Please select a training option or enter 5 to return:
+            1 - Training and Education
+            2 - IT Help Desk
+            3 - Business Analysis and Strategy
+            4 - Security
+            5 - Return to main menu
+
+            """
+    while True:
+        print(menu)
+        user_choice = start_options.get_user_option(1, 5)
+        while user_choice < 1 or user_choice > 5:
+            print("Invalid input. Try again")
+            user_choice = start_options.get_user_option(1, 5)
+        # come back later to implement a way for the user to go back to the lines above
+        if user_choice == 1:
+            print("Under Construction")
+            continue
+        elif user_choice == 2:
+            print("Coming Soon")
+            continue
+        elif user_choice == 3:
+            business_analysis_strategy_menu()
+            continue
+        elif user_choice == 4:
+            print("Coming Soon")
+            continue
+        else:
+            print("Returning to main menu...")
+            break
 
 
 def print_start_menu():
@@ -86,7 +149,7 @@ def main_menu():
             important_links_group.important_links_visitors()
             continue
         elif user_choice == 7:
-            training_txt.menu_newtraining()
+            training_menu()
             continue
         else:
             print("Exit the program.")
