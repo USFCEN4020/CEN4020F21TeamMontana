@@ -4,6 +4,7 @@
 
 import message_options
 import db_commands
+import user_options
 import start_options
 
 
@@ -50,6 +51,9 @@ def read_student_accounts():
                     values.append(line.split('\n'))
                 elif count % 4 == 3:
                     values.append(line.split('\n'))
+                    if user_options.does_user_exist(values[1], values[2]):
+                        continue
+
                     user = (values[0], values[5][0], values[1], values[2], values[4][0], "English", "Send Emails", "Send SMS",
                     "Target Ads", "TITLE:NULL", "MAJOR:NULL", "UNIVERSITY:NULL", "STUDENTINFO:NULL", "EDUCATION:NULL")
                     db_commands.create_row_in_users_table(db_commands.create_connection(db_commands.database_name), user)

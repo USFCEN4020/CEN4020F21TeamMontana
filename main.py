@@ -122,7 +122,6 @@ def main_menu():
     student_account_txt.read_student_accounts()
     student_account_txt.create_mycollege_users()
     training_txt.create_mycollege_raining()
-    db_commands.print_database(connection)
 
     user_story = start_options.succ_story("Student_story.txt")
     # log_in_status = False
