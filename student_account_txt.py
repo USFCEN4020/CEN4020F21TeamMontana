@@ -4,6 +4,7 @@
 
 import message_options
 import db_commands
+import start_options
 
 
 # Writing to file
@@ -17,16 +18,22 @@ def create_mycollege_users():
 
 def get_mycollege_users():
     list = []
-    with open("MyCollege_users.txt") as file:
-        for line in file:
-            list.append(line.strip())
+    try:
+        with open("MyCollege_users.txt") as file:
+            for line in file:
+                list.append(line.strip())
+    except FileNotFoundError:
+        print("MyCollege_users.txt is missing from directory")
     return list
 
 
 def print_mycollege_users():
-    with open("MyCollege_users.txt") as file:
-        for line in file:
-            print("{}".format(line.strip()))
+    try:
+        with open("MyCollege_users.txt") as file:
+            for line in file:
+                print("{}".format(line.strip()))
+    except FileNotFoundError:
+        print("MyCollege_users.txt is missing from directory")
 
 
 # Writing to file
